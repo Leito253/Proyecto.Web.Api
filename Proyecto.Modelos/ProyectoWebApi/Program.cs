@@ -8,15 +8,23 @@ var Local = new List<Local>
     new Local {Nombre = "Cancha Monumental",Direccion = "Av. Figueroa Alcorta 7597, CABA",CapacidadMax = 83000},
     new Local {Nombre = "Estadio Libertadores de América",Direccion = "Av. Pres. Figueroa Alcorta 7597, CABA",CapacidadMax = 66000},
     new Local {Nombre = "Estadio Ciudad de La Plata",Direccion = "Av. 25 y 32, La Plata, Buenos Aires",CapacidadMax = 53000},
-    new Local {Nombre = "Luna Park", Direccion = "Av. Eduardo Madero 470, C1106 Cdad. Autónoma de Buenos Aires", CapacidadMax = 8400}
-
+    new Local {Nombre = "Luna Park", Direccion = "Av. Eduardo Madero 470, C1106 Cdad. Autónoma de Buenos Aires", CapacidadMax = 8400},
+    new Local {Nombre = "Estadio Único Diego Armando Maradona", Direccion = "Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires", CapacidadMax = 53000}
 
 
 
 };
+var locales = app.MapGroup("/locales");
+locales.MapGet("/", () => Local);
+
+locales.MapGet("/{id}", (int id) =>
+{
+    var local = Local.FirstOrDefault(l => l.idLocal == id);
+    return local is not null ? Results.Ok(local) : Results.NotFound();
+});
 
 app.MapGet("/locales", () => Local);
-
+ 
 app.MapPost("/locales", (Local local) =>
 {
     Local.Add(local);
