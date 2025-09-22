@@ -6,6 +6,8 @@ public class Eventos
     public string Nombre { get; set; } = string.Empty;
     public DateTime Fecha { get; set; }
     public string Lugar { get; set; } = string.Empty;
-    public float Precio { get; set; }
+    public int Precio { get; set; }
 
+    public int LocalId { get; set; }
+    public Local? Local { get; set; }
 }

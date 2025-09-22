@@ -1,36 +1,57 @@
 using Proyecto.Modelos;
-
+using Servicios;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
-
-var Local = new List<Local>
+app.UseHttpsRedirection();
+app.MapGet("/Local", (ILocalService LocalService) =>
 {
-    new Local {Nombre = "Cancha Monumental",Direccion = "Av. Figueroa Alcorta 7597, CABA",CapacidadMax = 83000},
-    new Local {Nombre = "Estadio Libertadores de América",Direccion = "Av. Pres. Figueroa Alcorta 7597, CABA",CapacidadMax = 66000},
-    new Local {Nombre = "Estadio Ciudad de La Plata",Direccion = "Av. 25 y 32, La Plata, Buenos Aires",CapacidadMax = 53000},
-    new Local {Nombre = "Luna Park", Direccion = "Av. Eduardo Madero 470, C1106 Cdad. Autónoma de Buenos Aires", CapacidadMax = 8400},
-    new Local {Nombre = "Estadio Único Diego Armando Maradona", Direccion = "Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires", CapacidadMax = 53000}
+    return LocalService.GetAll();
+});
 
-
-
-};
-var locales = app.MapGroup("/locales");
-locales.MapGet("/", () => Local);
-
-locales.MapGet("/{id}", (int id) =>
+app.MapGet("/Local/{id}", (int id, ILocalService LocalService) =>
 {
-    var local = Local.FirstOrDefault(l => l.idLocal == id);
+    var local = LocalService.GetById(id);
     return local is not null ? Results.Ok(local) : Results.NotFound();
 });
-
-app.MapGet("/locales", () => Local);
- 
-app.MapPost("/locales", (Local local) =>
+app.MapPost("/Local", (Local newLocal, ILocalService LocalService) =>
 {
-    Local.Add(local);
-    return Results.Created($"/locales/{local.Nombre}", local);
+    var local = LocalService.Create(newLocal);
+    return Results.Created($"/Local/{local.idLocal}", local);
 });
-
+app.MapPut("/Local/{id}", (int id, Local updatedLocal, ILocalService LocalService) =>
+{
+    var local = LocalService.Update(id, updatedLocal);
+    return local is not null ? Results.Ok(local) : Results.NotFound();
+});
+app.MapDelete("/Local/{id}", (int id, ILocalService LocalService) =>
+{
+    return LocalService.Delete(id) ? Results.NoContent() : Results.NotFound();
+});
+/* Evento */
+app.MapGet("/Evento", (IEventoService EventoService) =>
+{
+    return EventoService.GetAll();
+});
+app.MapGet("/Evento/{id}", (int id, IEventoService EventoService) =>
+{
+    var evento = EventoService.GetById(id);
+    return evento is not null ? Results.Ok(evento) : Results.NotFound();
+});
+app.MapPost("/Evento", (Eventos newEvento, IEventoService EventoService) =>
+{
+    var evento = EventoService.Create(newEvento);
+    return Results.Created($"/Evento/{evento.idEvento}", evento);
+});
+app.MapPut("/Evento/{id}", (int id, Eventos updatedEvento, IEventoService
+    EventoService) =>
+    {
+        var evento = EventoService.Update(id, updatedEvento);
+        return evento is not null ? Results.Ok(evento) : Results.NotFound();
+    });
+app.MapDelete("/Evento/{id}", (int id, IEventoService EventoService) =>
+{
+    return EventoService.Delete(id) ? Results.NoContent() : Results.NotFound();
+});
 
 app.Run();
 
