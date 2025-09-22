@@ -1,4 +1,4 @@
-using Proyecto.Modelos;
+using Proyecto.Modelos.Entidades;
 
 public class Cliente
 {

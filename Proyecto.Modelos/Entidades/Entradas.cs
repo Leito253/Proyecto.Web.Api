@@ -1,5 +1,4 @@
-namespace Proyecto.Modelos;
-using Proyecto.Modelos;
+using Proyecto.Modelos.Entidades;
 public class Entrada
 {
     public Tarifa tarifa { get; set; } = new Tarifa();

@@ -1,4 +1,4 @@
-namespace Proyecto.Modelos;
+using Proyecto.Modelos.Entidades;
 
 public class Funcion
 {

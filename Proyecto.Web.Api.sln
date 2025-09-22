@@ -2,8 +2,6 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecto", "Proyecto\Proyecto.csproj", "{57CF43C2-626F-CF70-39D2-4582EC64AD7C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecto.Modelos", "Proyecto.Modelos\Proyecto.Modelos.csproj", "{04F0D42E-4EC1-4547-B26D-640CE14F2921}"
 EndProject
 Global

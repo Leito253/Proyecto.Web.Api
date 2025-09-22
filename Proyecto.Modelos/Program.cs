@@ -1,25 +1,88 @@
-﻿/* using System;
-using System.Reflection.Metadata;
-using QRCoder;
-using SkiaSharp;
+using Proyecto.Modelos.Entidades;
+using Proyecto.Web.Api.Repositorios;
 
- 
-dotnet add package QRCoder
-dotnet add package SkiaSharp
-dotnet add package SkiaSharp.NativeAssets.Linux.NoDependencies 
+var builder = WebApplication.CreateBuilder(args);
 
+string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
+                 ?? throw new InvalidOperationException("Cadena de conexión no encontrada");
 
-string url = "";
+var repo = new LocalRepository(connStr);
 
-QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
+var app = builder.Build();
 
-QRCodeData qRCodeData = qRCodeGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+app.Urls.Clear();
+app.Urls.Add("http://localhost:5001");
 
-BitmapByteQRCode qRCode = new BitmapByteQRCode(qRCodeData);
+app.MapGet("/locales", () =>
+{
+    try
+    {
+        var locales = repo.GetAll();
+        return Results.Ok(locales);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
-byte[] qrCodeBytes = qRCode.GetGraphic(20);
+app.MapGet("/locales/{id}", (int id) =>
+{
+    try
+    {
+        var local = repo.GetById(id);
+        return local != null ? Results.Ok(local) : Results.NotFound();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
-using var bitmap = SKBitmap.Decode(qrCodeBytes);
-using var image = SKImage.FromBitmap(bitmap);
-using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-File.WriteAllBytes("qrCode.png", data.ToArray()); */
+app.MapPost("/locales", (Local local) =>
+{
+    try
+    {
+        repo.Add(local);
+        return Results.Created($"/locales/{local.Id_local}", local);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapPut("/locales/{id}", (int id, Local local) =>
+{
+    try
+    {
+        var existente = repo.GetById(id);
+        if (existente == null) return Results.NotFound();
+
+        local.Id_local = id;
+        repo.Update(local);
+        return Results.Ok(local);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapDelete("/locales/{id}", (int id) =>
+{
+    try
+    {
+        var existente = repo.GetById(id);
+        if (existente == null) return Results.NotFound();
+
+        repo.Delete(id);
+        return Results.NoContent();
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.Run();

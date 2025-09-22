@@ -1,11 +1,11 @@
-﻿namespace Proyecto.Modelos;
-
-public class Eventos
+﻿namespace Proyecto.Modelos.Entidades
 {
-    public int idEvento { get; set; }
-    public string Nombre { get; set; } = string.Empty;
-    public DateTime Fecha { get; set; }
-    public string Lugar { get; set; } = string.Empty;
-    public float Precio { get; set; }
-
+    public class Evento
+    {
+        public int Id { get; set; }
+        public required string Nombre { get; set; }
+        public DateTime Fecha { get; set; }
+        public int LocalId { get; set; }
+        public required string Descripcion { get; set; }
+    }
 }

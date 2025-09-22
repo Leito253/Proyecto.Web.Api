@@ -1,0 +1,72 @@
+-- Active: 1700068523370@@127.0.0.1@3306@EventosBD
+CREATE DATABASE IF NOT EXISTS EventosBD;
+USE EventosBD;
+
+CREATE TABLE IF NOT EXISTS Local (
+    Id_local INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Direccion VARCHAR(255) NOT NULL,
+    Capacidad INT NOT NULL,
+    Telefono VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Sector (
+    Id_sector INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion VARCHAR(255),
+    Capacidad INT NOT NULL,
+    Precio DECIMAL(10,2) NOT NULL,
+    Id_local INT NOT NULL,
+    FOREIGN KEY (Id_local) REFERENCES Local(Id_local) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Evento (
+    Id_evento INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Fecha DATE NOT NULL,
+    Tipo VARCHAR(50),
+    Id_local INT NOT NULL,
+    FOREIGN KEY (Id_local) REFERENCES Local(Id_local) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Cliente (
+    Id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Email VARCHAR(100),
+    Telefono VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS Orden (
+    Id_orden INT AUTO_INCREMENT PRIMARY KEY,
+    Fecha DATE NOT NULL,
+    Total DECIMAL(10,2) NOT NULL,
+    Estado VARCHAR(50),
+    Id_cliente INT NOT NULL,
+    FOREIGN KEY (Id_cliente) REFERENCES Cliente(Id_cliente) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Entrada (
+    Id_entrada INT AUTO_INCREMENT PRIMARY KEY,
+    Numero_asiento VARCHAR(50),
+    Precio DECIMAL(10,2) NOT NULL,
+    Id_orden INT NOT NULL,
+    Id_sector INT NOT NULL,
+    FOREIGN KEY (Id_orden) REFERENCES Orden(Id_orden) ON DELETE CASCADE,
+    FOREIGN KEY (Id_sector) REFERENCES Sector(Id_sector) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Tarifa (
+    Id_tarifa INT AUTO_INCREMENT PRIMARY KEY,
+    Precio DECIMAL(10,2) NOT NULL,
+    Tipo VARCHAR(50),
+    Id_evento INT NOT NULL,
+    Id_sector INT NOT NULL,
+    FOREIGN KEY (Id_evento) REFERENCES Evento(Id_evento) ON DELETE CASCADE,
+    FOREIGN KEY (Id_sector) REFERENCES Sector(Id_sector) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Funcion (
+    Id_funcion INT AUTO_INCREMENT PRIMARY KEY,
+    Descripcion VARCHAR(255),
+    FechaHora DATETIME NOT NULL
+);

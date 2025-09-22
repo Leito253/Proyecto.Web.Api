@@ -1,9 +1,11 @@
-namespace Proyecto.Modelos;
-using Proyecto.Modelos;
-public class Local
+namespace Proyecto.Modelos.Entidades
 {
-    public string Nombre { get; set; } = string.Empty;
-    public string Direccion { get; set; } = string.Empty;
-    public int CapacidadMax { get; set; }
-    public int idLocal { get; set; }
+    public class Local
+    {
+        public int Id_local { get; set; } // Auto-increment en la base de datos
+        public required string Nombre { get; set; }
+        public required string Direccion { get; set; }
+        public int Capacidad { get; set; }
+        public required string Telefono { get; set; }
+    }
 }
