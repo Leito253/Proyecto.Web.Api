@@ -1,5 +1,4 @@
-using Proyecto.Modelos.Entidades;
-
+namespace Proyecto.Modelos.Entidades;
 public class Cliente
 {
     public int DNI { get; set; }

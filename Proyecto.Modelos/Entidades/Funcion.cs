@@ -1,5 +1,4 @@
-using Proyecto.Modelos.Entidades;
-
+namespace Proyecto.Modelos.Entidades;
 public class Funcion
 {
     public string Descripcion { get; set; } = string.Empty;

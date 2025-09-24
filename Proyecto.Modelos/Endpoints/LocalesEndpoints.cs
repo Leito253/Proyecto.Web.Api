@@ -18,7 +18,7 @@ namespace Proyecto.Web.Api.Endpoints
             app.MapPost("/locales", (Local local) =>
             {
                 repo.Add(local);
-                return Results.Created($"/locales/{local.Id_local}", local);
+                return Results.Created($"/locales/{local.idLocal}", local);
             });
 
             app.MapPut("/locales/{id}", (int id, Local local) =>
@@ -26,7 +26,7 @@ namespace Proyecto.Web.Api.Endpoints
                 var existente = repo.GetById(id);
                 if (existente == null) return Results.NotFound();
 
-                local.Id_local = id;
+                local.idLocal = id;
                 repo.Update(local);
                 return Results.Ok(local);
             });

@@ -1,6 +1,4 @@
-
-using Proyecto.Modelos.Entidades;
-
+namespace Proyecto.Modelos.Entidades;
 public class Orden
 {
     public int NumeroOrden { get; set; }

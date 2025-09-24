@@ -18,7 +18,7 @@ namespace Proyecto.Web.Api.Endpoints
             app.MapPost("/eventos", (Evento evento) =>
             {
                 repo.Add(evento);
-                return Results.Created($"/eventos/{evento.Id}", evento);
+                return Results.Created($"/eventos/{evento.idEvento}", evento);
             });
 
             app.MapPut("/eventos/{id}", (int id, Evento evento) =>
@@ -26,7 +26,7 @@ namespace Proyecto.Web.Api.Endpoints
                 var existente = repo.GetById(id);
                 if (existente == null) return Results.NotFound();
 
-                evento.Id = id;
+                evento.idEvento = id;
                 repo.Update(evento);
                 return Results.Ok(evento);
             });

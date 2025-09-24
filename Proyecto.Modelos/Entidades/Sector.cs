@@ -1,5 +1,4 @@
-using Proyecto.Modelos.Entidades;
-
+namespace Proyecto.Modelos.Entidades;
 public class Sector
 {
     public string sector { get; set; } = string.Empty;

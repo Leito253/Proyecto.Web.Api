@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
@@ -27,7 +26,7 @@ namespace Proyecto.Web.Api.Repositorios
         {
             using var db = Connection;
             return db.QueryFirstOrDefault<Local>(
-                "SELECT * FROM Local WHERE Id = @Id", new { Id = id });
+                "SELECT * FROM Local WHERE idLocal = @idLocal", new { idLocal = id });
         }
 
         public void Add(Local local)
@@ -40,8 +39,8 @@ namespace Proyecto.Web.Api.Repositorios
                 VALUES (@Nombre, @Direccion, @Capacidad, @Telefono);
                 SELECT LAST_INSERT_ID();";
 
-            /* // Ejecutar y asignar el ID
-            local.Id = db.ExecuteScalar<int>(sql, local); */
+            // Ejecutar y asignar el ID
+            local.idLocal = db.ExecuteScalar<int>(sql, local);
         }
 
         public void Update(Local local)
