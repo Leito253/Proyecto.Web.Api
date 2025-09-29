@@ -3,10 +3,10 @@
 public class Evento
 {
     public int idEvento { get; set; }
-    public string Nombre { get; set; } = string.Empty;
+    public required string Nombre { get; set; }
     public DateTime Fecha { get; set; }
-    public string Lugar { get; set; } = string.Empty;
-    public int Precio { get; set; }
+    public required string Lugar { get; set; }
+    public required string Tipo { get; set; }
     public int LocalId { get; set; }
     public Local? Local { get; set; }
 }

@@ -16,32 +16,32 @@ namespace Proyecto.Web.Api.Repositorios
 
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-        public IEnumerable<Clientes> GetAll()
+        public IEnumerable<Cliente> GetAll()
         {
             using var db = Connection;
-            return db.Query<Clientes>("SELECT * FROM Clientes");
+            return db.Query<Cliente>("SELECT * FROM Clientes");
         }
 
-        public Clientes? GetById(int dni)
+        public Cliente? GetById(int dni)
         {
             using var db = Connection;
-            return db.QueryFirstOrDefault<Clientes>("SELECT * FROM Clientes WHERE DNI=@DNI", new { DNI = DNI });
+            return db.QueryFirstOrDefault<Cliente>("SELECT * FROM Clientes WHERE DNI=@DNI", new { DNI = dni });
         }
 
-        public void Add(Clientes clientes)
+        public void Add(Cliente cliente)
         {
             using var db = Connection;
             var sql = @"INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) 
                         VALUES (@DNI, @Nombre, @Apellido, @Email, @contrasenia)";
-            db.Execute(sql, clientes);
+            db.Execute(sql, cliente);
         }
 
-        public void Update(Clientes clientes)
+        public void Update(Cliente cliente)
         {
             using var db = Connection;
             var sql = @"UPDATE Clientes SET DNI=@DNI, Nombre=@Nombre, Apellido=@Apellido, Email=@Email, contrasenia=@contrasenia 
                         WHERE DNI=@dni";
-            db.Execute(sql, clientes);
+            db.Execute(sql, cliente);
         }
 
         public void Delete(int dni)

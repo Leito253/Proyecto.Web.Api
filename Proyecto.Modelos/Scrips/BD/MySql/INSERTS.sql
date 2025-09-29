@@ -34,5 +34,7 @@ INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES
 ('00000002', 'Cesar', 'Torres', 'cesar@gmail.com', 'cesar123'),
 ('00000003', 'Alpaka', 'Delvalle', 'alpaka@gmail.com', 'alpaka123'),
 ('00000004', 'Hernan', 'Lopez', 'hernan@gmail.com', 'hernan123'),
-('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', 'tiago123'),
+('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', 'tiago123');
+
+
 

@@ -6,7 +6,7 @@ namespace Proyecto.Modelos.Interfaces
     public interface ILocalRepository
     {
         IEnumerable<Local> GetAll();
-        Local? GetById(int id); // <- nullabilidad correcta
+        Local? GetById(int id);
         void Add(Local local);
         void Update(Local local);
         void Delete(int id);

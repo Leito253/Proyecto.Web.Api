@@ -1,9 +1,10 @@
 namespace Proyecto.Modelos.Entidades;
 public class Cliente
 {
+    public int idCLiente { get; set; }
     public int DNI { get; set; }
-    public string Nombre { get; set; } = string.Empty;
-    public string Apellido { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string contrasenia { get; set; } = string.Empty;
+    public required string Nombre { get; set; }
+    public required string Apellido { get; set; }
+    public required string Email { get; set; }
+    public required string Telefono { get; set; }
 }

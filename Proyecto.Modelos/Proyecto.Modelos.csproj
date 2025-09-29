@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.BarCode" Version="25.9.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MySql.Data" Version="9.4.0" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
   </ItemGroup>
 
