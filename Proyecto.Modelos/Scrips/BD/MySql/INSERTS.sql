@@ -27,3 +27,12 @@ INSERT INTO Evento (nombre, fecha, tipo, idLocal) VALUES
 ('Concierto de Pop', '2025-10-20', 'Concierto', 3),
 ('Evento de Box', '2025-09-30', 'Deportivo', 4),
 ('Festival de Música', '2025-12-25', 'Concierto', 5);
+
+-- Insertar Clientes
+INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES
+('00000001', 'Fulano', 'Gutierrez', 'fulanogutierrez@gmail.com', 'fulano123'),
+('00000002', 'Cesar', 'Torres', 'cesar@gmail.com', 'cesar123'),
+('00000003', 'Alpaka', 'Delvalle', 'alpaka@gmail.com', 'alpaka123'),
+('00000004', 'Hernan', 'Lopez', 'hernan@gmail.com', 'hernan123'),
+('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', 'tiago123'),
+
