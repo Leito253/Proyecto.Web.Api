@@ -5,7 +5,7 @@ namespace Proyecto.Web.Api.Endpoints
 {
     public static class EventosEndpoints
     {
-        public static void MapEventosEndpoints(this WebApplication app, EventRepository repo)
+        public static void MapEventosEndpoints(this WebApplication app, EventoRepository repo)
         {
             app.MapGet("/eventos", () => repo.GetAll());
 

@@ -5,9 +5,9 @@ using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Web.Api.Repositorios
 {
-    public class EntradaRepository : IEntradaRepository
+    public class EntradaRepository 
     {
-        
+
 
     }
 }
