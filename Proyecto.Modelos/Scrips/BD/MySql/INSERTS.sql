@@ -10,7 +10,7 @@ INSERT INTO Local (nombre, direccion, capacidad, telefono) VALUES
 ('Estadio Único Diego Armando Maradona', 'Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires', 53000, '0221-66667777');
 
 -- Insertar sectores para los locales
-INSERT INTO Sector (nombre, descripcion, capacidad, precio, idLocal) VALUES
+INSERT INTO Sector (Nombre, Descripcion, Capacidad, Precio, idSector) VALUES
 ('Platea Baja', 'Platea cerca del escenario', 5000, 2000, 1),
 ('Platea Alta', 'Platea elevada', 8000, 1500, 1),
 ('VIP', 'Zona VIP', 500, 5000, 2),
@@ -35,6 +35,10 @@ INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES
 ('00000003', 'Alpaka', 'Delvalle', 'alpaka@gmail.com', 'alpaka123'),
 ('00000004', 'Hernan', 'Lopez', 'hernan@gmail.com', 'hernan123'),
 ('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', 'tiago123');
+
+INSERT INTO Entrada (Precio, QR, Usada, idTarifa, idFuncion, Estado)
+VALUES (1500.00, '', 0, 2, 5, 'Activa');
+
 
 
 

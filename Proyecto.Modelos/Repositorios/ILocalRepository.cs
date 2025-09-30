@@ -1,14 +1,18 @@
-using Proyecto.Modelos.Entidades;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Proyecto.Modelos.Entidades;
 
-namespace Proyecto.Modelos.Interfaces
+namespace Proyecto.Modelos.Repositorios
 {
     public interface ILocalRepository
     {
         IEnumerable<Local> GetAll();
         Local? GetById(int id);
-        void Add(Local local);
+        int Add(Local local);
         void Update(Local local);
-        void Delete(int id);
+        bool Delete(int id);
+        bool TieneFuncionesVigentes(int id);
     }
 }

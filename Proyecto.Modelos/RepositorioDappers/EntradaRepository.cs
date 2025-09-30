@@ -7,6 +7,7 @@ namespace Proyecto.Web.Api.Repositorios
 {
     public class EntradaRepository : IEntradaRepository
     {
+        
 
     }
 }

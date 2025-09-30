@@ -9,11 +9,11 @@ namespace Proyecto.Web.Api.Repositorios
 {
     public class EventoRepository : IEventoRepository
     {
-        private readonly string _connectionString;
+       private readonly string _connectionString;
 
-        public EventoRepository(string connectionString)
+        public EventoRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         
         private IDbConnection Connection => new MySqlConnection(_connectionString);

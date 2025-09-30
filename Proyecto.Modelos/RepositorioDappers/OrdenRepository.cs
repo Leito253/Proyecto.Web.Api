@@ -11,13 +11,12 @@ namespace Proyecto.Modelos.RepositorioDappers;
 
 public class OrdenRepository : IOrdenRepository
 {
-      private readonly string _connectionString;
+    private readonly string _connectionString;
 
-        public OrdenRepository(string connectionString)
+        public OrdenRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
     public void Add(Orden orden)

@@ -1,7 +1,16 @@
 using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
+using Proyecto.Modelos.RepositorioDappers;
+using Proyecto.Modelos.Repositorios;
 using Proyecto.Web.Api.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IEventoRepository, EventoRepository>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+builder.Services.AddScoped<ILocalRepository, LocalRepository>();
+builder.Services.AddScoped<IFuncionRepository, FuncionRepository>();
+builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 
 string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
                  ?? throw new InvalidOperationException("Cadena de conexión no encontrada");

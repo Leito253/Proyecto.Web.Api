@@ -13,11 +13,11 @@ namespace Proyecto.Modelos.RepositorioDappers
 
     public class FuncionRepository : IFuncionRepository
     {
-        private readonly string _connectionString;
+         private readonly string _connectionString;
 
-        public FuncionRepository(string connectionString)
+        public FuncionRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         private IDbConnection Connection => new MySqlConnection(_connectionString);
         public void Add(Funcion funcion)
