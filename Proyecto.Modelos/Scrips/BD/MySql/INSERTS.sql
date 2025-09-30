@@ -21,12 +21,12 @@ INSERT INTO Sector (nombre, descripcion, capacidad, precio, idLocal) VALUES
 ('Palco', 'Palco privado', 200, 6000, 5);
 
 -- Insertar eventos
-INSERT INTO Evento (nombre, fecha, tipo, idLocal) VALUES
-('Concierto de Rock', '2025-12-15', 'Concierto', 1),
-('Partido de Fútbol', '2025-11-01', 'Deportivo', 2),
-('Concierto de Pop', '2025-10-20', 'Concierto', 3),
-('Evento de Box', '2025-09-30', 'Deportivo', 4),
-('Festival de Música', '2025-12-25', 'Concierto', 5);
+INSERT INTO Evento (Nombre, Fecha, Tipo, idLocal, idEvento, Lugar, Local) VALUES
+('Concierto de Rock', '2025-12-15', 'Concierto', 1, 1, '',),
+('Partido de Fútbol', '2025-11-01', 'Deportivo', 2, 2, '',),
+('Concierto de Pop', '2025-10-20', 'Concierto', 3, 3, '',),
+('Evento de Box', '2025-09-30', 'Deportivo', 4, 4, '',),
+('Festival de Música', '2025-12-25', 'Concierto', 5, 5, '',);
 
 -- Insertar Clientes
 INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES

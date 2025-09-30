@@ -1,0 +1,19 @@
+using Proyecto.Modelos.Entidades;
+using System.Collections.Generic;
+
+namespace Proyecto.Modelos.Interfaces
+{
+    public interface IEventoRepository
+    {
+        IEnumerable<Evento> GetAll();
+        Evento? GetById(int idEvento);
+        void Add(Evento evento);
+        void Update(Evento evento);
+
+        void Publicar(int idEvento);
+
+        void Cancelar(int idEvento); 
+    
+
+    }
+}
