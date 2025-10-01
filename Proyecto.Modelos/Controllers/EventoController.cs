@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+/* using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos.Entidades;
 using Proyecto.Modelos.Interfaces;
 
@@ -59,3 +59,4 @@ namespace Proyecto.Web.Api.Controllers
         }
     }
 }
+ */
