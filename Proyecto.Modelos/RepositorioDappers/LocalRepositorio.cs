@@ -15,9 +15,9 @@ namespace Proyecto.Web.Api.Repositorios
        private readonly string _connectionString;
         private string connStr;
 
-        public LocalRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+       public LocalRepository(IConfiguration configuration)
+        {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
 
         public LocalRepository(string connStr)

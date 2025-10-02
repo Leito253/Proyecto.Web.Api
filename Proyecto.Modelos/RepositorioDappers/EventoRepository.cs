@@ -11,9 +11,9 @@ namespace Proyecto.Web.Api.Repositorios
     {
        private readonly string _connectionString;
 
-        public EventoRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+       public EventoRepository(IConfiguration configuration)
+        {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
         
         private IDbConnection Connection => new MySqlConnection(_connectionString);
@@ -48,11 +48,6 @@ namespace Proyecto.Web.Api.Repositorios
         }
 
         public void Update(Evento evento)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void Delete(int id)
         {
             throw new NotImplementedException();
         }

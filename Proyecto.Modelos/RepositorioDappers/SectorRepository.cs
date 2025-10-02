@@ -15,8 +15,8 @@ public class SectorRepository : ISectorRepository
     private readonly string _connectionString;
 
     public SectorRepository(IConfiguration configuration)
-    {
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
+    {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
     }
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 

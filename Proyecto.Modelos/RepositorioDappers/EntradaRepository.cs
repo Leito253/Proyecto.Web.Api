@@ -11,11 +11,10 @@ namespace Proyecto.Web.Api.Repositorios
     {
        private readonly string _connectionString;
 
-        public EntradaRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+       public EntradaRepository(IConfiguration configuration)
+        {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
-        
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
         public void Anular(int id)

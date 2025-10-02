@@ -13,9 +13,9 @@ public class OrdenRepository : IOrdenRepository
 {
     private readonly string _connectionString;
 
-        public OrdenRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+       public OrdenRepository(IConfiguration configuration)
+        {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 

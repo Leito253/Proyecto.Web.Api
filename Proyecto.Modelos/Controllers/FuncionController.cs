@@ -1,0 +1,53 @@
+using Microsoft.AspNetCore.Mvc;
+using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
+using Proyecto.Modelos.Repositorios;
+
+namespace Proyecto.Modelos.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class FuncionController : ControllerBase
+{
+private readonly IFuncionRepository _repo;
+
+public FuncionController(IFuncionRepository repo)
+{
+    _repo = repo;
+}
+
+[HttpGet]
+public ActionResult<IEnumerable<Funcion>> GetAll()
+    => Ok(_repo.GetAll());
+
+[HttpGet("{id:int}")]
+public ActionResult<Funcion?> GetById(int id)
+{
+    var f = _repo.GetById(id);
+    if (f == null) return NotFound();
+    return Ok(f);
+}
+
+[HttpPost]
+public ActionResult Create([FromBody] Funcion funcion)
+{
+    _repo.Add(funcion);
+    return CreatedAtAction(nameof(GetById), new { id = /* ajustar */ 0 }, funcion);
+}
+
+[HttpPut("{id:int}")]
+public ActionResult Update(int id, [FromBody] Funcion funcion)
+{
+    _repo.Update(funcion);
+    return NoContent();
+}
+
+[HttpDelete("{id:int}")]
+public ActionResult Delete(int id)
+{
+    _repo.Delete(id);
+    return NoContent();
+}
+
+
+}

@@ -16,8 +16,8 @@ namespace Proyecto.Modelos.RepositorioDappers
          private readonly string _connectionString;
 
         public FuncionRepository(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        {   
+            _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
         private IDbConnection Connection => new MySqlConnection(_connectionString);
         public void Add(Funcion funcion)

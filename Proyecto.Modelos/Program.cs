@@ -5,6 +5,7 @@ using Proyecto.Modelos.Repositorios;
 using Proyecto.Web.Api.Repositorios;
 using Microsoft.OpenApi.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Repositorios
@@ -14,6 +15,7 @@ builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
 builder.Services.AddScoped<ILocalRepository, LocalRepository>();
 builder.Services.AddScoped<IFuncionRepository, FuncionRepository>();
 builder.Services.AddScoped<ISectorRepository, SectorRepository>();
+
 
 // Cadena de conexión
 string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
