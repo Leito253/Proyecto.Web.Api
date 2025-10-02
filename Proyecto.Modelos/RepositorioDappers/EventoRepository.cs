@@ -51,5 +51,10 @@ namespace Proyecto.Web.Api.Repositorios
         {
             throw new NotImplementedException();
         }
+
+        internal void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
