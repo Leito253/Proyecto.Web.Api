@@ -36,9 +36,12 @@ INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES
 ('00000004', 'Hernan', 'Lopez', 'hernan@gmail.com', 'hernan123'),
 ('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', 'tiago123');
 
-INSERT INTO Entrada (Precio, QR, Usada, idTarifa, idFuncion, Estado, idEntrada)
-VALUES (1500.00, '', 0, 2, 5, 'Activa', 1);
-
-
+INSERT INTO Entrada (Precio, QR, Usada, idTarifa, idFuncion, Estado, idEntrada) VALUES 
+(15000.00, '', 0, 1, 1, 'Activa', 1),
+(10000.00, '', 0, 0, 2, 'Activa', 2)
+(10500.00, '', 0, 3, 6, 'Activa', 3),
+(14000.00, '', 0, 4, 1, 'Activa', 4)
+(15000.00, '', 0, 2, 5, 'Activa', 5),
+(13000.00, '', 0, 6, 1, 'Activa', 6)
 
 
