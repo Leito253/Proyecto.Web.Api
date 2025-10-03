@@ -28,7 +28,7 @@ INSERT INTO Evento (Nombre, Fecha, Tipo, idLocal, idEvento, Lugar, Local) VALUES
 ('Evento de Box', '2025-09-30', 'Deportivo', 4, 4, '',),
 ('Festival de Música', '2025-12-25', 'Concierto', 5, 5, '',);
 
--- Insertar Clientes
+-- Insertar clientes
 INSERT INTO Clientes (DNI, Nombre, Apellido, Email, contrasenia) VALUES
 ('00000001', 'Fulano', 'Gutierrez', 'fulanogutierrez@gmail.com', 'fulano123'),
 ('00000002', 'Cesar', 'Torres', 'cesar@gmail.com', 'cesar123'),
@@ -44,4 +44,29 @@ INSERT INTO Entrada (Precio, QR, Usada, idTarifa, idFuncion, Estado, idEntrada) 
 (15000.00, '', 0, 2, 5, 'Activa', 5),
 (13000.00, '', 0, 6, 1, 'Activa', 6)
 
+INSERT INTO Funcion (Descripcion, FechaHora, funcionId) VALUES 
+('Concierto Coldplay - Día 1', '2025-11-20 20:00:00', 1);
+('Concierto Coldplay - Día 2', '2025-11-21 21:00:00', 2);
+('Partido Argentina vs Brasil', '2025-11-30 18:00:00', 3);
+('Concierto Taylor Swift', '2025-12-01 20:30:00', 4);
+('Evento de Boxeo - Campeonato Mundial', '2025-12-03 21:00:00', 5);
+('Obra de teatro - Romeo y Julieta', '2025-12-05 19:30:00', 6);
+('Cine - Estreno Avengers 6', '2025-12-10 22:00:00', 7);
+('Partido Boca vs River', '2025-12-15 17:00:00', 8);
+('Concierto de Música Clásica', '2025-12-20 20:00:00', 9);
+('Festival de Jazz', '2025-12-25 21:00:00', 10);
 
+INSERT INTO Orden (Fecha, Estado, ClienteId) VALUES 
+('2025-10-01 15:30:00', 'Pendiente', 1);
+('2025-10-02 18:45:00', 'Pagada', 2);
+('2025-10-03 20:15:00', 'Anulada', 3);
+('2025-10-05 11:00:00', 'Pendiente', 1);
+('2025-10-06 19:00:00', 'Pagada', 4);
+
+
+INSERT INTO Tarifa (Precio, Descripcion, SectorId, FuncionId) VALUES 
+(25000, 'Platea Baja - General', 1, 1);
+(18000, 'Platea Alta - General', 2, 1);
+(50000, 'Palco VIP', 3, 1);
+(15000, 'Campo General', 4, 2);
+(12000, 'Galería - Promoción', 5, 3);
