@@ -8,9 +8,13 @@ public class Orden
     // FK
     public int ClienteId { get; set; }
 
+    public int NumeroOrden { get; set; }
+
     // Navegación
     public Cliente Cliente { get; set; } = default!;
     public List<Entrada> Entradas { get; set; } = new List<Entrada>();
 
     public decimal Total => Entradas.Sum(e => e.tarifa.Precio);
+
+    // Removed invalid implicit operator
 }

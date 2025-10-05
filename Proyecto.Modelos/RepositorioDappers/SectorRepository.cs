@@ -58,4 +58,14 @@ public class SectorRepository : ISectorRepository
         string sql = "DELETE FROM Sectores WHERE Id = @Id;";
         db.Execute(sql, new { Id = idSector });
     }
+
+    public object? GetByLocal(int idLocal)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Add(int idLocal, Sector sector)
+    {
+        throw new NotImplementedException();
+    }
 }

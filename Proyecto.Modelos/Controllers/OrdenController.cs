@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos.Entidades;
 using Proyecto.Modelos.Interfaces;
 using Proyecto.Modelos.Repositorios;
+using System.Collections.Generic;
+using Proyecto.Modelos.Controllers;
 
 namespace Proyecto.Modelos.Controllers;
 
