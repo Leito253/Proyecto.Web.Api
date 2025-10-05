@@ -1,3 +1,4 @@
+
 namespace Proyecto.Modelos.Entidades;
 public class Tarifa
 {
@@ -12,5 +13,9 @@ public class Tarifa
     // Navegación
     public Sector Sector { get; set; } = default!;
     public Funcion Funcion { get; set; } = default!;
-    
+
+    public static implicit operator Tarifa(int v)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -6,4 +6,9 @@ public class Funcion
     public DateTime FechaHora { get; set; }
     public List<Entrada> Entradas { get; set; } = new List<Entrada>();
     public int FuncionId { get; set; }
+
+    public static implicit operator Funcion(int v)
+    {
+        throw new NotImplementedException();
+    }
 }

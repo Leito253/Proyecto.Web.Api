@@ -1,4 +1,5 @@
 namespace Proyecto.Modelos.Entidades;
+
 public class Entrada
 {
     public int idEntrada { get; set; }
@@ -7,4 +8,6 @@ public class Entrada
     public string QR { get; set; } = string.Empty;
     public Funcion funcion { get; set; } = default!;
     public bool Usada { get; set; }
+    public bool Anulada { get; set; }
+    public string Numero { get; set; } = string.Empty;
 }
