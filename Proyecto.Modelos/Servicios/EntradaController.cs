@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos;
 using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Servicios;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,24 @@ namespace Proyecto.Web.Api.Controllers
     [Route("api/[controller]")]
     public class EntradaController : ControllerBase
     {
+private readonly QrService _qrService;
+
+    public EntradaController(QrService qrService)
+    {
+        _qrService = qrService;
+    }
+
+    /* [HttpGet("{entradaId}/qr")]
+    public IActionResult ObtenerQr(int entradaId)
+    {
+        var qrImagen = _qrService.GenerarQrEntradaImagen(entradaId);
+        if (qrImagen == null) return NotFound();
+        return qrImagen;
+        var 
+    } */
+
+
+
         private static List<Entrada> entradas = new List<Entrada>
         {
             new Entrada { idEntrada = 1, Numero = "A001", funcion = 1, tarifa = 1, Anulada = false },

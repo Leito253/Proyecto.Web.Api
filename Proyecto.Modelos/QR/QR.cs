@@ -13,3 +13,5 @@ namespace Proyecto.Modelos.Entidades
         public Entrada Entrada { get; set; }  
     }
 }
+
+

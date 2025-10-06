@@ -18,19 +18,20 @@ public class QrController : ControllerBase
     [HttpGet("/entradas/{entradaId}/qr")]
     public IActionResult GenerarQr(int entradaId)
     {
-        var base64Qr = _qrService.GenerarQrEntrada(entradaId);
-        if (string.IsNullOrEmpty(base64Qr)) return NotFound("Entrada no encontrada");
+        
+        var base64Qr = _qrService.GenerarQrEntradaImagen("qrUrl");
+        /* if (string.IsNullOrEmpty(base64Qr)) return NotFound("Entrada no encontrada"); */
 
-        return File(Convert.FromBase64String(base64Qr), "image/png");
+        return File(base64Qr, "image/png");
     }
 
-    // POST /qr/lote
+    /* // POST /qr/lote
     [HttpPost("lote")]
     public IActionResult GenerarQrLote([FromBody] List<int> entradaIds)
     {
         var qrs = entradaIds.Select(id => new { EntradaId = id, Qr = _qrService.GenerarQrEntrada(id) });
         return Ok(qrs);
-    }
+    } */
 
     // POST /qr/validar
     [HttpPost("validar")]

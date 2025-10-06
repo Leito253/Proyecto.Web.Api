@@ -6,7 +6,6 @@ using Proyecto.Web.Api.Repositorios;
 using Microsoft.OpenApi.Models;
 using Proyecto.Modelos.Servicios;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Repositorios
@@ -19,16 +18,19 @@ builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+// Servicios
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<QrService>();
+
 // Cadena de conexión
 string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
                  ?? throw new InvalidOperationException("Cadena de conexión no encontrada");
 
 var repo = new LocalRepository(connStr);
 
-
+// Configuración de controladores y Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gestor de Eventos", Version = "v1" });
@@ -46,10 +48,9 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gestor de Eventos v1");
     c.RoutePrefix = "swagger"; // disponible en /swagger
 });
+
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 
 // Redirección desde raíz a swagger
 app.MapGet("/", () => Results.Redirect("/swagger"));

@@ -1,67 +1,77 @@
 using QRCoder;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Repositorios;
-using Aspose.Drawing.Imaging;
 using Proyecto.Modelos.Interfaces;
-using System.Drawing;
+using SkiaSharp;
 
-
-namespace Proyecto.Modelos.Servicios;
-
-public class QrService
+namespace Proyecto.Modelos.Servicios
 {
-    private readonly IEntradaRepository _entradaRepo;
-    private readonly IConfiguration _config;
-
-    public QrService(IEntradaRepository entradaRepo, IConfiguration config)
+    public class QrService
     {
-        _entradaRepo = entradaRepo;
-        _config = config;
-    }
+        private readonly IEntradaRepository _entradaRepo;
+        private readonly IConfiguration _config;
 
-    public string GenerarQrEntrada(int entradaId)
-    {
-        var entrada = _entradaRepo.GetById(entradaId);
-        if (entrada == null) return string.Empty;
+        public QrService(IEntradaRepository entradaRepo, IConfiguration config)
+        {
+            _entradaRepo = entradaRepo;
+            _config = config;
+        }
 
-        // Payload (puede incluir firma digital)
-        string firmaSecreta = _config["Qr:Key"];
-        string payload = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{firmaSecreta}";
+        // Devuelve la imagen del QR como FileResult para el navegador
+        public byte[] GenerarQrEntradaImagen(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                throw new ArgumentException("La URL no puede estar vacía.", nameof(url));
 
-      
-        using var ms = new MemoryStream();
-  
-        return Convert.ToBase64String(ms.ToArray());
-    }
+            QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
+            QRCodeData qRCodeData = qRCodeGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+            BitmapByteQRCode qRCode = new BitmapByteQRCode(qRCodeData);
+            byte[] qrCodeBytes = qRCode.GetGraphic(20);
 
-    public string ValidarQr(string qrContent)
-    {
-        var partes = qrContent.Split('|');
-        if (partes.Length < 4) return "FirmaInvalida";
+            // Convertir a PNG usando SkiaSharp
+            using var bitmap = SKBitmap.Decode(qrCodeBytes);
+            using var image = SKImage.FromBitmap(bitmap);
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-        int entradaId = int.Parse(partes[0]);
-        int funcionId = int.Parse(partes[1]);
-        int clienteId = int.Parse(partes[2]);
-        string firma = partes[3];
+            return data.ToArray();
+        }
 
-        string firmaEsperada = _config["Qr:Key"];
-        if (firma != firmaEsperada) return "FirmaInvalida";
+        // Validación del QR
+        public string ValidarQr(string qrContent)
+        {
+            try
+            {
+                var partes = qrContent.Split('|');
+                if (partes.Length < 4) return "FirmaInvalida";
 
-        var entrada = _entradaRepo.GetById(entradaId);
-        if (entrada == null) return "NoExiste";
+                int entradaId = int.Parse(partes[0]);
+                int funcionId = int.Parse(partes[1]);
+                int clienteId = int.Parse(partes[2]);
+                string firma = partes[3];
 
-        if (entrada.Usada) return "YaUsada";
+                string firmaEsperada = _config["Qr:Key"];
+                if (firma != firmaEsperada) return "FirmaInvalida";
 
-        var funcion = entrada.funcion; // suponiendo que Entrada tiene navegación
-        if (funcion != null && funcion.FechaHora < DateTime.Now) return "Expirada";
+                var entrada = _entradaRepo.GetById(entradaId);
+                if (entrada == null) return "NoExiste";
 
-        // marcar como usada
-        entrada.Usada = true;
-        _entradaRepo.Update(entrada);
+                if (entrada.Usada) return "YaUsada";
 
-        return "Ok";
+                if (entrada.funcion != null && entrada.funcion.FechaHora < DateTime.Now)
+                    return "Expirada";
+
+                entrada.Usada = true;
+                _entradaRepo.Update(entrada);
+
+                return "Ok";
+            }
+            catch
+            {
+                return "FirmaInvalida";
+            }
+        }
     }
 }
