@@ -1,0 +1,4 @@
+[*.cs]
+
+# IDE0008: Usar un tipo explícito
+dotnet_diagnostic.IDE0008.severity = suggestion
