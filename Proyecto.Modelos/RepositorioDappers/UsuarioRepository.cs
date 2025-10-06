@@ -54,7 +54,7 @@ public class UsuarioRepository : IUsuarioRepository
         return db.Query<Rol>("SELECT * FROM Rol");
     }
 
-    public void AssignRole(int IdUsuario, int idRol)
+    public void AsignarRoles(int IdUsuario, int idRol)
     {
         using var db = Connection;
         string sql = @"INSERT INTO UsuarioRol (IdUsuario, IdRol)

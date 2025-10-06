@@ -9,5 +9,5 @@ public interface IUsuarioRepository
     void Add(Usuario user);
     IEnumerable<Rol> GetRoles(int IdUsuario);
     IEnumerable<Rol> GetAllRoles();
-    void AssignRole(int IdUsuario, int idRol);
+    void AsignarRoles(int IdUsuario, int idRol);
 }

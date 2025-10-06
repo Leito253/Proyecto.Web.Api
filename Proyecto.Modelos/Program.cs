@@ -16,7 +16,7 @@ builder.Services.AddScoped<ILocalRepository, LocalRepository>();
 builder.Services.AddScoped<IFuncionRepository, FuncionRepository>();
 builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
-
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // Cadena de conexión
 string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
