@@ -46,5 +46,10 @@ namespace Proyecto.Web.Api.Repositorios
             using var db = Connection;
             return db.QueryFirstOrDefault<Entrada>("SELECT * FROM Entrada WHERE idEntrada=@idEntrada", new { Id = idEntrada });
         }
+
+        public void Update(Entrada entrada)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

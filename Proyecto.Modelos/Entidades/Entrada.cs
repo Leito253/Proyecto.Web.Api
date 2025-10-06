@@ -10,4 +10,8 @@ public class Entrada
     public bool Usada { get; set; }
     public bool Anulada { get; set; }
     public string Numero { get; set; } = string.Empty;
+
+    public int idCliente {get; set;}
+
+    public int idFuncion {get; set;}
 }

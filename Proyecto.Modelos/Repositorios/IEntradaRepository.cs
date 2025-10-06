@@ -8,6 +8,6 @@ namespace Proyecto.Modelos.Interfaces
         IEnumerable<Entrada> GetAll();
         Entrada? GetById(int id);
         void Anular(int id);
-
+        void Update(Entrada entrada);
     }
 }
