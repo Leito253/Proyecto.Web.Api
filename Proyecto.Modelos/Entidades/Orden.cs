@@ -16,5 +16,7 @@ public class Orden
 
     public decimal Total => Entradas.Sum(e => e.tarifa.Precio);
 
+    public List<DetalleOrden> Detalles { get; internal set; }
+
     // Removed invalid implicit operator
 }

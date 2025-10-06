@@ -19,6 +19,19 @@ namespace Proyecto.Web.Api.Repositorios
 
         public void Anular(int id)
         {
+             using var db = Connection;
+
+            string sqlCheck = "SELECT Estado FROM Entrada WHERE IdEntrada = @IdEntrada;";
+            var estado = db.QueryFirstOrDefault<string>(sqlCheck, new { IdEntrada = id });
+
+            if (estado == null)
+                throw new Exception("La entrada no existe.");
+
+            if (estado == "Anulada")
+                throw new Exception("La entrada ya está anulada.");
+
+            string sqlUpdate = "UPDATE Entrada SET Estado = 'Anulada' WHERE IdEntrada = @IdEntrada;";
+            db.Execute(sqlUpdate, new { IdEntrada = id });
             
         }
 

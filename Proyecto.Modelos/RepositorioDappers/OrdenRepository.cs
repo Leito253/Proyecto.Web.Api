@@ -6,46 +6,102 @@ using MySql.Data.MySqlClient;
 using Proyecto.Modelos.Repositorios;
 using Proyecto.Modelos.Entidades;
 using System.Data;
+using Dapper;
 
-namespace Proyecto.Modelos.RepositorioDappers;
-
-public class OrdenRepository : IOrdenRepository
+namespace Proyecto.Modelos.RepositorioDappers
 {
-    private readonly string _connectionString;
+    public class OrdenRepository : IOrdenRepository
+    {
+        private readonly string _connectionString;
 
-       public OrdenRepository(IConfiguration configuration)
-        {   
+        public OrdenRepository(IConfiguration configuration)
+        {
             _connectionString = configuration.GetConnectionString("MySqlConnection");
         }
+
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-    public void Add(Orden orden)
-    {
-        throw new NotImplementedException();
-    }
+        // Crear orden (INSERT)
+        public void Add(Orden orden)
+        {
+            using var db = Connection;
+            string sql = @"
+                INSERT INTO Orden (IdUsuario, FechaCreacion, Estado)
+                VALUES (@IdUsuario, @FechaCreacion, @Estado);
+                SELECT LAST_INSERT_ID();";
 
-    public void Cancelar(int NumeroOrden)
-    {
-        throw new NotImplementedException();
-    }
+            var id = db.ExecuteScalar<int>(sql, orden);
+            orden.idOrden = id;
 
-    public IEnumerable<Orden> GetAll()
-    {
-        throw new NotImplementedException();
-    }
+            // Insertar detalles
+            foreach (var detalle in orden.Detalles)
+            {
+                string sqlDetalle = @"
+                    INSERT INTO DetalleOrden (IdOrden, IdEvento, Cantidad, PrecioUnitario)
+                    VALUES (@IdOrden, @IdEvento, @Cantidad, @PrecioUnitario);";
+                detalle.IdOrden = id;
+                db.Execute(sqlDetalle, detalle);
+            }
+        }
 
-    public Orden? GetById(int NumeroOrden)
-    {
-        throw new NotImplementedException();
-    }
+        // Listar todas las órdenes
+        public IEnumerable<Orden> GetAll()
+        {
+            using var db = Connection;
+            string sql = "SELECT * FROM Orden;";
+            var ordenes = db.Query<Orden>(sql).ToList();
 
-    public void Pagar(int NumeroOrden)
-    {
-        throw new NotImplementedException();
-    }
+            foreach (var orden in ordenes)
+            {
+                string sqlDetalle = "SELECT * FROM DetalleOrden WHERE IdOrden = @IdOrden;";
+                orden.Detalles = db.Query<DetalleOrden>(sqlDetalle, new { IdOrden = orden.idOrden }).ToList();
+            }
 
-    public void Update(Orden orden)
-    {
-        throw new NotImplementedException();
+            return ordenes;
+        }
+
+        // Buscar por ID
+        public Orden? GetById(int NumeroOrden)
+        {
+            using var db = Connection;
+            string sql = "SELECT * FROM Orden WHERE IdOrden = @IdOrden;";
+            var orden = db.QueryFirstOrDefault<Orden>(sql, new { IdOrden = NumeroOrden });
+
+            if (orden != null)
+            {
+                string sqlDetalle = "SELECT * FROM DetalleOrden WHERE IdOrden = @IdOrden;";
+                orden.Detalles = db.Query<DetalleOrden>(sqlDetalle, new { IdOrden = NumeroOrden }).ToList();
+            }
+
+            return orden;
+        }
+
+        // Actualizar orden (ej: cambiar estado o usuario)
+        public void Update(Orden orden)
+        {
+            using var db = Connection;
+            string sql = @"
+                UPDATE Orden 
+                SET IdUsuario = @IdUsuario,
+                    Estado = @Estado
+                WHERE IdOrden = @IdOrden;";
+            db.Execute(sql, orden);
+        }
+
+        // Marcar como Pagada
+        public void Pagar(int NumeroOrden)
+        {
+            using var db = Connection;
+            string sql = "UPDATE Orden SET Estado = 'Pagada' WHERE IdOrden = @IdOrden;";
+            db.Execute(sql, new { IdOrden = NumeroOrden });
+        }
+
+        // Cancelar orden
+        public void Cancelar(int NumeroOrden)
+        {
+            using var db = Connection;
+            string sql = "UPDATE Orden SET Estado = 'Cancelada' WHERE IdOrden = @IdOrden AND Estado = 'Creada';";
+            db.Execute(sql, new { IdOrden = NumeroOrden });
+        }
     }
 }

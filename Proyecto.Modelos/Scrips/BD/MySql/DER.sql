@@ -74,3 +74,26 @@ CREATE TABLE Funcion (
     Descripcion VARCHAR(255),
     FechaHora DATETIME NOT NULL
 );
+
+CREATE TABLE Usuario (
+    IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    User VARCHAR(50) NOT NULL UNIQUE,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    Password VARCHAR(255) NOT NULL,
+    Activo BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE Rol (
+    IdRol INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE UsuarioRol (
+    IdUsuario INT NOT NULL,
+    IdRol INT NOT NULL,
+    PRIMARY KEY (IdUsuario, IdRol),
+    FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (IdRol) REFERENCES Rol(IdRol) ON DELETE CASCADE
+);
+
+INSERT INTO Rol (Nombre) VALUES ('Admin'), ('Cliente'), ('Empleado');

@@ -1,4 +1,5 @@
 using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.RepositorioDappers;
 using Proyecto.Web.Api.Repositorios;
 
 namespace Proyecto.Web.Api.Endpoints
