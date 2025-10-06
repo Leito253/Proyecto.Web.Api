@@ -15,6 +15,7 @@ builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
 builder.Services.AddScoped<ILocalRepository, LocalRepository>();
 builder.Services.AddScoped<IFuncionRepository, FuncionRepository>();
 builder.Services.AddScoped<ISectorRepository, SectorRepository>();
+builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 
 
 // Cadena de conexión
