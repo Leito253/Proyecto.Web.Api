@@ -24,9 +24,9 @@ public ActionResult<IEnumerable<Orden>> GetAll()
     => Ok(_repo.GetAll());
 
 [HttpGet("{id:int}")]
-public ActionResult<Orden?> GetById(int id)
+public ActionResult<Orden?> GetById(int idOrden)
 {
-    var o = _repo.GetById(id);
+    var o = _repo.GetById(idOrden);
     if (o == null) return NotFound();
     return Ok(o);
 }
@@ -35,11 +35,11 @@ public ActionResult<Orden?> GetById(int id)
 public ActionResult Create([FromBody] Orden orden)
 {
     _repo.Add(orden);
-    return CreatedAtAction(nameof(GetById), new { id = /* ajustar */ 0 }, orden);
+    return CreatedAtAction(nameof(GetById), new { idOrden = /* ajustar */ 0 }, orden);
 }
 
 [HttpPut("{id:int}")]
-public ActionResult Update(int id, [FromBody] Orden orden)
+public ActionResult Update(int idOrden, [FromBody] Orden orden)
 {
     _repo.Update(orden);
     return NoContent();

@@ -24,9 +24,9 @@ public ActionResult<IEnumerable<Cliente>> GetAll()
 
 // Nota: IClienteRepository usa 'dni' como clave según tu interfaz
 [HttpGet("{dni:int}")]
-public ActionResult<Cliente?> GetById(int dni)
+public ActionResult<Cliente?> GetById(int DNI)
 {
-    var c = _repo.GetById(dni);
+    var c = _repo.GetById(DNI);
     if (c == null) return NotFound();
     return Ok(c);
 }
@@ -39,17 +39,17 @@ public ActionResult Create([FromBody] Cliente cliente)
 }
 
 [HttpPut("{dni:int}")]
-public ActionResult Update(int dni, [FromBody] Cliente cliente)
+public ActionResult Update(int DNI, [FromBody] Cliente cliente)
 {
-    if (cliente.DNI != dni) return BadRequest();
+    if (cliente.DNI != DNI) return BadRequest();
     _repo.Update(cliente);
     return NoContent();
 }
 
 [HttpDelete("{dni:int}")]
-public ActionResult Delete(int dni)
+public ActionResult Delete(int DNI)
 {
-    _repo.Delete(dni);
+    _repo.Delete(DNI);
     return NoContent();
 }
 

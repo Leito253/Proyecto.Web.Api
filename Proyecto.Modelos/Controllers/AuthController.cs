@@ -89,11 +89,11 @@ namespace Proyecto.Modelos.Controllers
             return Ok(roles);
         }
 
-        [HttpPost("/usuarios/{usuarioId}/roles")]
+        [HttpPost("/usuarios/{IdUsuario}/roles")]
         [Authorize(Roles = "Admin")]
-        public IActionResult AsignarRol(int usuarioId, [FromBody] string rol)
+        public IActionResult AsignarRol(int IdUsuario, [FromBody] string rol)
         {
-            var usuario = Usuarios.FirstOrDefault(u => u.IdUsuario == usuarioId);
+            var usuario = Usuarios.FirstOrDefault(u => u.IdUsuario == IdUsuario);
             if (usuario == null) return NotFound("Usuario no encontrado.");
 
             usuario.Rol = rol;

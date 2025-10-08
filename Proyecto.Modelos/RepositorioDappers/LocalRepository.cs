@@ -33,11 +33,11 @@ namespace Proyecto.Web.Api.Repositorios
             return connection.Query<Local>("SELECT * FROM Local");
         }
 
-        public Local? GetById(int id)
+        public Local? GetById(int idLocal)
         {
             using var connection = new MySqlConnection(_connectionString);
             return connection.QueryFirstOrDefault<Local>(
-                "SELECT * FROM Local WHERE idLocal = @id", new { id });
+                "SELECT * FROM Local WHERE idLocal = @id", new { idLocal });
         }
 
         public int Add(Local local)
@@ -59,20 +59,20 @@ namespace Proyecto.Web.Api.Repositorios
             connection.Execute(sql, local);
         }
 
-        public bool Delete(int id)
+        public bool Delete(int idLocal)
         {
             using var connection = new MySqlConnection(_connectionString);
             var sql = "DELETE FROM Local WHERE idLocal = @id";
-            return connection.Execute(sql, new { id }) > 0;
+            return connection.Execute(sql, new { idLocal }) > 0;
         }
 
-        public bool TieneFuncionesVigentes(int id)
+        public bool TieneFuncionesVigentes(int idLocal)
         {
             using var connection = new MySqlConnection(_connectionString);
             var sql = @"SELECT COUNT(*) 
                         FROM Funcion 
                         WHERE idLocal = @id AND Estado = 'Activa'";
-            return connection.ExecuteScalar<int>(sql, new { id }) > 0;
+            return connection.ExecuteScalar<int>(sql, new { idLocal }) > 0;
         }
     }
 }

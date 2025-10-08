@@ -6,9 +6,9 @@ namespace Proyecto.Modelos.Interfaces
     public interface IClienteRepository
     {
         IEnumerable<Cliente> GetAll();
-        Cliente? GetById(int dni);
+        Cliente? GetById(int DNI);
         void Add(Cliente cliente);
         void Update(Cliente cliente);
-        void Delete(int dni);
+        void Delete(int DNI);
     }
 }

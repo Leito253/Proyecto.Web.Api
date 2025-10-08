@@ -22,10 +22,10 @@ namespace Proyecto.Web.Api.Repositorios
             return db.Query<Cliente>("SELECT * FROM Cliente");
         }
 
-        public Cliente? GetById(int dni)
+        public Cliente? GetById(int DNI)
         {
             using var db = Connection;
-            return db.QueryFirstOrDefault<Cliente>("SELECT * FROM Cliente WHERE DNI=@DNI", new { DNI = dni });
+            return db.QueryFirstOrDefault<Cliente>("SELECT * FROM Cliente WHERE DNI=@DNI", new { dni = DNI });
         }
 
         public void Add(Cliente cliente)
@@ -44,10 +44,10 @@ namespace Proyecto.Web.Api.Repositorios
             db.Execute(sql, cliente);
         }
 
-        public void Delete(int dni)
+        public void Delete(int DNI)
         {
             using var db = Connection;
-            db.Execute("DELETE FROM Cliente WHERE DNI=@DNI", new { DNI = dni });
+            db.Execute("DELETE FROM Cliente WHERE DNI=@DNI", new { dni = DNI });
         }
     }
 }

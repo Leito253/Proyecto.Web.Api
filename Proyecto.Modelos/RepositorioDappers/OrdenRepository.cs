@@ -61,16 +61,16 @@ namespace Proyecto.Modelos.RepositorioDappers
         }
 
         // Buscar por ID
-        public Orden? GetById(int NumeroOrden)
+        public Orden? GetById(int idOrden)
         {
             using var db = Connection;
             string sql = "SELECT * FROM Orden WHERE IdOrden = @IdOrden;";
-            var orden = db.QueryFirstOrDefault<Orden>(sql, new { IdOrden = NumeroOrden });
+            var orden = db.QueryFirstOrDefault<Orden>(sql, new { IdOrden = idOrden });
 
             if (orden != null)
             {
                 string sqlDetalle = "SELECT * FROM DetalleOrden WHERE IdOrden = @IdOrden;";
-                orden.Detalles = db.Query<DetalleOrden>(sqlDetalle, new { IdOrden = NumeroOrden }).ToList();
+                orden.Detalles = db.Query<DetalleOrden>(sqlDetalle, new { IdOrden = idOrden }).ToList();
             }
 
             return orden;
@@ -89,19 +89,19 @@ namespace Proyecto.Modelos.RepositorioDappers
         }
 
         // Marcar como Pagada
-        public void Pagar(int NumeroOrden)
+        public void Pagar(int idOrden)
         {
             using var db = Connection;
             string sql = "UPDATE Orden SET Estado = 'Pagada' WHERE IdOrden = @IdOrden;";
-            db.Execute(sql, new { IdOrden = NumeroOrden });
+            db.Execute(sql, new { IdOrden = idOrden });
         }
 
         // Cancelar orden
-        public void Cancelar(int NumeroOrden)
+        public void Cancelar(int idOrden)
         {
             using var db = Connection;
             string sql = "UPDATE Orden SET Estado = 'Cancelada' WHERE IdOrden = @IdOrden AND Estado = 'Creada';";
-            db.Execute(sql, new { IdOrden = NumeroOrden });
+            db.Execute(sql, new { IdOrden = idOrden });
         }
     }
 }

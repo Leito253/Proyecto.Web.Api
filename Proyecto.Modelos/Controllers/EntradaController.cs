@@ -11,7 +11,7 @@ namespace Proyecto.Web.Api.Controllers
     [Route("api/[controller]")]
     public class EntradaController : ControllerBase
     {
-private readonly QrService _qrService;
+    private readonly QrService _qrService;
 
     public EntradaController(QrService qrService)
     {
@@ -42,9 +42,9 @@ private readonly QrService _qrService;
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int idEntrada)
         {
-            var entrada = entradas.FirstOrDefault(e => e.idEntrada == id);
+            var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
             if (entrada == null)
                 return NotFound();
             return Ok(entrada);
@@ -59,9 +59,9 @@ private readonly QrService _qrService;
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Entrada entradaActualizada)
+        public IActionResult Put(int idEntrada, [FromBody] Entrada entradaActualizada)
         {
-            var entrada = entradas.FirstOrDefault(e => e.idEntrada == id);
+            var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
             if (entrada == null)
                 return NotFound();
 
@@ -74,9 +74,9 @@ private readonly QrService _qrService;
         }
 
         [HttpPost("{id}/anular")]
-        public IActionResult Anular(int id)
+        public IActionResult Anular(int idEntrada)
         {
-            var entrada = entradas.FirstOrDefault(e => e.idEntrada == id);
+            var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
             if (entrada == null)
                 return NotFound();
 
@@ -85,9 +85,9 @@ private readonly QrService _qrService;
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int idEntrada)
         {
-            var entrada = entradas.FirstOrDefault(e => e.idEntrada == id);
+            var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
             if (entrada == null)
                 return NotFound();
 

@@ -6,8 +6,8 @@ namespace Proyecto.Modelos.Interfaces
     public interface IEntradaRepository
     {
         IEnumerable<Entrada> GetAll();
-        Entrada? GetById(int id);
-        void Anular(int id);
+        Entrada? GetById(int idEntrada);
+        void Anular(int idEntrada);
         void Update(Entrada entrada);
     }
 }

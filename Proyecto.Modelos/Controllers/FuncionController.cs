@@ -21,9 +21,9 @@ public ActionResult<IEnumerable<Funcion>> GetAll()
     => Ok(_repo.GetAll());
 
 [HttpGet("{id:int}")]
-public ActionResult<Funcion?> GetById(int id)
+public ActionResult<Funcion?> GetById(int IdFuncion)
 {
-    var f = _repo.GetById(id);
+    var f = _repo.GetById(IdFuncion);
     if (f == null) return NotFound();
     return Ok(f);
 }
@@ -32,20 +32,20 @@ public ActionResult<Funcion?> GetById(int id)
 public ActionResult Create([FromBody] Funcion funcion)
 {
     _repo.Add(funcion);
-    return CreatedAtAction(nameof(GetById), new { id = /* ajustar */ 0 }, funcion);
+    return CreatedAtAction(nameof(GetById), new { IdFuncion = /* ajustar */ 0 }, funcion);
 }
 
 [HttpPut("{id:int}")]
-public ActionResult Update(int id, [FromBody] Funcion funcion)
+public ActionResult Update(int IdFuncion, [FromBody] Funcion funcion)
 {
     _repo.Update(funcion);
     return NoContent();
 }
 
 [HttpDelete("{id:int}")]
-public ActionResult Delete(int id)
+public ActionResult Delete(int IdFuncion)
 {
-    _repo.Delete(id);
+    _repo.Delete(IdFuncion);
     return NoContent();
 }
 

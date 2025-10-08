@@ -10,10 +10,10 @@ namespace Proyecto.Modelos.Repositorios;
 public interface IOrdenRepository
 {
     IEnumerable<Orden> GetAll();
-    Orden? GetById(int NumeroOrden);
+    Orden? GetById(int idOrden);
     void Add(Orden orden);
     void Update(Orden orden);
-    void Pagar(int NumeroOrden);   
-    void Cancelar(int NumeroOrden); 
+    void Pagar(int IdOrden);   
+    void Cancelar(int IdOrden); 
     
 }

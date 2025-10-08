@@ -17,12 +17,12 @@ namespace Proyecto.Web.Api.Repositorios
         }
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-        public void Anular(int id)
+        public void Anular(int IdEntrada)
         {
              using var db = Connection;
 
             string sqlCheck = "SELECT Estado FROM Entrada WHERE IdEntrada = @IdEntrada;";
-            var estado = db.QueryFirstOrDefault<string>(sqlCheck, new { IdEntrada = id });
+            var estado = db.QueryFirstOrDefault<string>(sqlCheck, new { Id = IdEntrada });
 
             if (estado == null)
                 throw new Exception("La entrada no existe.");
@@ -31,7 +31,7 @@ namespace Proyecto.Web.Api.Repositorios
                 throw new Exception("La entrada ya está anulada.");
 
             string sqlUpdate = "UPDATE Entrada SET Estado = 'Anulada' WHERE IdEntrada = @IdEntrada;";
-            db.Execute(sqlUpdate, new { IdEntrada = id });
+            db.Execute(sqlUpdate, new { Id = IdEntrada });
             
         }
 

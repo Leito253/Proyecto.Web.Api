@@ -23,8 +23,8 @@ public class SectorRepository : ISectorRepository
      public void Add(Sector sector)
     {
         using var db = Connection;
-        string sql = "INSERT INTO Sectores (Nombre, LocalId) VALUES (@Nombre, @LocalId);";
-        db.Execute(sql, new { sector.Nombre, sector.LocalId });
+        string sql = "INSERT INTO Sectores (Nombre, idLocal ) VALUES (@Nombre, @idLocal );";
+        db.Execute(sql, new { sector.Nombre, sector.idLocal  });
     }
 
 

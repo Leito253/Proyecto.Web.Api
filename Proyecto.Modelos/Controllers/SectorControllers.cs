@@ -19,7 +19,7 @@ namespace Proyecto.Modelos.Controllers
         public IActionResult Create(int idLocal, Sector sector)
         {
             _repo.Add(idLocal, sector);
-            return CreatedAtAction(nameof(GetByLocal), new { idLocal = idLocal }, sector);
+            return CreatedAtAction(nameof(GetByLocal), new { id  = idLocal }, sector);
         }
 
         [HttpGet("local/{idLocal}/sector")]
