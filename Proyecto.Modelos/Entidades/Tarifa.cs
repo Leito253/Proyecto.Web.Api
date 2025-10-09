@@ -7,8 +7,8 @@ public class Tarifa
     public string Descripcion { get; set; } = string.Empty;
 
     // Claves foráneas explícitas
-    public int SectorId { get; set; }
-    public int FuncionId { get; set; }
+    public int idSector { get; set; }
+    public int IdFuncion { get; set; }
 
     // Navegación
     public Sector Sector { get; set; } = default!;

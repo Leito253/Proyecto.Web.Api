@@ -22,10 +22,10 @@ namespace Proyecto.Web.Api.Controllers
             return Ok(tarifas);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("{idTarifa}")]
+        public IActionResult Get(int idTarifa)
         {
-            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == id);
+            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == idTarifa);
             if (tarifa == null)
                 return NotFound();
             return Ok(tarifa);
@@ -39,10 +39,10 @@ namespace Proyecto.Web.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = nuevaTarifa.idTarifa }, nuevaTarifa);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Tarifa tarifaActualizada)
+        [HttpPut("{idTarifa}")]
+        public IActionResult Put(int idTarifa, [FromBody] Tarifa tarifaActualizada)
         {
-            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == id);
+            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == idTarifa);
             if (tarifa == null)
                 return NotFound();
 
@@ -52,10 +52,10 @@ namespace Proyecto.Web.Api.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{idTarifa}")]
+        public IActionResult Delete(int idTarifa)
         {
-            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == id);
+            var tarifa = tarifas.FirstOrDefault(t => t.idTarifa == idTarifa);
             if (tarifa == null)
                 return NotFound();
 
