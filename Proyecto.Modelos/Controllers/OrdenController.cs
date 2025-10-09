@@ -23,7 +23,7 @@ public OrdenController(IOrdenRepository repo)
 public ActionResult<IEnumerable<Orden>> GetAll()
     => Ok(_repo.GetAll());
 
-[HttpGet("{id:int}")]
+[HttpGet("{idOrden:int}")]
 public ActionResult<Orden?> GetById(int idOrden)
 {
     var o = _repo.GetById(idOrden);
@@ -38,12 +38,11 @@ public ActionResult Create([FromBody] Orden orden)
     return CreatedAtAction(nameof(GetById), new { idOrden = /* ajustar */ 0 }, orden);
 }
 
-[HttpPut("{id:int}")]
+[HttpPut("{idOrden:int}")]
 public ActionResult Update(int idOrden, [FromBody] Orden orden)
 {
     _repo.Update(orden);
     return NoContent();
 }
-
 
 }

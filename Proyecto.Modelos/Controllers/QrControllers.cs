@@ -15,7 +15,7 @@ public class QrController : ControllerBase
     }
 
     // GET /entradas/{entradaId}/qr
-    [HttpGet("/entradas/{entradaId}/qr")]
+    [HttpGet("/entradas/{idEntrada}/qr")]
     public IActionResult GenerarQr(int entradaId)
     {
         

@@ -12,7 +12,7 @@ public class UsuarioRepository : IUsuarioRepository
 
     public UsuarioRepository(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
+        _connectionString = configuration.GetConnectionString("MySqlConnection");
     }
 
     private IDbConnection Connection => new MySqlConnection(_connectionString);
@@ -20,16 +20,16 @@ public class UsuarioRepository : IUsuarioRepository
     public void Add(Usuario usuario)
     {
         using var db = Connection;
-        string sql = @"INSERT INTO Usuario (User, Email, Password, Activo)
-                       VALUES (@User, @Email, @Password, @Activo)";
+        string sql = @"INSERT INTO Usuario (Usuario, Email, Password, Activo)
+                       VALUES (@Usuario, @Email, @Password, @Activo)";
        int filas = db.Execute(sql, usuario );
     }
 
-    public Usuario? GetByUsername(string user)
+    public Usuario? GetByUsername(string usuario)
     {
         using var db = Connection;
         return db.QueryFirstOrDefault<Usuario>(
-            "SELECT * FROM Usuario WHERE user = @user", new { User = user });
+            "SELECT * FROM Usuario WHERE Usuario = @usuario", new { Usuario = usuario });
     }
 
     public Usuario? GetById(int IdUsuario)
@@ -63,7 +63,7 @@ public class UsuarioRepository : IUsuarioRepository
         db.Execute(sql, new { Id = IdUsuario, IdRol = idRol });
     }
 
-    public Usuario? GetByUsuario(string user)
+    public Usuario? GetByUsuario(string usuario)
     {
         throw new NotImplementedException();
     }

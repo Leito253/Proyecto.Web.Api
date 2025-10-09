@@ -20,7 +20,7 @@ public FuncionController(IFuncionRepository repo)
 public ActionResult<IEnumerable<Funcion>> GetAll()
     => Ok(_repo.GetAll());
 
-[HttpGet("{id:int}")]
+[HttpGet("{idFuncion:int}")]
 public ActionResult<Funcion?> GetById(int IdFuncion)
 {
     var f = _repo.GetById(IdFuncion);
@@ -35,14 +35,14 @@ public ActionResult Create([FromBody] Funcion funcion)
     return CreatedAtAction(nameof(GetById), new { IdFuncion = /* ajustar */ 0 }, funcion);
 }
 
-[HttpPut("{id:int}")]
+[HttpPut("{idFuncion:int}")]
 public ActionResult Update(int IdFuncion, [FromBody] Funcion funcion)
 {
     _repo.Update(funcion);
     return NoContent();
 }
 
-[HttpDelete("{id:int}")]
+[HttpDelete("{idFuncion:int}")]
 public ActionResult Delete(int IdFuncion)
 {
     _repo.Delete(IdFuncion);

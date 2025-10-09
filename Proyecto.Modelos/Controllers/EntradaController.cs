@@ -41,7 +41,7 @@ namespace Proyecto.Web.Api.Controllers
             return Ok(entradas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{idEntrada}")]
         public IActionResult Get(int idEntrada)
         {
             var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
@@ -58,7 +58,7 @@ namespace Proyecto.Web.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = nuevaEntrada.idEntrada }, nuevaEntrada);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{idEntrada}")]
         public IActionResult Put(int idEntrada, [FromBody] Entrada entradaActualizada)
         {
             var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
@@ -73,7 +73,7 @@ namespace Proyecto.Web.Api.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id}/anular")]
+        [HttpPost("{idEntrada}/anular")]
         public IActionResult Anular(int idEntrada)
         {
             var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);
@@ -84,7 +84,7 @@ namespace Proyecto.Web.Api.Controllers
             return Ok(entrada);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{idEntrada}")]
         public IActionResult Delete(int idEntrada)
         {
             var entrada = entradas.FirstOrDefault(e => e.idEntrada == idEntrada);

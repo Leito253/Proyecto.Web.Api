@@ -39,7 +39,7 @@ namespace Proyecto.Modelos.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] Usuario usuario)
         {
-            var result = _authService.Login(usuario.User, usuario.Password);
+            var result = _authService.Login(usuario.usuario, usuario.Contrasena);
             if (result)
                 return Ok("Inicio de sesión exitoso");
             else
@@ -75,7 +75,7 @@ namespace Proyecto.Modelos.Controllers
             return Ok(new
             {
                 usuario.IdUsuario,
-                usuario.User,
+                usuario.usuario,
                 usuario.Email,
                 usuario.Rol
             });
@@ -97,7 +97,7 @@ namespace Proyecto.Modelos.Controllers
             if (usuario == null) return NotFound("Usuario no encontrado.");
 
             usuario.Rol = rol;
-            return Ok(new { Message = $"Rol actualizado a {rol} para {usuario.User}" });
+            return Ok(new { Message = $"Rol actualizado a {rol} para {usuario.usuario}" });
         }
 
     private string GenerateJwtToken(Usuario usuario)
@@ -106,7 +106,7 @@ namespace Proyecto.Modelos.Controllers
     {
         new Claim(ClaimTypes.Email, usuario.Email),
         new Claim(ClaimTypes.Role, usuario.Rol),
-        new Claim(ClaimTypes.Name, usuario.User)
+        new Claim(ClaimTypes.Name, usuario.usuario)
     };
 
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

@@ -8,7 +8,7 @@ namespace Proyecto.Modelos.Servicios
 
         public bool Register(Usuario usuario)
         {
-            if (usuarios.Any(u => u.User == usuario.User || u.Email == usuario.Email))
+            if (usuarios.Any(u => u.usuario == usuario.usuario || u.Email == usuario.Email))
                 return false;
 
             usuario.IdUsuario = usuarios.Count + 1;
@@ -17,9 +17,9 @@ namespace Proyecto.Modelos.Servicios
             return true;
         }
 
-        public bool Login(string user, string password)
+        public bool Login(string usuario, string Contrasena)
         {
-            return usuarios.Any(u => u.User == user && u.Password == password && u.Activo);
+            return usuarios.Any(u => u.usuario == usuario && u.Contrasena == Contrasena && u.Activo);
         }
     }
 }
