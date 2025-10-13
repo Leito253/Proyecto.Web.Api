@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.RepositorioDappers;
-using Proyecto.Web.Api.Repositorios;
+using Proyecto.Modelos.Repositorios.ReposDapper;
 
 namespace Proyecto.Web.Api.Endpoints
 {
@@ -25,7 +26,7 @@ namespace Proyecto.Web.Api.Endpoints
             app.MapPut("/eventos/{id}", (int id, Evento evento) =>
             {
                 var existente = repo.GetById(id);
-                if (existente == null) return Results.NotFound();
+                if (existente is null) return Results.NotFound();
 
                 evento.idEvento = id;
                 repo.Update(evento);
@@ -35,7 +36,7 @@ namespace Proyecto.Web.Api.Endpoints
             app.MapDelete("/eventos/{id}", (int id) =>
             {
                 var existente = repo.GetById(id);
-                if (existente == null) return Results.NotFound();
+                if (existente is null) return Results.NotFound();
 
                 repo.Delete(id);
                 return Results.NoContent();
