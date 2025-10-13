@@ -1,7 +1,4 @@
-using Proyecto.Modelos.Entidades;
-using System.Collections.Generic;
-
-namespace Proyecto.Modelos.Interfaces
+namespace Proyecto.Modelos.Repositorios
 {
     public interface IEntradaRepository
     {

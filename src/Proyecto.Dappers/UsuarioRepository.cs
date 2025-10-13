@@ -1,11 +1,6 @@
-using Dapper;
-using MySql.Data.MySqlClient;
-using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Repositorios;
 using System.Data;
 
-namespace Proyecto.Modelos.RepositorioDappers;
-
+namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class UsuarioRepository : IUsuarioRepository
 {
     private readonly string _connectionString;

@@ -1,15 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using Proyecto.Modelos.Repositorios;
-using Proyecto.Modelos.Entidades;
 using System.Data;
-using Dapper;
 
-namespace Proyecto.Modelos.RepositorioDappers;
-
+namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class SectorRepository : ISectorRepository
 {
     private readonly string _connectionString;
@@ -43,7 +34,7 @@ public class SectorRepository : ISectorRepository
         return db.QueryFirstOrDefault<Sector>(sql, new { Id = idSector });
     }
 
-    
+
     public void Update(Sector sector)
     {
         using var db = Connection;
@@ -51,7 +42,7 @@ public class SectorRepository : ISectorRepository
         db.Execute(sql, new { sector.Nombre, Id = sector.idSector });
     }
 
- 
+
     public void Delete(int idSector)
     {
         using var db = Connection;
