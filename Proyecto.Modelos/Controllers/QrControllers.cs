@@ -14,15 +14,18 @@ public class QrController : ControllerBase
         _qrService = qrService;
     }
 
-    // GET /entradas/{entradaId}/qr
+   
+    // GET /entradas/{idEntrada}/qr
     [HttpGet("/entradas/{idEntrada}/qr")]
-    public IActionResult GenerarQr(int entradaId)
+    public IActionResult GenerarQr(int idEntrada)
     {
-        
-        var base64Qr = _qrService.GenerarQrEntradaImagen("qrUrl");
-        /* if (string.IsNullOrEmpty(base64Qr)) return NotFound("Entrada no encontrada"); */
+    var url = $"http://localhost:5001/swagger/index.html#/Proyecto.Modelos/get_";
+    var qrBytes = _qrService.GenerarQrEntradaImagen(url);
 
-        return File(base64Qr, "image/png");
+    if (qrBytes == null || qrBytes.Length == 0)
+        return NotFound("No se pudo generar el QR.");
+
+    return File(qrBytes, "image/png");
     }
 
     /* // POST /qr/lote
