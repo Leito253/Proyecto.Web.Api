@@ -1,44 +1,37 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Repositorios.ReposDapper;
-
-namespace Proyecto.Web.Api.Endpoints;
 
 public static class ClienteEndpoints
 {
-    public static void MapClienteEndpoints(this WebApplication app, ClienteRepository repo)
+    public static void MapClienteEndpoints(this WebApplication app)
     {
-        app.MapGet("/clientes", () => repo.GetAll());
-
-        app.MapGet("/clientes/{id}", (int id) =>
+        app.MapGet("/api/cliente", (IClienteRepository repo) =>
         {
-            var cliente = repo.GetById(id);
-            return cliente is not null ? Results.Ok(cliente) : Results.NotFound();
+            return Results.Ok(repo.GetAll());
         });
 
-        app.MapPost("/clientes", (Cliente cliente) =>
+        app.MapGet("/api/cliente/{DNI:int}", (int DNI, IClienteRepository repo) =>
+        {
+            var cliente = repo.GetById(DNI);
+            return cliente is null ? Results.NotFound() : Results.Ok(cliente);
+        });
+
+        app.MapPost("/api/cliente", (Cliente cliente, IClienteRepository repo) =>
         {
             repo.Add(cliente);
-            return Results.Created($"/clientes/{cliente.idCliente}", cliente);
+            return Results.Created($"/api/cliente/{cliente.DNI}", cliente);
         });
 
-        app.MapPut("/clientes/{id}", (int id, Cliente cliente) =>
+        app.MapPut("/api/cliente/{DNI:int}", (int DNI, Cliente cliente, IClienteRepository repo) =>
         {
-            var existente = repo.GetById(id);
-            if (existente is null) return Results.NotFound();
+            if (cliente.DNI != DNI)
+                return Results.BadRequest();
 
-            cliente.idCliente = id;
             repo.Update(cliente);
-            return Results.Ok(cliente);
+            return Results.NoContent();
         });
 
-        app.MapDelete("/clientes/{id}", (int id) =>
+        app.MapDelete("/api/cliente/{DNI:int}", (int DNI, IClienteRepository repo) =>
         {
-            var existente = repo.GetById(id);
-            if (existente is null) return Results.NotFound();
-
-            repo.Delete(id);
+            repo.Delete(DNI);
             return Results.NoContent();
         });
     }

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configurar la conexión a MySQL
 builder.Services.AddTransient<IDbConnection>(_ =>
-    new MySqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
+    new MySqlConnection(builder.Configuration.GetConnectionString("MySqlConnection")));
 
 // Registrar todos los repositorios Dapper
 builder.Services.AddScoped<ClienteRepository>();
@@ -45,3 +45,43 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.Run();
+
+var app = builder.Build();
+
+app.MapGet("/api/cliente", (IClienteRepository repo) =>
+{
+    return Results.Ok(repo.GetAll());
+});
+
+app.MapGet("/api/cliente/{DNI:int}", (int DNI, IClienteRepository repo) =>
+{
+    var cliente = repo.GetById(DNI);
+    return cliente is null ? Results.NotFound() : Results.Ok(cliente);
+});
+
+app.MapPost("/api/cliente", (Cliente cliente, IClienteRepository repo) =>
+{
+    repo.Add(cliente);
+    return Results.Created($"/api/cliente/{cliente.DNI}", cliente);
+});
+
+app.MapPut("/api/cliente/{DNI:int}", (int DNI, Cliente cliente, IClienteRepository repo) =>
+{
+    if (cliente.DNI != DNI)
+        return Results.BadRequest();
+
+    repo.Update(cliente);
+    return Results.NoContent();
+});
+
+app.MapDelete("/api/cliente/{DNI:int}", (int DNI, IClienteRepository repo) =>
+{
+    repo.Delete(DNI);
+    return Results.NoContent();
+});
+
+app.MapClienteEndpoints();
+
+app.Run();
+
+
