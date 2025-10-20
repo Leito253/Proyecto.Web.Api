@@ -1,4 +1,7 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class UsuarioRepository : IUsuarioRepository
@@ -56,10 +59,5 @@ public class UsuarioRepository : IUsuarioRepository
                        VALUES (@IdUsuario, @IdRol)
                        ON DUPLICATE KEY UPDATE IdRol = @IdRol";
         db.Execute(sql, new { Id = IdUsuario, IdRol = idRol });
-    }
-
-    public Usuario? GetByUsuario(string usuario)
-    {
-        throw new NotImplementedException();
     }
 }

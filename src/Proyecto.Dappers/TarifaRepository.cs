@@ -1,4 +1,8 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class TarifaRepository : ITarifaRepository
@@ -47,4 +51,6 @@ public class TarifaRepository : ITarifaRepository
                            WHERE idTarifa = @idTarifa;";
         db.Execute(sql, tarifa);
     }
+
+    
 }

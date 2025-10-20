@@ -1,4 +1,7 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class EntradaRepository : IEntradaRepository
@@ -10,6 +13,21 @@ public class EntradaRepository : IEntradaRepository
         _connectionString = configuration.GetConnectionString("MySqlConnection");
     }
     private IDbConnection Connection => new MySqlConnection(_connectionString);
+
+    public IEnumerable<Entrada> GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Entrada? GetById(int idEntrada)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(Entrada entrada)
+    {
+        throw new NotImplementedException();
+    }
 
     public void Anular(int IdEntrada)
     {
@@ -27,22 +45,5 @@ public class EntradaRepository : IEntradaRepository
         string sqlUpdate = "UPDATE Entrada SET Estado = 'Anulada' WHERE IdEntrada = @IdEntrada;";
         db.Execute(sqlUpdate, new { Id = IdEntrada });
         
-    }
-
-    public IEnumerable<Entrada> GetAll()
-    {
-        using var db = Connection;
-        return db.Query<Entrada>("SELECT * FROM Entrada ");
-    }
-
-    public Entrada? GetById(int idEntrada)
-    {
-        using var db = Connection;
-        return db.QueryFirstOrDefault<Entrada>("SELECT * FROM Entrada WHERE idEntrada=@idEntrada", new { Id = idEntrada });
-    }
-
-    public void Update(Entrada entrada)
-    {
-        throw new NotImplementedException();
     }
 }

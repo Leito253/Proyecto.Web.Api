@@ -1,4 +1,7 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 
@@ -46,5 +49,16 @@ public class FuncionRepository : IFuncionRepository
         using var db = Connection;
         db.Execute("DELETE FROM Funcion WHERE IdFuncion=@IdFuncion", new { Id = IdFuncion });
     }
+
+    IEnumerable<Funcion> IFuncionRepository.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    Funcion? IFuncionRepository.GetById(int IdFuncion)
+    {
+        throw new NotImplementedException();
+    }
+
 }
 

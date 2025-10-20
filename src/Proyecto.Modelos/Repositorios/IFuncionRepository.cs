@@ -1,3 +1,5 @@
+using Proyecto.Modelos.Entidades;
+
 namespace Proyecto.Modelos.Repositorios;
 
 public interface IFuncionRepository

@@ -1,4 +1,7 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 public class SectorRepository : ISectorRepository
@@ -50,13 +53,11 @@ public class SectorRepository : ISectorRepository
         db.Execute(sql, new { Id = idSector });
     }
 
-    public object? GetByLocal(int idLocal)
-    {
-        throw new NotImplementedException();
-    }
-
     public void Add(int idLocal, Sector sector)
     {
-        throw new NotImplementedException();
+               using var db = Connection;
+        string sql = "INSERT INTO Sectores (Nombre, idLocal ) VALUES (@Nombre, @idLocal );";
+        db.Execute(sql, new { sector.Nombre, sector.idLocal  });
     }
+   
 }

@@ -1,4 +1,7 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 
@@ -27,15 +30,15 @@ public class ClienteRepository : IClienteRepository
     public void Add(Cliente cliente)
     {
         using var db = Connection;
-        var sql = @"INSERT INTO Cliente (DNI, Nombre, Apellido, Email, contrasenia) 
-                        VALUES (@DNI, @Nombre, @Apellido, @Email, @contrasenia)";
+        var sql = @"INSERT INTO Cliente (DNI, Nombre, Apellido, Email, telefono) 
+                        VALUES (@DNI, @Nombre, @Apellido, @Email, @telefono)";
         db.Execute(sql, cliente);
     }
 
     public void Update(Cliente cliente)
     {
         using var db = Connection;
-        var sql = @"UPDATE Cliente SET DNI=@DNI, Nombre=@Nombre, Apellido=@Apellido, Email=@Email, contrasenia=@contrasenia 
+        var sql = @"UPDATE Cliente SET DNI=@DNI, Nombre=@Nombre, Apellido=@Apellido, Email=@Email, Telefono=@Telefono 
                         WHERE DNI=@dni";
         db.Execute(sql, cliente);
     }
@@ -45,4 +48,16 @@ public class ClienteRepository : IClienteRepository
         using var db = Connection;
         db.Execute("DELETE FROM Cliente WHERE DNI=@DNI", new { dni = DNI });
     }
+
+    IEnumerable<Cliente> IClienteRepository.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    Cliente? IClienteRepository.GetById(int DNI)
+    {
+        throw new NotImplementedException();
+    }
+
+    
 }

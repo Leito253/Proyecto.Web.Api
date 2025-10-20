@@ -14,6 +14,5 @@ public interface ISectorRepository
     void Add(Sector sector);
     void Update(Sector sector);
     void Delete(int idSector);
-    object? GetByLocal(int idLocal);
     void Add(int idLocal, Sector sector);
 }

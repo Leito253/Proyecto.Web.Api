@@ -9,10 +9,10 @@ namespace Proyecto.Modelos.Repositorios
     public interface ILocalRepository
     {
         IEnumerable<Local> GetAll();
-        Local? GetById(int id);
+        Local? GetById(int idLocal);
         int Add(Local local);
         void Update(Local local);
-        bool Delete(int id);
-        bool TieneFuncionesVigentes(int id);
+        bool Delete(int idLocal);
+        bool TieneFuncionesVigentes(int idLocal);
     }
 }

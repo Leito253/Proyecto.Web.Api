@@ -72,15 +72,5 @@ namespace Proyecto.Modelos.Repositorios.ReposDapper
         {
             throw new NotImplementedException();
         }
-
-        public void Add(Evento evento)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Evento evento)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

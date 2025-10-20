@@ -70,23 +70,4 @@ public class LocalRepository : ILocalRepository
         return connection.ExecuteScalar<int>(sql, new { idLocal }) > 0;
     }
 
-    IEnumerable<Local> ILocalRepository.GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    Local? ILocalRepository.GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public int Add(Local local)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Update(Local local)
-    {
-        throw new NotImplementedException();
-    }
 }
