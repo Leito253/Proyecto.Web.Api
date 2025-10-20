@@ -1,4 +1,5 @@
 
+
 public static class ClienteEndpoints
 {
     public static void MapClienteEndpoints(this WebApplication app)

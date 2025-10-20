@@ -1,4 +1,8 @@
 using System.Data;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper
 {
@@ -55,6 +59,26 @@ namespace Proyecto.Modelos.Repositorios.ReposDapper
         }
 
         internal void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<Evento> IEventoRepository.GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        Evento? IEventoRepository.GetById(int idEvento)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(Evento evento)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Evento evento)
         {
             throw new NotImplementedException();
         }
