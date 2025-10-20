@@ -1,46 +1,40 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Repositorios.ReposDapper;
+using Proyecto.Modelos.Repositorios;
 
-namespace Proyecto.Web.Api.Endpoints
+public static class TarifaEndpoints
 {
-    public static class TarifaEndpoints
+    public static void MapTarifaEndpoints(this WebApplication app)
     {
-        public static void MapTarifaEndpoints(this WebApplication app, TarifaRepository repo)
+        app.MapGet("/api/tarifa", (ITarifaRepository repo) =>
         {
-            app.MapGet("/tarifas", () => repo.GetAll());
+            return Results.Ok(repo.GetAll());
+        });
 
-            app.MapGet("/tarifas/{id}", (int id) =>
-            {
-                var tarifa = repo.GetById(id);
-                return tarifa is not null ? Results.Ok(tarifa) : Results.NotFound();
-            });
+        app.MapGet("/api/tarifa/{id:int}", (int id, ITarifaRepository repo) =>
+        {
+            var tarifa = repo.GetById(id);
+            return tarifa is null ? Results.NotFound() : Results.Ok(tarifa);
+        });
 
-            app.MapPost("/tarifas", (Tarifa tarifa) =>
-            {
-                repo.Add(tarifa);
-                return Results.Created($"/tarifas/{tarifa.idTarifa}", tarifa);
-            });
+        app.MapPost("/api/tarifa", (Tarifa tarifa, ITarifaRepository repo) =>
+        {
+            repo.Add(tarifa);
+            return Results.Created($"/api/tarifa/{tarifa.IdTarifa}", tarifa);
+        });
 
-            app.MapPut("/tarifas/{id}", (int id, Tarifa tarifa) =>
-            {
-                var existente = repo.GetById(id);
-                if (existente is null) return Results.NotFound();
+        app.MapPut("/api/tarifa/{id:int}", (int id, Tarifa tarifa, ITarifaRepository repo) =>
+        {
+            if (tarifa.IdTarifa != id)
+                return Results.BadRequest();
 
-                tarifa.idTarifa = id;
-                repo.Update(tarifa);
-                return Results.Ok(tarifa);
-            });
+            repo.Update(tarifa);
+            return Results.NoContent();
+        });
 
-            app.MapDelete("/tarifas/{id}", (int id) =>
-            {
-                var existente = repo.GetById(id);
-                if (existente is null) return Results.NotFound();
-
-                repo.Delete(id);
-                return Results.NoContent();
-            });
-        }
+        app.MapDelete("/api/tarifa/{id:int}", (int id, ITarifaRepository repo) =>
+        {
+            repo.Delete(id);
+            return Results.NoContent();
+        });
     }
 }
