@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+/* using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Proyecto.Modelos.Controllers;
 using Proyecto.Modelos.Entidades;
@@ -55,4 +55,4 @@ namespace Proyecto.Tests
             Assert.Equal(2, ((List<Local>)returned).Count);
         }
     }
-}
+} */

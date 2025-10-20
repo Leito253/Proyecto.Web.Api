@@ -1,11 +1,3 @@
-using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Interfaces;
-using Proyecto.Web.Api.Repositorios;
-using Proyecto.Web.Api.Servicios;
-
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
