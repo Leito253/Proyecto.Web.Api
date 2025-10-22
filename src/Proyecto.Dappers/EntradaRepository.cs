@@ -46,4 +46,9 @@ public class EntradaRepository : IEntradaRepository
         db.Execute(sqlUpdate, new { Id = IdEntrada });
         
     }
+
+    public void Add(Entrada entrada)
+    {
+        throw new NotImplementedException();
+    }
 }

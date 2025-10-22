@@ -8,5 +8,7 @@ namespace Proyecto.Modelos.Repositorios
         Entrada? GetById(int idEntrada);
         void Anular(int idEntrada);
         void Update(Entrada entrada);
+
+        void Add (Entrada entrada);
     }
 }

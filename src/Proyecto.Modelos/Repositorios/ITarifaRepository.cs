@@ -9,5 +9,7 @@ namespace Proyecto.Modelos.Interfaces
         IEnumerable<Tarifa> GetByFuncionId(int IdFuncion);
         Tarifa GetById(int idTarifa);
         void Update(Tarifa tarifa);
+
+        v
     }
 }

@@ -33,14 +33,6 @@ namespace Proyecto.Web.Api.Endpoints
                 return Results.Ok(orden);
             });
 
-            app.MapDelete("/ordenes/{id}", (int id) =>
-            {
-                var existente = repo.GetById(id);
-                if (existente is null) return Results.NotFound();
-
-                repo.Delete(id);
-                return Results.NoContent();
-            });
         }
     }
 }

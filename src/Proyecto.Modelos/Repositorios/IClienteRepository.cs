@@ -9,5 +9,5 @@ public interface IClienteRepository
     void Add(Cliente cliente);
     void Update(Cliente cliente);
     void Delete(int DNI);
-    void Add(Cliente cliente);
+
 }
