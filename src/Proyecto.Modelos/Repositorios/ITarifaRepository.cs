@@ -10,6 +10,6 @@ namespace Proyecto.Modelos.Interfaces
         Tarifa GetById(int idTarifa);
         void Update(Tarifa tarifa);
 
-        v
+        
     }
 }

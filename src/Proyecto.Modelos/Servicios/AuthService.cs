@@ -1,4 +1,6 @@
 namespace Proyecto.Modelos.Servicios;
+using Proyecto.Modelos.Entidades;    // ✅ agregado
+using Proyecto.Modelos.Repositorios; 
 
 public class AuthService
 {

@@ -7,6 +7,7 @@ using Proyecto.Modelos.Interfaces;
 using Proyecto.Modelos.Repositorios;
 using Proyecto.Modelos.Repositorios.ReposDapper;
 using Proyecto.Modelos.Servicios;
+using src.Proyecto.Modelos.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
 

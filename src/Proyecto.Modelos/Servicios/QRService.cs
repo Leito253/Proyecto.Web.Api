@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos.Entidades;
 using Proyecto.Modelos.Interfaces;
 using SkiaSharp;
+using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Repositorios; // ✅ agregado
+using System;
 
 namespace Proyecto.Modelos.Servicios
 {
