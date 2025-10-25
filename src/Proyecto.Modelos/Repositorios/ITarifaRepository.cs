@@ -5,9 +5,9 @@ namespace Proyecto.Modelos.Interfaces
 {
     public interface ITarifaRepository
     {
-        Tarifa Insert(Tarifa tarifa);
+        void Add(Tarifa tarifa);
         IEnumerable<Tarifa> GetByFuncionId(int IdFuncion);
-        Tarifa GetById(int idTarifa);
+        Tarifa? GetById(int idTarifa);
         void Update(Tarifa tarifa);
 
         

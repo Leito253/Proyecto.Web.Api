@@ -16,16 +16,13 @@ public class TarifaRepository : ITarifaRepository
 
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-    public Tarifa Insert(Tarifa tarifa)
-    {
-        using var db = Connection;
-        string sql = @"INSERT INTO Tarifa (idFuncion, Precio, Stock, Activa)
-                           VALUES (@idFuncion, @Precio, @Stock, @Activa);
-                           SELECT LAST_INSERT_ID();";
-        int id = db.ExecuteScalar<int>(sql, tarifa);
-        tarifa.idTarifa = id;
-        return tarifa;
-    }
+     public void Add(Tarifa tarifa)
+        {
+            using var db = Connection;
+            const string sql = @"INSERT INTO Tarifa (IdFuncion, Precio, Stock, Activa)
+                                 VALUES (@IdFuncion, @Precio, @Stock, @Activa);";
+            db.Execute(sql, tarifa);
+        }
 
     public IEnumerable<Tarifa> GetByFuncionId(int idFuncion)
     {

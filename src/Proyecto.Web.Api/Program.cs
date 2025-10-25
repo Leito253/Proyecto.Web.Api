@@ -115,9 +115,9 @@ app.UseHttpsRedirection();
 
 #region Clientes
 app.MapGet("/api/clientes", (IClienteRepository repo) => Results.Ok(repo.GetAll()));
-app.MapGet("/api/clientes/{id}", (int id, IClienteRepository repo) =>
+app.MapGet("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 {
-    var item = repo.GetById(id);
+    var item = repo.GetById(idCliente);
     return item is null ? Results.NotFound() : Results.Ok(item);
 });
 app.MapPost("/api/clientes", (Cliente c, IClienteRepository repo) =>
@@ -125,15 +125,15 @@ app.MapPost("/api/clientes", (Cliente c, IClienteRepository repo) =>
     repo.Add(c);
     return Results.Created($"/api/clientes/{c.DNI}", c);
 });
-app.MapPut("/api/clientes/{id}", (int id, Cliente c, IClienteRepository repo) =>
+app.MapPut("/api/clientes/{id}", (int idCliente, Cliente c, IClienteRepository repo) =>
 {
-    if (id != c.DNI) return Results.BadRequest();
+    if (idCliente != c.DNI) return Results.BadRequest();
     repo.Update(c);
     return Results.NoContent();
 });
-app.MapDelete("/api/clientes/{id}", (int id, IClienteRepository repo) =>
+app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 {
-    repo.Delete(id);
+    repo.Delete(idCliente);
     return Results.NoContent();
 });
 
@@ -141,9 +141,9 @@ app.MapDelete("/api/clientes/{id}", (int id, IClienteRepository repo) =>
 
 #region Ordenes
 app.MapGet("/api/ordenes", (IOrdenRepository repo) => Results.Ok(repo.GetAll()));
-app.MapGet("/api/ordenes/{id}", (int id, IOrdenRepository repo) =>
+app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
 {
-    var item = repo.GetById(id);
+    var item = repo.GetById(idOrden);
     return item is null ? Results.NotFound() : Results.Ok(item);
 });
 app.MapPost("/api/ordenes", (Orden o, IOrdenRepository repo) =>
@@ -151,9 +151,9 @@ app.MapPost("/api/ordenes", (Orden o, IOrdenRepository repo) =>
     repo.Add(o);
     return Results.Created($"/api/ordenes/{o.idOrden}", o);
 });
-app.MapPut("/api/ordenes/{id}", (int id, Orden o, IOrdenRepository repo) =>
+app.MapPut("/api/ordenes/{id}", (int idOrden, Orden o, IOrdenRepository repo) =>
 {
-    if (id != o.idOrden) return Results.BadRequest();
+    if (idOrden != o.idOrden) return Results.BadRequest();
     repo.Update(o);
     return Results.NoContent();
 });
@@ -207,7 +207,7 @@ app.MapGet("/api/roles", (IRolRepository repo) => Results.Ok(repo.GetAll()));
 app.MapPost("/api/roles", (Rol r, IRolRepository repo) =>
 {
     repo.Add(r);
-    return Results.Created($"/api/roles/{r.Id}", r);
+    return Results.Created($"/api/roles/{r.IdRol}", r);
 });
 
 #endregion
@@ -223,11 +223,15 @@ app.MapPost("/api/sectores", (Sector s, ISectorRepository repo) =>
 #endregion
 
 #region TARIFA 
-app.MapGet("/api/tarifas", (ITarifaRepository repo) => Results.Ok(repo.GetAll()));
+app.MapGet("/api/funciones/{funcionId}/tarifas", (int IdFuncion, ITarifaRepository repo) =>
+{
+    var tarifas = repo.GetByFuncionId(IdFuncion);
+    return Results.Ok(tarifas);
+});
 app.MapPost("/api/tarifas", (Tarifa t, ITarifaRepository repo) =>
 {
     repo.Add(t);
-    return Results.Created($"/api/tarifas/{t.Id}", t);
+    return Results.Created($"/api/tarifas/{t.idTarifa}", t);
 });
 
 #endregion
@@ -240,16 +244,18 @@ app.MapPost("/api/usuarios", (Usuario u, IUsuarioRepository repo) =>
     return Results.Created($"/api/usuarios/{u.IdUsuario}", u);
 });
 
-#endregion
 
+#endregion
+/*
 #region USUARIO ROL 
 app.MapGet("/api/usuariorol", (IUsuarioRolRepository repo) => Results.Ok(repo.GetAll()));
 app.MapPost("/api/usuariorol", (UsuarioRol ur, IUsuarioRolRepository repo) =>
 {
     repo.Add(ur);
-    return Results.Created($"/api/usuariorol/{ur.Id}", ur);
+    return Results.Created($"/api/usuariorol/{ur.IdUsuario}", ur);
 });
 
 #endregion
+*/
 
 app.Run();
