@@ -5,6 +5,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <OutputPath>bin\Debug\net9.0\</OutputPath>
+    <AssemblyName>Proyecto.Web.Api</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
