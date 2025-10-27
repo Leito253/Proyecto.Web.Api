@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Proyecto.Modelos.Entidades;
 using Proyecto.Modelos.Interfaces;
 using Proyecto.Modelos.Repositorios;
@@ -10,6 +11,11 @@ using Proyecto.Modelos.Servicios;
 using src.Proyecto.Modelos.Repositorios;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -60,6 +66,7 @@ builder.Services.AddScoped<IFuncionRepository, FuncionRepository>();
 builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<ITarifaRepository, TarifaRepository>();
 
 // Servicios
 builder.Services.AddScoped<AuthService>();
@@ -88,7 +95,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// MVC y Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -102,160 +108,219 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
-app.MapControllers();
 
+/* ===========================
+ *      ENDPOINTS API
+ * ===========================*/
 
-app.UseHttpsRedirection();
+#region CLIENTES
+app.MapGet("/api/clientes", ([FromServices] IClienteRepository repo) => Results.Ok(repo.GetAll()));
 
-/* ENDPOINTS */ 
-
-#region Clientes
-app.MapGet("/api/clientes", (IClienteRepository repo) => Results.Ok(repo.GetAll()));
-app.MapGet("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
+app.MapGet("/api/clientes/{id}", (int idCliente, [FromServices] IClienteRepository repo) =>
 {
     var item = repo.GetById(idCliente);
     return item is null ? Results.NotFound() : Results.Ok(item);
 });
-app.MapPost("/api/clientes", (Cliente c, IClienteRepository repo) =>
+
+app.MapPost("/api/clientes", (Cliente c, [FromServices] IClienteRepository repo) =>
 {
     repo.Add(c);
     return Results.Created($"/api/clientes/{c.DNI}", c);
 });
-app.MapPut("/api/clientes/{id}", (int idCliente, Cliente c, IClienteRepository repo) =>
+
+app.MapPut("/api/clientes/{id}", (int idCliente, Cliente c, [FromServices] IClienteRepository repo) =>
 {
     if (idCliente != c.DNI) return Results.BadRequest();
     repo.Update(c);
     return Results.NoContent();
 });
-app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
+
+app.MapDelete("/api/clientes/{id}", (int idCliente, [FromServices] IClienteRepository repo) =>
 {
     repo.Delete(idCliente);
     return Results.NoContent();
 });
-
 #endregion
 
-#region Ordenes
-app.MapGet("/api/ordenes", (IOrdenRepository repo) => Results.Ok(repo.GetAll()));
-app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
+#region ORDENES
+app.MapGet("/api/ordenes", ([FromServices] IOrdenRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapGet("/api/ordenes/{id}", (int idOrden, [FromServices] IOrdenRepository repo) =>
 {
     var item = repo.GetById(idOrden);
     return item is null ? Results.NotFound() : Results.Ok(item);
 });
-app.MapPost("/api/ordenes", (Orden o, IOrdenRepository repo) =>
+
+app.MapPost("/api/ordenes", (Orden o, [FromServices] IOrdenRepository repo) =>
 {
     repo.Add(o);
     return Results.Created($"/api/ordenes/{o.idOrden}", o);
 });
-app.MapPut("/api/ordenes/{id}", (int idOrden, Orden o, IOrdenRepository repo) =>
+
+app.MapPut("/api/ordenes/{id}", (int idOrden, Orden o, [FromServices] IOrdenRepository repo) =>
 {
     if (idOrden != o.idOrden) return Results.BadRequest();
     repo.Update(o);
     return Results.NoContent();
 });
-
-
 #endregion
 
-#region ENTRADA
+#region ENTRADAS
+app.MapGet("/api/entradas", ([FromServices] IEntradaRepository repo) => Results.Ok(repo.GetAll()));
 
-app.MapGet("/api/entradas", (IEntradaRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/entradas", (Entrada e, IEntradaRepository repo) =>
+app.MapPost("/api/entradas", (Entrada e, [FromServices] IEntradaRepository repo) =>
 {
     repo.Add(e);
     return Results.Created($"/api/entradas/{e.idEntrada}", e);
 });
-
 #endregion
 
-#region EVENTO 
-app.MapGet("/api/eventos", (IEventoRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/eventos", (Evento e, IEventoRepository repo) =>
+#region EVENTOS
+app.MapGet("/api/eventos", ([FromServices] IEventoRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapPost("/api/eventos", (Evento e, [FromServices] IEventoRepository repo) =>
 {
     repo.Add(e);
     return Results.Created($"/api/eventos/{e.idEvento}", e);
 });
-
 #endregion
 
-#region FUNCION 
-app.MapGet("/api/funciones", (IFuncionRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/funciones", (Funcion f, IFuncionRepository repo) =>
+#region FUNCIONES
+app.MapGet("/api/funciones", ([FromServices] IFuncionRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapPost("/api/funciones", (Funcion f, [FromServices] IFuncionRepository repo) =>
 {
     repo.Add(f);
     return Results.Created($"/api/funciones/{f.IdFuncion}", f);
 });
-
 #endregion
 
-#region LOCAL 
-app.MapGet("/api/locales", (ILocalRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/locales", (Local l, ILocalRepository repo) =>
+#region LOCAL
+app.MapGet("/api/locales", ([FromServices] ILocalRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapPost("/api/locales", (Local l, [FromServices] ILocalRepository repo) =>
 {
     repo.Add(l);
     return Results.Created($"/api/locales/{l.idLocal}", l);
 });
-
 #endregion
 
-#region ROL 
-app.MapGet("/api/roles", (IRolRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/roles", (Rol r, IRolRepository repo) =>
+#region ROLES
+app.MapGet("/api/roles", ([FromServices] IRolRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapPost("/api/roles", (Rol r, [FromServices] IRolRepository repo) =>
 {
     repo.Add(r);
     return Results.Created($"/api/roles/{r.IdRol}", r);
 });
-
 #endregion
 
-#region SECTOR 
-app.MapGet("/api/sectores", (ISectorRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/sectores", (Sector s, ISectorRepository repo) =>
+#region SECTORES
+app.MapGet("/api/sectores", ([FromServices] ISectorRepository repo) => Results.Ok(repo.GetAll()));
+
+app.MapPost("/api/sectores", (Sector s, [FromServices] ISectorRepository repo) =>
 {
     repo.Add(s);
     return Results.Created($"/api/sectores/{s.idSector}", s);
 });
-
 #endregion
 
-#region TARIFA 
-app.MapGet("/api/funciones/{funcionId}/tarifas", (int IdFuncion, ITarifaRepository repo) =>
+#region TARIFAS
+app.MapGet("/api/funciones/{funcionId}/tarifas", (int IdFuncion, [FromServices] ITarifaRepository repo) =>
 {
     var tarifas = repo.GetByFuncionId(IdFuncion);
     return Results.Ok(tarifas);
 });
-app.MapPost("/api/tarifas", (Tarifa t, ITarifaRepository repo) =>
+
+app.MapPost("/api/tarifas", (Tarifa t, [FromServices] ITarifaRepository repo) =>
 {
     repo.Add(t);
     return Results.Created($"/api/tarifas/{t.idTarifa}", t);
 });
-
 #endregion
 
-#region USUARIO
-app.MapGet("/api/usuarios", (IUsuarioRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/usuarios", (Usuario u, IUsuarioRepository repo) =>
+#region USUARIOS
+app.MapGet("/usuarios/{id}", (int IdUsuario, [FromServices] IUsuarioRepository repo) =>
 {
-    repo.Add(u);
-    return Results.Created($"/api/usuarios/{u.IdUsuario}", u);
+    var usuario = repo.GetById(IdUsuario);
+    return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
 });
 
-
-#endregion
-/*
-#region USUARIO ROL 
-app.MapGet("/api/usuariorol", (IUsuarioRolRepository repo) => Results.Ok(repo.GetAll()));
-app.MapPost("/api/usuariorol", (UsuarioRol ur, IUsuarioRolRepository repo) =>
+app.MapPost("/auth/login", (Usuario request, [FromServices] IUsuarioRepository repo) =>
 {
-    repo.Add(ur);
-    return Results.Created($"/api/usuariorol/{ur.IdUsuario}", ur);
+    var usuario = repo.Login(request.Email, request.Contrasena);
+    return usuario is not null ? Results.Ok(usuario) : Results.Unauthorized();
 });
 
+app.MapPost("/usuarios", (Usuario nuevoUsuario, [FromServices] IUsuarioRepository repo) =>
+{
+    repo.Add(nuevoUsuario);
+    return Results.Created($"/usuarios/{nuevoUsuario.IdUsuario}", nuevoUsuario);
+});
+
+app.MapGet("/usuarios/{id}/roles", (int IdUsuario, [FromServices] IUsuarioRepository repo) =>
+{
+    var roles = repo.GetRoles(IdUsuario);
+    return Results.Ok(roles);
+});
+
+app.MapGet("/roles", ([FromServices] IUsuarioRepository repo) =>
+{
+    var roles = repo.GetAllRoles();
+    return Results.Ok(roles);
+});
+
+app.MapPost("/usuarios/{id}/roles/{rolId}", (int IdUsuario, int IdRol, [FromServices] IUsuarioRepository repo) =>
+{
+    repo.AsignarRoles(IdUsuario, IdRol);
+    return Results.Ok(new { mensaje = "Rol asignado correctamente" });
+});
 #endregion
-*/
+
+
+#region QR
+// GET /entradas/{idEntrada}/qr
+app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEntradaRepository repo) =>
+{
+    var entrada = repo.GetById(idEntrada);
+    if (entrada == null) return Results.NotFound("Entrada no existe");
+
+    string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+    var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
+
+    return Results.File(qrBytes, "image/png");
+});
+
+// POST /qr/lote
+app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepository repo) =>
+{
+    var resultados = new Dictionary<int, byte[]>();
+
+    foreach (var idEntrada in idEntradas)
+    {
+        var entrada = repo.GetById(idEntrada);
+        if (entrada == null) continue;
+
+        string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+        var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
+        resultados.Add(entrada.idEntrada, qrBytes);
+    }
+
+    return Results.Ok(resultados); // Opcional: comprimir a ZIP para producción
+});
+
+// POST /qr/validar
+app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
+{
+    var resultado = qrService.ValidarQr(qrContent);
+    return Results.Ok(resultado);
+});
+#endregion
+
 
 app.Run();

@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ namespace src.Proyecto.Dappers
 {
     public interface UsuarioRolRepository
     {
-        
+
     }
 }
+*/

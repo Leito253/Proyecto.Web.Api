@@ -1,3 +1,4 @@
+/*
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Proyecto.Modelos.Entidades;
@@ -44,3 +45,4 @@ namespace Proyecto.Web.Api.Endpoints
         }
     }
 }
+*/

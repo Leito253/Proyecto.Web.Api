@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
+
 public class UsuarioRepository : IUsuarioRepository
 {
     private readonly string _connectionString;
@@ -23,14 +24,14 @@ public class UsuarioRepository : IUsuarioRepository
        int filas = db.Execute(sql, usuario );
     }
 
-    public Usuario? GetByUsername(string usuario)
-    {
-        using var db = Connection;
-        return db.QueryFirstOrDefault<Usuario>(
-            "SELECT * FROM Usuario WHERE Usuario = @usuario", new { Usuario = usuario });
-    }
+    public Usuario? Login(string Correo, string Contrasena)
+        {
+            using var db = Connection;
+            const string sql = "SELECT * FROM Usuario WHERE correo = @correo AND contrasena = @contrasena;";
+            return db.QueryFirstOrDefault<Usuario>(sql, new { Correo, Contrasena });
+        }
 
-    public Usuario? GetById(int IdUsuario)
+         public Usuario? GetById(int IdUsuario)
     {
         using var db = Connection;
         return db.QueryFirstOrDefault<Usuario>(
@@ -60,4 +61,6 @@ public class UsuarioRepository : IUsuarioRepository
                        ON DUPLICATE KEY UPDATE IdRol = @IdRol";
         db.Execute(sql, new { Id = IdUsuario, IdRol = idRol });
     }
+
+
 }

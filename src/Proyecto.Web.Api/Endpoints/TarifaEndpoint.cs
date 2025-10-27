@@ -1,3 +1,4 @@
+/*
 using Proyecto.Modelos.Entidades;
 using Proyecto.Modelos.Repositorios;
 
@@ -38,3 +39,4 @@ public static class TarifaEndpoints
         });
     }
 }
+*/
