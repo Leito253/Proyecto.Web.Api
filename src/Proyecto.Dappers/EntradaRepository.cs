@@ -2,53 +2,72 @@ using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Proyecto.Modelos.Entidades;
+using src.Proyecto.Modelos.Repositorios;
 
-namespace Proyecto.Modelos.Repositorios.ReposDapper;
+namespace Proyecto.Modelos.Repositorios.ReposDapper
+{
 public class EntradaRepository : IEntradaRepository
 {
-   private readonly string _connectionString;
+    private readonly string _connectionString;
 
-   public EntradaRepository(IConfiguration configuration)
+    public EntradaRepository(IConfiguration configuration)
     {   
-        _connectionString = configuration.GetConnectionString("MySqlConnection");
+        _connectionString = configuration.GetConnectionString("MySqlConnection")!;
     }
+
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 
     public IEnumerable<Entrada> GetAll()
     {
-        throw new NotImplementedException();
+        using var db = Connection;
+        string sql = "SELECT * FROM Entrada;";
+        return db.Query<Entrada>(sql);
     }
 
     public Entrada? GetById(int idEntrada)
     {
-        throw new NotImplementedException();
+        using var db = Connection;
+        string sql = "SELECT * FROM Entrada WHERE idEntrada = @idEntrada;";
+        return db.QueryFirstOrDefault<Entrada>(sql, new { idEntrada });
     }
 
     public void Update(Entrada entrada)
     {
-        throw new NotImplementedException();
+        using var db = Connection;
+        string sql = @"
+            UPDATE Entrada SET
+                Precio = @Precio,
+                idFuncion = @idFuncion,
+                idCliente = @idCliente,
+                Usada = @Usada,
+                Anulada = @Anulada,
+                Numero = @Numero,
+                QR = @QR
+            WHERE idEntrada = @idEntrada;";
+        db.Execute(sql, entrada);
     }
 
-    public void Anular(int IdEntrada)
+    public void Anular(int idEntrada)
     {
-         using var db = Connection;
+        using var db = Connection;
+        string sqlCheck = "SELECT Estado FROM Entrada WHERE idEntrada = @idEntrada;";
+        var estado = db.QueryFirstOrDefault<string>(sqlCheck, new { idEntrada });
 
-        string sqlCheck = "SELECT Estado FROM Entrada WHERE IdEntrada = @IdEntrada;";
-        var estado = db.QueryFirstOrDefault<string>(sqlCheck, new { Id = IdEntrada });
+        if (estado == null) throw new Exception("La entrada no existe.");
+        if (estado == "Anulada") throw new Exception("La entrada ya está anulada.");
 
-        if (estado == null)
-            throw new Exception("La entrada no existe.");
-
-        if (estado == "Anulada")
-            throw new Exception("La entrada ya está anulada.");
-
-        string sqlUpdate = "UPDATE Entrada SET Estado = 'Anulada' WHERE IdEntrada = @IdEntrada;";
-        db.Execute(sqlUpdate, new { Id = IdEntrada });
-        
+        string sqlUpdate = "UPDATE Entrada SET Estado = 'Anulada' WHERE idEntrada = @idEntrada;";
+        db.Execute(sqlUpdate, new { idEntrada });
     }
 
     public void Add(Entrada entrada)
     {
-        throw new NotImplementedException();
+        using var db = Connection;
+        string sql = @"
+            INSERT INTO Entrada (Precio, idFuncion, idCliente, Usada, Anulada, Numero, QR)
+            VALUES (@Precio, @idFuncion, @idCliente, @Usada, @Anulada, @Numero, @QR);
+            SELECT LAST_INSERT_ID();";
+        entrada.idEntrada = db.ExecuteScalar<int>(sql, entrada);
     }
+}
 }

@@ -2,63 +2,58 @@ using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
 
-namespace Proyecto.Modelos.Repositorios.ReposDapper;
-
-
-public class FuncionRepository : IFuncionRepository
+namespace Proyecto.Modelos.Repositorios.ReposDapper
 {
-    private readonly string _connectionString;
-
-    public FuncionRepository(IConfiguration configuration)
+    public class FuncionRepository : IFuncionRepository
     {
-        _connectionString = configuration.GetConnectionString("MySqlConnection");
-    }
-    private IDbConnection Connection => new MySqlConnection(_connectionString);
-    public void Add(Funcion funcion)
-    {
-        using var db = Connection;
-        var sql = @"INSERT INTO Funcion () 
-                        VALUES (@Descripcion, @FechaHora, @Entradas, @IdFuncion)";
-        db.Execute(sql, funcion);
+        private readonly string _connectionString;
 
-    }
+        public FuncionRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("MySqlConnection")!;
+        }
 
-    public IEnumerable<Funcion> GetAll()
-    {
-        using var db = Connection;
-        return db.Query<Funcion>("SELECT * FROM Funcion ");
-    }
+        private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-    public Funcion? GetById(int IdFuncion)
-    {
-        using var db = Connection;
-        return db.QueryFirstOrDefault<Funcion>("SELECT * FROM Funcion WHERE IdFuncion=@IdFuncion", new { Id = IdFuncion });
-    }
+        public IEnumerable<Funcion> GetAll()
+        {
+            using var db = Connection;
+            return db.Query<Funcion>("SELECT * FROM Funcion");
+        }
 
-    public void Update(Funcion funcion)
-    {
-        using var db = Connection;
-        var sql = @"UPDATE Funcion SET IdFuncion=@IdFuncion, Descripcion=@Descripcion, FechaHora=@FechaHora, Entradas=@Entradas
-                        WHERE IdFuncion=@IdFuncion";
-        db.Execute(sql, funcion);
-    }
+        public Funcion? GetById(int idFuncion)
+        {
+            using var db = Connection;
+            return db.QueryFirstOrDefault<Funcion>(
+                "SELECT * FROM Funcion WHERE idFuncion = @idFuncion", new { idFuncion });
+        }
 
-    public void Delete(int IdFuncion)
-    {
-        using var db = Connection;
-        db.Execute("DELETE FROM Funcion WHERE IdFuncion=@IdFuncion", new { Id = IdFuncion });
-    }
+        public void Add(Funcion funcion)
+        {
+            using var db = Connection;
+            var sql = @"
+                INSERT INTO Funcion (Descripcion, FechaHora, Entradas) 
+                VALUES (@Descripcion, @FechaHora, @Entradas);
+                SELECT LAST_INSERT_ID();";
+            funcion.IdFuncion = db.ExecuteScalar<int>(sql, funcion);
+        }
 
-    IEnumerable<Funcion> IFuncionRepository.GetAll()
-    {
-        throw new NotImplementedException();
-    }
+        public void Update(Funcion funcion)
+        {
+            using var db = Connection;
+            var sql = @"
+                UPDATE Funcion 
+                SET Descripcion=@Descripcion, FechaHora=@FechaHora, Entradas=@Entradas
+                WHERE idFuncion=@IdFuncion";
+            db.Execute(sql, funcion);
+        }
 
-    Funcion? IFuncionRepository.GetById(int IdFuncion)
-    {
-        throw new NotImplementedException();
+        public void Delete(int idFuncion)
+        {
+            using var db = Connection;
+            db.Execute("DELETE FROM Funcion WHERE idFuncion=@idFuncion", new { idFuncion });
+        }
     }
-
 }
-

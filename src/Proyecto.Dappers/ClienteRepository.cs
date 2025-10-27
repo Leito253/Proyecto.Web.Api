@@ -2,6 +2,8 @@ using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Proyecto.Modelos.Entidades;
+using Proyecto.Modelos.Interfaces;
+
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;
 
@@ -15,17 +17,19 @@ public class ClienteRepository : IClienteRepository
     }
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-    public IEnumerable<Cliente> GetAll()
+    
+    IEnumerable<Cliente> IClienteRepository.GetAll()
     {
-        using var db = Connection;
+               using var db = Connection;
         return db.Query<Cliente>("SELECT * FROM Cliente");
     }
 
-    public Cliente? GetById(int DNI)
+    Cliente? IClienteRepository.GetById(int DNI)
     {
-        using var db = Connection;
+            using var db = Connection;
         return db.QueryFirstOrDefault<Cliente>("SELECT * FROM Cliente WHERE DNI=@DNI", new { dni = DNI });
     }
+
 
     public void Add(Cliente cliente)
     {
@@ -48,16 +52,5 @@ public class ClienteRepository : IClienteRepository
         using var db = Connection;
         db.Execute("DELETE FROM Cliente WHERE DNI=@DNI", new { dni = DNI });
     }
-
-    IEnumerable<Cliente> IClienteRepository.GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    Cliente? IClienteRepository.GetById(int DNI)
-    {
-        throw new NotImplementedException();
-    }
-
     
 }

@@ -12,18 +12,10 @@ namespace Proyecto.Modelos.Repositorios.ReposDapper
 
         public EventoRepository(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("MySqlConnection");
+            _connectionString = configuration.GetConnectionString("MySqlConnection")!;
         }
 
         private IDbConnection Connection => new MySqlConnection(_connectionString);
-
-        public void Add(Evento evento)
-        {
-            using var db = Connection;
-            string sql = @"INSERT INTO Evento (Nombre, Descripcion, Fecha, Estado)
-                       VALUES (@Nombre, @Descripcion, @Fecha, @Estado)";
-            db.Execute(sql, evento);
-        }
 
         public IEnumerable<Evento> GetAll()
         {
@@ -35,42 +27,43 @@ namespace Proyecto.Modelos.Repositorios.ReposDapper
         {
             using var db = Connection;
             return db.QueryFirstOrDefault<Evento>(
-                "SELECT * FROM Evento WHERE IdEvento = @Id", new { Id = idEvento });
+                "SELECT * FROM Evento WHERE idEvento = @Id", new { Id = idEvento });
+        }
+
+        public void Add(Evento evento)
+        {
+            using var db = Connection;
+            string sql = @"INSERT INTO Evento (Nombre, Descripcion, Fecha, Estado)
+                           VALUES (@Nombre, @Descripcion, @Fecha, @Estado)";
+            db.Execute(sql, evento);
         }
 
         public void Update(Evento evento)
         {
             using var db = Connection;
             string sql = @"UPDATE Evento 
-                       SET Nombre=@Nombre, Descripcion=@Descripcion, Fecha=@Fecha 
-                       WHERE IdEvento=@IdEvento";
+                           SET Nombre=@Nombre, Descripcion=@Descripcion, Fecha=@Fecha 
+                           WHERE idEvento=@idEvento";
             db.Execute(sql, evento);
         }
 
         public void Publicar(int idEvento)
         {
             using var db = Connection;
-            db.Execute("UPDATE Evento SET Estado='Publicado' WHERE IdEvento=@Id", new { Id = idEvento });
+            db.Execute("UPDATE Evento SET Estado='Publicado' WHERE idEvento=@Id", new { Id = idEvento });
         }
 
         public void Cancelar(int idEvento)
         {
-            throw new NotImplementedException();
+            using var db = Connection;
+            db.Execute("UPDATE Evento SET Estado='Cancelado' WHERE idEvento=@Id", new { Id = idEvento });
         }
 
-        internal void Delete(int id)
+       public void Delete(int idEvento)
         {
-            throw new NotImplementedException();
+            using var db = Connection;
+            db.Execute("DELETE FROM Evento WHERE idEvento=@Id", new { Id = idEvento });
         }
 
-        IEnumerable<Evento> IEventoRepository.GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        Evento? IEventoRepository.GetById(int idEvento)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
