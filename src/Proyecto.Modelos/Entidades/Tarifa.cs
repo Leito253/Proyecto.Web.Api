@@ -9,6 +9,8 @@ public class Tarifa
     // Claves foráneas explícitas
     public int idSector { get; set; }
     public int IdFuncion { get; set; }
+    public int idEvento { get; set; }
+
 
     // Navegación
     public Sector Sector { get; set; } = default!;

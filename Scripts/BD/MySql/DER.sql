@@ -54,6 +54,7 @@ CREATE TABLE Tarifa (
     Tipo VARCHAR(50),
     idEvento INT NOT NULL,
     idSector INT NOT NULL,
+    idFuncion INT NOT NULL,
     FOREIGN KEY (idEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
     FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE
 );
