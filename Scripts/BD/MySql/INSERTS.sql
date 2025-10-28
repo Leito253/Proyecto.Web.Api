@@ -10,23 +10,23 @@ INSERT INTO Local (nombre, direccion, capacidad, telefono) VALUES
 ('Estadio Único Diego Armando Maradona', 'Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires', 53000, '0221-66667777');
 
 -- Insertar sectores para los locales
-INSERT INTO Sector (Nombre, Descripcion, Capacidad, Precio, idSector) VALUES
+INSERT INTO Sector (Nombre, Descripcion, Capacidad, Precio, idLocal) VALUES
 ('Platea Baja', 'Platea cerca del escenario', 5000, 2000, 1),
-('Platea Alta', 'Platea elevada', 8000, 1500, 1),
+('Platea Alta', 'Platea elevada', 8000, 1500, 2),
 ('VIP', 'Zona VIP', 500, 5000, 2),
-('General', 'Asientos generales', 30000, 1000, 2),
-('Tribuna Norte', 'Tribuna norte del estadio', 10000, 1200, 3),
-('Tribuna Sur', 'Tribuna sur del estadio', 10000, 1200, 3),
-('Ring', 'Alrededor del ring', 1000, 2500, 4),
-('Palco', 'Palco privado', 200, 6000, 5);
+('General', 'Asientos generales', 30000, 1000, 4),
+('Tribuna Norte', 'Tribuna norte del estadio', 10000, 1200, 4),
+('Tribuna Sur', 'Tribuna sur del estadio', 10000, 1200, 5),
+('Ring', 'Alrededor del ring', 1000, 2500, 5),
+('Palco', 'Palco privado', 200, 6000, 2);
 
 -- Insertar eventos
-INSERT INTO Evento (Nombre, Fecha, Tipo, idLocal, idEvento, Lugar, Local) VALUES
-('Concierto de Rock', '2025-12-15', 'Concierto', 1, 1, ''),
-('Partido de Fútbol', '2025-11-01', 'Deportivo', 2, 2, ''),
-('Concierto de Pop', '2025-10-20', 'Concierto', 3, 3, ''),
-('Evento de Box', '2025-09-30', 'Deportivo', 4, 4, ''),
-('Festival de Música', '2025-12-25', 'Concierto', 5, 5, '');
+INSERT INTO Evento (Nombre, Fecha, Tipo, idLocal, Lugar) VALUES
+('Concierto de Rock', '2025-12-15', 'Concierto', 1, ''),
+('Partido de Fútbol', '2025-11-01', 'Deportivo', 2, ''),
+('Concierto de Pop', '2025-10-20', 'Concierto', 3,  ''),
+('Evento de Box', '2025-09-30', 'Deportivo', 4, ''),
+('Festival de Música', '2025-12-25', 'Concierto', 5, '');
 
 -- Insertar clientes
 INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono) VALUES
@@ -38,14 +38,13 @@ INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono) VALUES
 
 -- Insertar entradas;  
 
-INSERT INTO Entrada (Precio, QR, Usada, idTarifa, idFuncion, Estado, idEntrada) VALUES 
-(15000.00, '', 0, 1, 1, 'Activa', 1),
-(10000.00, '', 0, 0, 2, 'Activa', 2),
-(10500.00, '', 0, 3, 6, 'Activa', 3),
-(14000.00, '', 0, 4, 1, 'Activa', 4),
-(15000.00, '', 0, 2, 5, 'Activa', 5),
-(13000.00, '', 0, 6, 1, 'Activa', 6);
-
+INSERT INTO Entrada (Precio, idTarifa, idFuncion, Estado, QR, Usada, Anulada, Numero, idSector, idDetalleOrden) VALUES 
+(15000, 1, 1, 'Disponible', '', True, FALSE, 1, 1, 1),
+(10000, 2, 2, 'Disponible', '', True, FALSE, 2, 2, 2),
+(10500, 3, 3, 'Disponible', '', True, FALSE, 3, 3, 3),
+(14000, 4, 4, 'Disponible', '', True, FALSE, 4, 4, 4),
+(15000, 5, 5, 'Disponible', '', True, FALSE, 5, 5, 5),
+(13000, 2, 6, 'Disponible', '', True, FALSE, 6, 6, 5);
 INSERT INTO Funcion (Descripcion, FechaHora) VALUES 
 ('Concierto Coldplay - Día 1', '2025-11-20 20:00:00'),
 ('Concierto Coldplay - Día 2', '2025-11-21 21:00:00'),
@@ -73,3 +72,10 @@ INSERT INTO Tarifa (Precio, Descripcion, idSector, idFuncion, idEvento) VALUES
 (50000, 'Palco VIP', 3, 1, 3),
 (15000, 'Campo General', 4, 2, 4),
 (12000, 'Galería - Promoción', 5, 3, 5);
+
+INSERT INTO DetalleOrden (Cantidad, Precio, idOrden, idTarifa) VALUES
+(2, 10000.00, 1, 1),
+(1, 15000.00, 2, 2),
+(3, 15000.00, 3, 3),
+(2, 10000.00, 4, 4),
+(1, 12000.00, 5, 5);

@@ -12,6 +12,7 @@ public class Tarifa
     public int idEvento { get; set; }
 
 
+
     // Navegación
     public Sector Sector { get; set; } = default!;
     public Funcion Funcion { get; set; } = default!;

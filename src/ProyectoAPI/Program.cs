@@ -282,7 +282,6 @@ app.MapPost("/usuarios/{id}/roles/{rolId}", (int IdUsuario, int IdRol, [FromServ
 });
 #endregion
 
-
 #region QR
 // GET /entradas/{idEntrada}/qr
 app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEntradaRepository repo) =>
@@ -321,6 +320,5 @@ app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
     return Results.Ok(resultado);
 });
 #endregion
-
 
 app.Run();

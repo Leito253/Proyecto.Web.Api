@@ -75,6 +75,12 @@ CREATE TABLE Entrada (
     QR VARCHAR(255),
     idDetalleOrden INT NOT NULL,
     idSector INT NOT NULL,
+    idTarifa INT NOT NULL,
+    idFuncion INT NOT NULL,
+    Anulada BOOLEAN DEFAULT FALSE,
+    Usada BOOLEAN DEFAULT FALSE,
+    Estado VARCHAR(50),
+    Numero INT NOT NULL,
     FOREIGN KEY (idDetalleOrden) REFERENCES DetalleOrden(idDetalleOrden) ON DELETE CASCADE,
     FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE
 );

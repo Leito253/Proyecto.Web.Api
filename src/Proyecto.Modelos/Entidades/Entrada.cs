@@ -3,15 +3,12 @@ namespace Proyecto.Modelos.Entidades;
 public class Entrada
 {
     public int idEntrada { get; set; }
-    public decimal Precio { get; set; }
-    public Tarifa tarifa { get; set; } = new Tarifa();
+    public int Precio { get; set; }
     public string QR { get; set; } = string.Empty;
-    public Funcion funcion { get; set; } = default!;
     public bool Usada { get; set; }
     public bool Anulada { get; set; }
     public string Numero { get; set; } = string.Empty;
-
     public int idCliente {get; set;}
-
-    public int idFuncion {get; set;}
+    public int idFuncion { get; set; }
+    public int idTarifa { get; set; } 
 }
