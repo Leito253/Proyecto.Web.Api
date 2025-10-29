@@ -8,7 +8,8 @@ public class Orden
     public int NumeroOrden { get; set; }
     public Cliente Cliente { get; set; } = default!;
     public List<Entrada> Entradas { get; set; } = new List<Entrada>();
-    public decimal Total => Entradas.Sum(e => e.tarifa.Precio);
+    
+    /*public decimal Total => Entradas.Sum(e => e.tarifa.Precio); */
     public List<DetalleOrden> Detalles { get; internal set; }
 
 }

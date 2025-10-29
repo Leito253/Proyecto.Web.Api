@@ -63,11 +63,11 @@ namespace Proyecto.Modelos.Servicios
 
                 if (entrada.Usada) return "YaUsada";
 
-                if (entrada.funcion != null && entrada.funcion.FechaHora < DateTime.Now)
+               /* if (entrada.funcion != null && entrada.funcion.FechaHora < DateTime.Now)
                     return "Expirada";
 
                 entrada.Usada = true;
-                _entradaRepo.Update(entrada);
+                _entradaRepo.Update(entrada);*/
 
                 return "Ok";
             }
