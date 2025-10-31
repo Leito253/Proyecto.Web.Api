@@ -52,6 +52,7 @@ CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
     Precio DECIMAL(10,2) NOT NULL,
     Tipo VARCHAR(50),
+    Descripcion VARCHAR(255),
     idEvento INT NOT NULL,
     idSector INT NOT NULL,
     idFuncion INT NOT NULL,

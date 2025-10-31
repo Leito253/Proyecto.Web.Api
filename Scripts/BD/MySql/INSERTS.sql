@@ -45,6 +45,7 @@ INSERT INTO Entrada (Precio, idTarifa, idFuncion, Estado, QR, Usada, Anulada, Nu
 (14000, 4, 4, 'Disponible', '', True, FALSE, 4, 4, 4),
 (15000, 5, 5, 'Disponible', '', True, FALSE, 5, 5, 5),
 (13000, 2, 6, 'Disponible', '', True, FALSE, 6, 6, 5);
+-- Insertar Funciones
 INSERT INTO Funcion (Descripcion, FechaHora) VALUES 
 ('Concierto Coldplay - Día 1', '2025-11-20 20:00:00'),
 ('Concierto Coldplay - Día 2', '2025-11-21 21:00:00'),
@@ -66,7 +67,6 @@ INSERT INTO Orden (Fecha, Total, Estado, idCliente) VALUES
 
 
 INSERT INTO Tarifa (Precio, Descripcion, idSector, idFuncion, idEvento) VALUES 
-
 (25000, 'Platea Baja - General', 1, 1, 1),
 (18000, 'Platea Alta - General', 2, 1, 2),
 (50000, 'Palco VIP', 3, 1, 3),
