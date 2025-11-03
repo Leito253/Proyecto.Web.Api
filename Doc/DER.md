@@ -1,4 +1,3 @@
-```mermaid
 erDiagram
     LOCAL {
         int idLocal PK
@@ -43,6 +42,16 @@ erDiagram
         int idCliente FK
     }
 
+    TARIFA {
+        int idTarifa PK
+        decimal Precio
+        string Tipo
+        string Descripcion
+        int idEvento FK
+        int idSector FK
+        int idFuncion FK
+    }
+
     DETALLEORDEN {
         int idDetalleOrden PK
         int Cantidad
@@ -57,14 +66,12 @@ erDiagram
         string QR
         int idDetalleOrden FK
         int idSector FK
-    }
-
-    TARIFA {
-        int idTarifa PK
-        decimal Precio
-        string Tipo
-        int idEvento FK
-        int idSector FK
+        int idTarifa FK
+        int idFuncion FK
+        bool Anulada
+        bool Usada
+        string Estado
+        int Numero
     }
 
     FUNCION {
@@ -75,10 +82,10 @@ erDiagram
 
     USUARIO {
         int idUsuario PK
-        string User
+        string usuario
         string Email
-        string Password
-        boolean Activo
+        string Contrasena
+        bool Activo
     }
 
     ROL {
@@ -89,18 +96,27 @@ erDiagram
     USUARIOROL {
         int idUsuario FK
         int idRol FK
-        %% PK compuesta: idUsuario + idRol
+        PK (idUsuario, idRol)
     }
 
     %% Relaciones
-    LOCAL ||--o{ SECTOR : tiene
-    LOCAL ||--o{ EVENTO : tiene
-    CLIENTE ||--o{ ORDEN : genera
-    ORDEN ||--o{ DETALLEORDEN : contiene
-    DETALLEORDEN ||--o{ ENTRADA : genera
-    SECTOR ||--o{ ENTRADA : pertenece
-    EVENTO ||--o{ TARIFA : aplica
-    SECTOR ||--o{ TARIFA : aplica
-    USUARIO ||--o{ USUARIOROL : asigna
-    ROL ||--o{ USUARIOROL : asigna
-```
+    LOCAL ||--o{ SECTOR : "contiene"
+    LOCAL ||--o{ EVENTO : "organiza"
+
+    CLIENTE ||--o{ ORDEN : "realiza"
+
+    ORDEN ||--o{ DETALLEORDEN : "incluye"
+    DETALLEORDEN }o--|| TARIFA : "usa"
+    DETALLEORDEN ||--o{ ENTRADA : "genera"
+
+    TARIFA ||--o{ DETALLEORDEN : "detalle"
+    TARIFA ||--o{ ENTRADA : "aplica"
+
+    EVENTO ||--o{ TARIFA : "tiene"
+    SECTOR ||--o{ TARIFA : "pertenece"
+    FUNCION ||--o{ TARIFA : "asocia"
+
+    SECTOR ||--o{ ENTRADA : "corresponde"
+
+    USUARIO ||--o{ USUARIOROL : "posee"
+    ROL ||--o{ USUARIOROL : "asigna"
