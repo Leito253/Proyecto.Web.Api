@@ -1,3 +1,4 @@
+using Proyecto.Modelos.Entidades;
 namespace Proyecto.Core.Repositorios
 {
     public interface IRolRepository
@@ -5,6 +6,6 @@ namespace Proyecto.Core.Repositorios
         IEnumerable<Rol> GetAll();
         void Add(Rol rol);
         Rol? GetById(int idRol);
-         void Delete(int idRol);
+        void Delete(int idRol);
     }
 }

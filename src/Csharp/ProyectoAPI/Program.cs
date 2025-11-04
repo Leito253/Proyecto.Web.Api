@@ -5,7 +5,8 @@ using Proyecto.Core.Entidades;
 using Proyecto.Core.Interfaces;
 using Proyecto.Core.Repositorios;
 using Proyecto.Core.Servicios;
-using Proyecto.Core.Repositorios.ReposDapper;
+using Proyecto.Modelos.Repositorios.ReposDapper;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

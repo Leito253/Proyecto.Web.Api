@@ -1,3 +1,5 @@
+using Proyecto.Core.Entidades;
+
 namespace Proyecto.Core.Repositorios;
 
 public interface IClienteRepository

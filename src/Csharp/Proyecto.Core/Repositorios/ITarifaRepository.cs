@@ -1,3 +1,4 @@
+using Proyecto.Modelos.Entidades;
 namespace Proyecto.Core.Interfaces
 {
     public interface ITarifaRepository
@@ -7,6 +8,6 @@ namespace Proyecto.Core.Interfaces
         Tarifa? GetById(int idTarifa);
         void Update(Tarifa tarifa);
 
-        
+
     }
 }

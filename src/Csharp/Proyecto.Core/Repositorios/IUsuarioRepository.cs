@@ -1,3 +1,4 @@
+using Proyecto.Modelos.Entidades;
 namespace Proyecto.Core.Repositorios;
 
 public interface IUsuarioRepository
