@@ -1,14 +1,11 @@
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Proyecto.Modelos.Entidades;
-using Proyecto.Modelos.Interfaces;
-using Proyecto.Modelos.Repositorios;
-using Proyecto.Modelos.Repositorios.ReposDapper;
-using Proyecto.Modelos.Servicios;
-using src.Proyecto.Modelos.Repositorios;
+using Proyecto.Core.Entidades;
+using Proyecto.Core.Interfaces;
+using Proyecto.Core.Repositorios;
+using Proyecto.Core.Servicios;
+using Proyecto.Core.Repositorios.ReposDapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
