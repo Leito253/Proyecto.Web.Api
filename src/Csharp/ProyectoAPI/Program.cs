@@ -6,9 +6,15 @@ using Proyecto.Core.Interfaces;
 using Proyecto.Core.Repositorios;
 using Proyecto.Core.Servicios;
 using Proyecto.Modelos.Repositorios.ReposDapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Carga la configuración (esto ya lo hace por defecto)
+var configuration = builder.Configuration;
+
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -95,6 +101,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 
 var app = builder.Build();
 
