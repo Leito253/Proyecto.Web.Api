@@ -8,11 +8,11 @@ using Proyecto.Core.Servicios;
 using Proyecto.Modelos.Repositorios.ReposDapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Proyecto.Modelos.Entidades;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Carga la configuración (esto ya lo hace por defecto)
 var configuration = builder.Configuration;
 
 
@@ -21,7 +21,6 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -61,7 +60,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Repositorios
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
@@ -72,15 +70,12 @@ builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ITarifaRepository, TarifaRepository>();
 
-// Servicios
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<QrService>();
 
-// Cadena de conexión
 string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
                  ?? throw new InvalidOperationException("Cadena de conexión no encontrada");
 
-// Autenticación JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -105,7 +100,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// Swagger siempre habilitado
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -118,10 +112,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
-
-/* ===========================
- *      ENDPOINTS API
- * ===========================*/
 
 #region CLIENTES
 app.MapGet("/api/clientes", ([FromServices] IClienteRepository repo) => Results.Ok(repo.GetAll()));
