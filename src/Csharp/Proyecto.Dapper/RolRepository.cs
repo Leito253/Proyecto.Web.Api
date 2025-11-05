@@ -1,8 +1,9 @@
 using System.Data;
 using Dapper;
-using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
+using MySqlConnector;
+using Proyecto.Core.Repositorios;
 using Proyecto.Modelos.Entidades;
-using src.Proyecto.Modelos.Repositorios;
 
 namespace src.Proyecto.Dappers
 {
@@ -17,7 +18,6 @@ namespace src.Proyecto.Dappers
 
         private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-        // 🔹 Obtener todos los roles
         public IEnumerable<Rol> GetAll()
         {
             using var db = Connection;
@@ -25,7 +25,6 @@ namespace src.Proyecto.Dappers
             return db.Query<Rol>(sql);
         }
 
-        // 🔹 Agregar un nuevo rol
         public void Add(Rol rol)
         {
             using var db = Connection;
@@ -33,7 +32,6 @@ namespace src.Proyecto.Dappers
             db.Execute(sql, new { rol.Nombre });
         }
 
-        // 🔹 Obtener un rol por ID (opcional)
         public Rol? GetById(int idRol)
         {
             using var db = Connection;
@@ -41,7 +39,6 @@ namespace src.Proyecto.Dappers
             return db.QueryFirstOrDefault<Rol>(sql, new { Id = idRol });
         }
 
-        // 🔹 Eliminar un rol (opcional)
         public void Delete(int idRol)
         {
             using var db = Connection;

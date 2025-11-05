@@ -9,6 +9,7 @@ using SkiaSharp;
 using Proyecto.Core.Entidades;
 using Proyecto.Core.Repositorios; // ✅ agregado
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Proyecto.Core.Servicios
 {

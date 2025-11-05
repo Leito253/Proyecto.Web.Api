@@ -1,3 +1,5 @@
+using Proyecto.Modelos.Entidades;
+
 namespace Proyecto.Core.Servicios;
 
 public class AuthService

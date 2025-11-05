@@ -1,3 +1,5 @@
+using Proyecto.Modelos.Entidades;
+
 namespace Servicios;
 public class EventoService : IEventoService
 {

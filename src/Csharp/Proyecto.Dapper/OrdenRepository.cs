@@ -1,6 +1,8 @@
 using System.Data;
 using Dapper;
-using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
+using MySqlConnector;
+using Proyecto.Core.Repositorios;
 using Proyecto.Modelos.Entidades;
 
 namespace Proyecto.Modelos.Repositorios.ReposDapper;

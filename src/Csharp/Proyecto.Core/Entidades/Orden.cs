@@ -1,3 +1,5 @@
+using Proyecto.Core.Entidades;
+
 namespace Proyecto.Modelos.Entidades;
 public class Orden
 {
@@ -10,6 +12,6 @@ public class Orden
     public List<Entrada> Entradas { get; set; } = new List<Entrada>();
     
     /*public decimal Total => Entradas.Sum(e => e.tarifa.Precio); */
-    public List<DetalleOrden> Detalles { get; internal set; }
+    public List<DetalleOrden> Detalles { get; set; }
 
 }
