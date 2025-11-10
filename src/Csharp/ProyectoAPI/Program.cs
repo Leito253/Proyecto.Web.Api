@@ -8,7 +8,7 @@ using Proyecto.Core.Servicios;
 using Proyecto.Modelos.Repositorios.ReposDapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto.Modelos.DTOs;
+using Proyecto.Core.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -180,8 +180,7 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            idDetalleOrden = d.IdDetalleOrden,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -200,8 +199,7 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            idDetalleOrden = d.IdDetalleOrden,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -214,8 +212,6 @@ app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
     {
         idCliente = dto.idCliente,
         Fecha = DateTime.Now,
-        Total = 0,
-        Detalles = new List<DetalleOrden>()
     };
     repo.Add(nueva);
     return Results.Created($"/api/ordenes/{nueva.idOrden}", nueva);
@@ -241,13 +237,13 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 #region USUARIOS
 app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
-    var usuario = repo.Login(login.NombreUsuario, login.Contrasena);
+    var usuario = repo.Login(login.usuario, login.Contrasena);
     if (usuario is null) return Results.Unauthorized();
 
     return Results.Ok(new UsuarioDTO
     {
         idUsuario = usuario.IdUsuario,
-        NombreUsuario = usuario.NombreUsuario,
+        usuario = usuario.usuario,
         Rol = usuario.Rol
     });
 });
