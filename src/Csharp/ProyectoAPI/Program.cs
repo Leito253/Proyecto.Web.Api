@@ -8,13 +8,9 @@ using Proyecto.Core.Servicios;
 using Proyecto.Modelos.Repositorios.ReposDapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto.Modelos.Entidades;
-
+using Proyecto.Modelos.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var configuration = builder.Configuration;
-
 
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -37,7 +33,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: \"Bearer {token}\"",
+        Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: 'Bearer {token}'",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -69,12 +65,8 @@ builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ITarifaRepository, TarifaRepository>();
-
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<QrService>();
-
-string connStr = builder.Configuration.GetConnectionString("MySqlConnection")
-                 ?? throw new InvalidOperationException("Cadena de conexión no encontrada");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -97,7 +89,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-
 var app = builder.Build();
 
 app.UseSwagger();
@@ -114,205 +105,151 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 #region CLIENTES
-app.MapGet("/api/clientes", ([FromServices] IClienteRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapGet("/api/clientes/{id}", (int idCliente, [FromServices] IClienteRepository repo) =>
+app.MapGet("/api/clientes", (IClienteRepository repo) =>
 {
-    var item = repo.GetById(idCliente);
-    return item is null ? Results.NotFound() : Results.Ok(item);
+    var clientes = repo.GetAll();
+    return Results.Ok(clientes.Select(c => new ClienteDTO
+    {
+        idCliente = c.idCliente,
+        DNI = c.DNI,
+        Nombre = c.Nombre,
+        Apellido = c.Apellido,
+        Email = c.Email,
+        Telefono = c.Telefono
+    }));
 });
 
-app.MapPost("/api/clientes", (Cliente c, [FromServices] IClienteRepository repo) =>
+app.MapGet("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 {
-    repo.Add(c);
-    return Results.Created($"/api/clientes/{c.DNI}", c);
+    var c = repo.GetById(idCliente);
+    if (c is null) return Results.NotFound();
+    return Results.Ok(new ClienteDTO
+    {
+        idCliente = c.idCliente,
+        DNI = c.DNI,
+        Nombre = c.Nombre,
+        Apellido = c.Apellido,
+        Email = c.Email,
+        Telefono = c.Telefono
+    });
 });
 
-app.MapPut("/api/clientes/{id}", (int idCliente, Cliente c, [FromServices] IClienteRepository repo) =>
+app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
 {
-    if (idCliente != c.DNI) return Results.BadRequest();
+    var cliente = new Cliente
+    {
+        DNI = dto.DNI,
+        Nombre = dto.Nombre,
+        Apellido = dto.Apellido,
+        Email = dto.Email,
+        Telefono = dto.Telefono
+    };
+    repo.Add(cliente);
+    return Results.Created($"/api/clientes/{cliente.idCliente}", cliente);
+});
+
+app.MapPut("/api/clientes/{id}", (int id, ClienteUpdateDTO dto, IClienteRepository repo) =>
+{
+    var c = repo.GetById(id);
+    if (c is null) return Results.NotFound();
+    c.DNI = dto.DNI;
+    c.Nombre = dto.Nombre;
+    c.Apellido = dto.Apellido;
+    c.Email = dto.Email;
+    c.Telefono = dto.Telefono;
     repo.Update(c);
     return Results.NoContent();
 });
 
-app.MapDelete("/api/clientes/{id}", (int idCliente, [FromServices] IClienteRepository repo) =>
+app.MapDelete("/api/clientes/{id}", (int id, IClienteRepository repo) =>
 {
-    repo.Delete(idCliente);
+    repo.Delete(id);
     return Results.NoContent();
 });
 #endregion
 
 #region ORDENES
-app.MapGet("/api/ordenes", ([FromServices] IOrdenRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapGet("/api/ordenes/{id}", (int idOrden, [FromServices] IOrdenRepository repo) =>
+app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
 {
-    var item = repo.GetById(idOrden);
-    return item is null ? Results.NotFound() : Results.Ok(item);
+    var ordenes = repo.GetAll();
+    return Results.Ok(ordenes.Select(o => new OrdenDTO
+    {
+        idOrden = o.idOrden,
+        idCliente = o.idCliente,
+        Fecha = o.Fecha,
+        Total = o.Total,
+        Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
+        {
+            idDetalleOrden = d.idDetalleOrden,
+            idEntrada = d.idEntrada,
+            Cantidad = d.Cantidad,
+            PrecioUnitario = d.PrecioUnitario
+        }).ToList()
+    }));
 });
 
-app.MapPost("/api/ordenes", (Orden o, [FromServices] IOrdenRepository repo) =>
+app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
 {
-    repo.Add(o);
-    return Results.Created($"/api/ordenes/{o.idOrden}", o);
+    var o = repo.GetById(idOrden);
+    if (o is null) return Results.NotFound();
+    return Results.Ok(new OrdenDTO
+    {
+        idOrden = o.idOrden,
+        idCliente = o.idCliente,
+        Fecha = o.Fecha,
+        Total = o.Total,
+        Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
+        {
+            idDetalleOrden = d.idDetalleOrden,
+            idEntrada = d.idEntrada,
+            Cantidad = d.Cantidad,
+            PrecioUnitario = d.PrecioUnitario
+        }).ToList()
+    });
 });
 
-app.MapPut("/api/ordenes/{id}", (int idOrden, Orden o, [FromServices] IOrdenRepository repo) =>
+app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
 {
-    if (idOrden != o.idOrden) return Results.BadRequest();
-    repo.Update(o);
-    return Results.NoContent();
+    var nueva = new Orden
+    {
+        idCliente = dto.idCliente,
+        Fecha = DateTime.Now,
+        Total = 0,
+        Detalles = new List<DetalleOrden>()
+    };
+    repo.Add(nueva);
+    return Results.Created($"/api/ordenes/{nueva.idOrden}", nueva);
 });
 #endregion
 
 #region ENTRADAS
-app.MapGet("/api/entradas", ([FromServices] IEntradaRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/entradas", (Entrada e, [FromServices] IEntradaRepository repo) =>
+app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 {
-    repo.Add(e);
-    return Results.Created($"/api/entradas/{e.idEntrada}", e);
-});
-#endregion
-
-#region EVENTOS
-app.MapGet("/api/eventos", ([FromServices] IEventoRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/eventos", (Evento e, [FromServices] IEventoRepository repo) =>
-{
-    repo.Add(e);
-    return Results.Created($"/api/eventos/{e.idEvento}", e);
-});
-#endregion
-
-#region FUNCIONES
-app.MapGet("/api/funciones", ([FromServices] IFuncionRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/funciones", (Funcion f, [FromServices] IFuncionRepository repo) =>
-{
-    repo.Add(f);
-    return Results.Created($"/api/funciones/{f.IdFuncion}", f);
-});
-#endregion
-
-#region LOCAL
-app.MapGet("/api/locales", ([FromServices] ILocalRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/locales", (Local l, [FromServices] ILocalRepository repo) =>
-{
-    repo.Add(l);
-    return Results.Created($"/api/locales/{l.idLocal}", l);
-});
-#endregion
-
-#region ROLES
-app.MapGet("/api/roles", ([FromServices] IRolRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/roles", (Rol r, [FromServices] IRolRepository repo) =>
-{
-    repo.Add(r);
-    return Results.Created($"/api/roles/{r.IdRol}", r);
-});
-#endregion
-
-#region SECTORES
-app.MapGet("/api/sectores", ([FromServices] ISectorRepository repo) => Results.Ok(repo.GetAll()));
-
-app.MapPost("/api/sectores", (Sector s, [FromServices] ISectorRepository repo) =>
-{
-    repo.Add(s);
-    return Results.Created($"/api/sectores/{s.idSector}", s);
-});
-#endregion
-
-#region TARIFAS
-app.MapGet("/api/funciones/{funcionId}/tarifas", (int IdFuncion, [FromServices] ITarifaRepository repo) =>
-{
-    var tarifas = repo.GetByFuncionId(IdFuncion);
-    return Results.Ok(tarifas);
-});
-
-app.MapPost("/api/tarifas", (Tarifa t, [FromServices] ITarifaRepository repo) =>
-{
-    repo.Add(t);
-    return Results.Created($"/api/tarifas/{t.idTarifa}", t);
+    var entradas = repo.GetAll();
+    return Results.Ok(entradas.Select(e => new EntradaDTO
+    {
+        idEntrada = e.idEntrada,
+        Precio = e.Precio,
+        Numero = e.Numero,
+        Usada = e.Usada,
+        Anulada = e.Anulada,
+        QR = e.QR
+    }));
 });
 #endregion
 
 #region USUARIOS
-app.MapGet("/usuarios/{id}", (int IdUsuario, [FromServices] IUsuarioRepository repo) =>
+app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
-    var usuario = repo.GetById(IdUsuario);
-    return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
-});
+    var usuario = repo.Login(login.NombreUsuario, login.Contrasena);
+    if (usuario is null) return Results.Unauthorized();
 
-app.MapPost("/auth/login", (Usuario request, [FromServices] IUsuarioRepository repo) =>
-{
-    var usuario = repo.Login(request.Email, request.Contrasena);
-    return usuario is not null ? Results.Ok(usuario) : Results.Unauthorized();
-});
-
-app.MapPost("/usuarios", (Usuario nuevoUsuario, [FromServices] IUsuarioRepository repo) =>
-{
-    repo.Add(nuevoUsuario);
-    return Results.Created($"/usuarios/{nuevoUsuario.IdUsuario}", nuevoUsuario);
-});
-
-app.MapGet("/usuarios/{id}/roles", (int IdUsuario, [FromServices] IUsuarioRepository repo) =>
-{
-    var roles = repo.GetRoles(IdUsuario);
-    return Results.Ok(roles);
-});
-
-app.MapGet("/roles", ([FromServices] IUsuarioRepository repo) =>
-{
-    var roles = repo.GetAllRoles();
-    return Results.Ok(roles);
-});
-
-app.MapPost("/usuarios/{id}/roles/{rolId}", (int IdUsuario, int IdRol, [FromServices] IUsuarioRepository repo) =>
-{
-    repo.AsignarRoles(IdUsuario, IdRol);
-    return Results.Ok(new { mensaje = "Rol asignado correctamente" });
-});
-#endregion
-
-#region QR
-// GET /entradas/{idEntrada}/qr
-app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEntradaRepository repo) =>
-{
-    var entrada = repo.GetById(idEntrada);
-    if (entrada == null) return Results.NotFound("Entrada no existe");
-
-    string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
-    var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
-
-    return Results.File(qrBytes, "image/png");
-});
-
-// POST /qr/lote
-app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepository repo) =>
-{
-    var resultados = new Dictionary<int, byte[]>();
-
-    foreach (var idEntrada in idEntradas)
+    return Results.Ok(new UsuarioDTO
     {
-        var entrada = repo.GetById(idEntrada);
-        if (entrada == null) continue;
-
-        string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
-        var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
-        resultados.Add(entrada.idEntrada, qrBytes);
-    }
-
-    return Results.Ok(resultados); // Opcional: comprimir a ZIP para producción
-});
-
-// POST /qr/validar
-app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
-{
-    var resultado = qrService.ValidarQr(qrContent);
-    return Results.Ok(resultado);
+        idUsuario = usuario.IdUsuario,
+        NombreUsuario = usuario.NombreUsuario,
+        Rol = usuario.Rol
+    });
 });
 #endregion
 

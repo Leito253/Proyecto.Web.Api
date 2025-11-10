@@ -1,4 +1,4 @@
-namespace Proyecto.Modelos.DTOs
+namespace Proyecto.Core.DTOs
 {
     public class ClienteDTO
     {
