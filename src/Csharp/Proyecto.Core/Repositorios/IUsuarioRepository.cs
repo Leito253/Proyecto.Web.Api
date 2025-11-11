@@ -10,5 +10,5 @@ public interface IUsuarioRepository
     IEnumerable<Rol> GetAllRoles();
     void AsignarRoles(int IdUsuario, int idRol);
     object Login(object nombreUsuario, string contrasena);
-    object Login(object usuario, string contrasena);
+    
 }
