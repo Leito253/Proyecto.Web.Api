@@ -9,5 +9,6 @@ public class Evento
     public required string Tipo { get; set; }
     public int idLocal { get; set; }
     public Local? Local { get; set; }
+    public bool Activo { get; set; }
 }
     

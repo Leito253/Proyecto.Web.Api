@@ -5,10 +5,11 @@ using Proyecto.Core.Entidades;
 using Proyecto.Core.Interfaces;
 using Proyecto.Core.Repositorios;
 using Proyecto.Core.Servicios;
-using Proyecto.Modelos.Repositorios.ReposDapper;
+using Proyecto.Core.Repositorios.ReposDapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Proyecto.Core.DTOs;
+using src.Proyecto.Dappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -182,8 +183,8 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            IdDetalleOrden = d.IdDetalleOrden,
+            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -202,8 +203,8 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            IdDetalleOrden = d.IdDetalleOrden,
+            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -230,7 +231,7 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
     var entradas = repo.GetAll();
     return Results.Ok(entradas.Select(e => new EntradaDTO
     {
-        idEntrada = e.idEntrada,
+        idEntrada = e.IdEntrada,
         Precio = e.Precio,
         Numero = e.Numero,
         Usada = e.Usada,
@@ -242,7 +243,7 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 app.MapPost("/api/entradas", (Entrada e, IEntradaRepository repo) =>
 {
     repo.Add(e);
-    return Results.Created($"/api/entradas/{e.idEntrada}", e);
+    return Results.Created($"/api/entradas/{e.IdEntrada}", e);
 });
 #endregion
 
@@ -260,17 +261,21 @@ app.MapGet("/api/eventos", (IEventoRepository repo) =>
     }));
 });
 
+// ...existing code...
 app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
 {
     var ev = new Evento
     {
         Nombre = dto.Nombre,
         Fecha = dto.Fecha,
-        Activo = true
+        Activo = true,
+        Lugar = dto.Lugar,
+        Tipo = dto.Tipo
     };
     repo.Add(ev);
     return Results.Created($"/api/eventos/{ev.idEvento}", ev);
 });
+// ...existing code...
 #endregion
 
 #region FUNCIONES
@@ -279,10 +284,9 @@ app.MapGet("/api/funciones", (IFuncionRepository repo) =>
     var funciones = repo.GetAll();
     return Results.Ok(funciones.Select(f => new FuncionDTO
     {
-        idFuncion = f.idFuncion,
-        idEvento = f.idEvento,
+        idFuncion = f.IdFuncion,
+        idEvento = f.IdEvento,
         Fecha = f.Fecha,
-        Hora = f.Hora,
         idLocal = f.idLocal
     }));
 });
@@ -291,13 +295,12 @@ app.MapPost("/api/funciones", (FuncionCreateDTO dto, IFuncionRepository repo) =>
 {
     var f = new Funcion
     {
-        idEvento = dto.idEvento,
+        IdEvento = dto.idEvento,
         Fecha = dto.Fecha,
-        Hora = dto.Hora,
         idLocal = dto.idLocal
     };
     repo.Add(f);
-    return Results.Created($"/api/funciones/{f.idFuncion}", f);
+    return Results.Created($"/api/funciones/{f.IdFuncion}", f);
 });
 #endregion
 
@@ -338,17 +341,19 @@ app.MapGet("/api/sectores", (ISectorRepository repo) =>
         idLocal = s.idLocal
     }));
 });
-
 app.MapPost("/api/sectores", (SectorCreateDTO dto, ISectorRepository repo) =>
 {
     var s = new Sector
     {
         Nombre = dto.Nombre,
-        idLocal = dto.idLocal
+        idLocal = dto.idLocal,
+        Capacidad = dto.Capacidad, 
+        Precio = dto.Precio
     };
     repo.Add(s);
     return Results.Created($"/api/sectores/{s.idSector}", s);
 });
+// ...existing code...
 #endregion
 
 #region TARIFAS
@@ -358,9 +363,8 @@ app.MapGet("/api/funciones/{funcionId}/tarifas", (int funcionId, ITarifaReposito
     return Results.Ok(tarifas.Select(t => new TarifaDTO
     {
         idTarifa = t.idTarifa,
-        Nombre = t.Nombre,
         Precio = t.Precio,
-        idFuncion = t.idFuncion
+        idFuncion = t.IdFuncion
     }));
 });
 
@@ -368,9 +372,8 @@ app.MapPost("/api/tarifas", (TarifaCreateDTO dto, ITarifaRepository repo) =>
 {
     var t = new Tarifa
     {
-        Nombre = dto.Nombre,
         Precio = dto.Precio,
-        idFuncion = dto.idFuncion
+        IdFuncion = dto.idFuncion
     };
     repo.Add(t);
     return Results.Created($"/api/tarifas/{t.idTarifa}", t);
@@ -433,7 +436,7 @@ app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEnt
     var entrada = repo.GetById(idEntrada);
     if (entrada == null) return Results.NotFound("Entrada no existe");
 
-    string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+    string qrContent = $"{entrada.IdEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
     var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
     return Results.File(qrBytes, "image/png");
 });
@@ -445,9 +448,9 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
     {
         var entrada = repo.GetById(idEntrada);
         if (entrada == null) continue;
-        string qrContent = $"{entrada.idEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+        string qrContent = $"{entrada.IdEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
         var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
-        resultados.Add(entrada.idEntrada, qrBytes);
+        resultados.Add(entrada.IdEntrada, qrBytes);
     }
     return Results.Ok(resultados);
 });
