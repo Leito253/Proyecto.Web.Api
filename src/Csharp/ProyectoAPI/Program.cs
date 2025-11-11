@@ -7,10 +7,7 @@ using Proyecto.Core.Servicios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Proyecto.Core.DTOs;
-<<<<<<< HEAD
 using Proyecto.Core.Repositorios.ReposDapper;
-=======
->>>>>>> f14edf8e7241c6adc380be8d0e8034f4aff8bd59
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -182,12 +179,8 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-<<<<<<< HEAD
             IdDetalleOrden = d.IdDetalleOrden,
             IdEntrada = d.IdEntrada,
-=======
-            idDetalleOrden = d.IdDetalleOrden,
->>>>>>> f14edf8e7241c6adc380be8d0e8034f4aff8bd59
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -206,12 +199,8 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-<<<<<<< HEAD
             IdDetalleOrden = d.IdDetalleOrden,
             IdEntrada = d.IdEntrada,
-=======
-            idDetalleOrden = d.IdDetalleOrden,
->>>>>>> f14edf8e7241c6adc380be8d0e8034f4aff8bd59
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -249,13 +238,13 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 #region USUARIOS
 app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
-    var usuario = repo.Login(login.usuario, login.Contrasena);
+    var usuario = repo.Login(login.NombreUsuario, login.Contrasena);
     if (usuario is null) return Results.Unauthorized();
 
     return Results.Ok(new UsuarioDTO
     {
         idUsuario = usuario.IdUsuario,
-        usuario = usuario.usuario,
+        NombreUsuario = usuario.usuario,
         Rol = usuario.Rol
     });
 });
