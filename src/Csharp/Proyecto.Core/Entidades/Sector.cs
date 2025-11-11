@@ -8,6 +8,4 @@ public class Sector
     public required int Capacidad { get; set; }
     public required decimal Precio { get; set; }
     public int idLocal { get; set; }
-    
-    
 }

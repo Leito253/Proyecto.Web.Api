@@ -10,9 +10,4 @@ public class Tarifa
     public int IdEvento { get; set; }
     public Sector Sector { get; set; } = default!;
     public Funcion Funcion { get; set; } = default!;
-
-    public static implicit operator Tarifa(int v)
-    {
-        throw new NotImplementedException();
-    }
 }

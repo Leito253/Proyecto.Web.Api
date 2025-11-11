@@ -38,20 +38,20 @@ public class LocalRepository : ILocalRepository
     }
 
     public int Add(Local local)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        var sql = @"
-                INSERT INTO Local (Nombre, Direccion, Capacidad)
-                VALUES (@Nombre, @Direccion, @Capacidad);
-                SELECT LAST_INSERT_ID();";
-        return connection.ExecuteScalar<int>(sql, local);
-    }
+{
+    using var connection = new MySqlConnection(_connectionString);
+    var sql = @"
+        INSERT INTO Local (Nombre, Direccion, Capacidad, Telefono)
+        VALUES (@Nombre, @Direccion, @Capacidad, @Telefono);
+        SELECT LAST_INSERT_ID();";
+    return connection.ExecuteScalar<int>(sql, local);
+}
 
     public void Update(Local local)
     {
         using var connection = new MySqlConnection(_connectionString);
         var sql = @"UPDATE Local 
-                        SET Nombre = @Nombre, Direccion = @Direccion, Capacidad = @Capacidad 
+                        SET Nombre = @Nombre, Direccion = @Direccion, Capacidad = @Capacidad, Telefono = @Telefono
                         WHERE idLocal = @idLocal";
         connection.Execute(sql, local);
     }

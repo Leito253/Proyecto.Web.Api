@@ -8,7 +8,7 @@ public class AuthService
 
     public bool Register(Usuario usuario)
     {
-        if (usuarios.Any(u => u.usuario == usuario.usuario || u.Email == usuario.Email))
+        if (usuarios.Any(u => u.NombreUsuario == usuario.NombreUsuario || u.Email == usuario.Email))
             return false;
 
         usuario.IdUsuario = usuarios.Count + 1;
@@ -19,6 +19,6 @@ public class AuthService
 
     public bool Login(string usuario, string Contrasena)
     {
-        return usuarios.Any(u => u.usuario == usuario && u.Contrasena == Contrasena && u.Activo);
+        return usuarios.Any(u => u.NombreUsuario == usuario && u.Contrasena == Contrasena && u.Activo);
     }
 }

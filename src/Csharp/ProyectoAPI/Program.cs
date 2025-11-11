@@ -184,7 +184,6 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
         Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
         {
             IdDetalleOrden = d.IdDetalleOrden,
-            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -204,7 +203,6 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
         Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
         {
             IdDetalleOrden = d.IdDetalleOrden,
-            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -232,7 +230,7 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
     return Results.Ok(entradas.Select(e => new EntradaDTO
     {
         idEntrada = e.IdEntrada,
-        Precio = e.Precio,
+        Precio = (int)e.Precio,
         Numero = e.Numero,
         Usada = e.Usada,
         Anulada = e.Anulada,
@@ -261,7 +259,6 @@ app.MapGet("/api/eventos", (IEventoRepository repo) =>
     }));
 });
 
-// ...existing code...
 app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
 {
     var ev = new Evento
@@ -275,7 +272,6 @@ app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
     repo.Add(ev);
     return Results.Created($"/api/eventos/{ev.idEvento}", ev);
 });
-// ...existing code...
 #endregion
 
 #region FUNCIONES
@@ -286,8 +282,8 @@ app.MapGet("/api/funciones", (IFuncionRepository repo) =>
     {
         idFuncion = f.IdFuncion,
         idEvento = f.IdEvento,
-        Fecha = f.Fecha,
-        idLocal = f.idLocal
+        Fecha = f.FechaHora,
+        idLocal = f.IdLocal
     }));
 });
 
@@ -296,8 +292,8 @@ app.MapPost("/api/funciones", (FuncionCreateDTO dto, IFuncionRepository repo) =>
     var f = new Funcion
     {
         IdEvento = dto.idEvento,
-        Fecha = dto.Fecha,
-        idLocal = dto.idLocal
+        FechaHora = dto.Fecha,
+        IdLocal = dto.idLocal
     };
     repo.Add(f);
     return Results.Created($"/api/funciones/{f.IdFuncion}", f);
@@ -313,20 +309,22 @@ app.MapGet("/api/locales", (ILocalRepository repo) =>
         idLocal = l.idLocal,
         Nombre = l.Nombre,
         Direccion = l.Direccion,
+        Capacidad = l.Capacidad,
         Telefono = l.Telefono
     }));
 });
 
 app.MapPost("/api/locales", (LocalCreateDTO dto, ILocalRepository repo) =>
 {
-    var l = new Local
+    var local = new Local
     {
         Nombre = dto.Nombre,
         Direccion = dto.Direccion,
+        Capacidad = dto.Capacidad,
         Telefono = dto.Telefono
     };
-    repo.Add(l);
-    return Results.Created($"/api/locales/{l.idLocal}", l);
+    var id = repo.Add(local);
+    return Results.Created($"/api/locales/{id}", local);
 });
 #endregion
 
@@ -353,7 +351,6 @@ app.MapPost("/api/sectores", (SectorCreateDTO dto, ISectorRepository repo) =>
     repo.Add(s);
     return Results.Created($"/api/sectores/{s.idSector}", s);
 });
-// ...existing code...
 #endregion
 
 #region TARIFAS
@@ -405,7 +402,6 @@ app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
     {
         idUsuario = usuario.IdUsuario,
         NombreUsuario = usuario.NombreUsuario,
-        Rol = usuario.Rol
     });
 });
 
@@ -436,7 +432,7 @@ app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEnt
     var entrada = repo.GetById(idEntrada);
     if (entrada == null) return Results.NotFound("Entrada no existe");
 
-    string qrContent = $"{entrada.IdEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+    string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
     var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
     return Results.File(qrBytes, "image/png");
 });
@@ -448,7 +444,7 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
     {
         var entrada = repo.GetById(idEntrada);
         if (entrada == null) continue;
-        string qrContent = $"{entrada.IdEntrada}|{entrada.idFuncion}|{entrada.idCliente}|{builder.Configuration["Qr:Key"]}";
+        string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
         var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
         resultados.Add(entrada.IdEntrada, qrBytes);
     }

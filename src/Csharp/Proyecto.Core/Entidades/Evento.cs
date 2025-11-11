@@ -11,4 +11,3 @@ public class Evento
     public Local? Local { get; set; }
     public bool Activo { get; set; }
 }
-    
