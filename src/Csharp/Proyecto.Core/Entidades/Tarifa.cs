@@ -1,5 +1,5 @@
 
-namespace Proyecto.Modelos.Entidades;
+namespace Proyecto.Core.Entidades;
 public class Tarifa
 {
     public int idTarifa { get; set; }

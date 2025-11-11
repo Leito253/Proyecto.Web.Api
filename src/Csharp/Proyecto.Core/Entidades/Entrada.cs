@@ -1,8 +1,8 @@
-namespace Proyecto.Modelos.Entidades;
+namespace Proyecto.Core.Entidades;
 
 public class Entrada
 {
-    public int idEntrada { get; set; }
+    public int IdEntrada { get; set; }
     public int Precio { get; set; }
     public string QR { get; set; } = string.Empty;
     public bool Usada { get; set; }

@@ -3,7 +3,7 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Proyecto.Core.Repositorios;
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 
 namespace src.Proyecto.Dappers
 {

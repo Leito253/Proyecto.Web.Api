@@ -3,9 +3,9 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Proyecto.Core.Repositorios;
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 
-namespace Proyecto.Modelos.Repositorios.ReposDapper;
+namespace Proyecto.Core.Repositorios.ReposDapper;
 
 public class UsuarioRepository : IUsuarioRepository
 {
@@ -64,5 +64,8 @@ public class UsuarioRepository : IUsuarioRepository
         db.Execute(sql, new { Id = IdUsuario, IdRol = idRol });
     }
 
-
+    public object Login(object nombreUsuario, string contrasena)
+    {
+        throw new NotImplementedException();
+    }
 }

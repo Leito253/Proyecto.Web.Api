@@ -1,5 +1,5 @@
-using Proyecto.Modelos.Entidades;
-namespace Proyecto.Core.Interfaces
+using Proyecto.Core.Entidades;
+namespace Proyecto.Core.Repositorios
 {
     public interface ITarifaRepository
     {

@@ -1,14 +1,12 @@
 using System.Data;
-using Proyecto.Core.Repositorios;
 using Proyecto.Core.Entidades;
 using Microsoft.Extensions.Configuration;
-using Proyecto.Core.Interfaces;
 using MySqlConnector;
 using Dapper;
 
 
 
-namespace Proyecto.Modelos.Repositorios.ReposDapper
+namespace Proyecto.Core.Repositorios.ReposDapper
 {
     public class ClienteRepository : IClienteRepository
     {

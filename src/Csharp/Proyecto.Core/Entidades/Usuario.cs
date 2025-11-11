@@ -1,4 +1,4 @@
-namespace Proyecto.Modelos.Entidades;
+namespace Proyecto.Core.Entidades;
 
 public class Usuario
 {
@@ -8,4 +8,5 @@ public class Usuario
     public string Contrasena { get; set; } = string.Empty;
     public bool Activo { get; set; }
     public required string Rol { get; set; }
+    public string NombreUsuario { get; set; }
 }

@@ -1,14 +1,13 @@
 using System.Text;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using Proyecto.Core.Entidades;
 using Proyecto.Core.Interfaces;
 using Proyecto.Core.Repositorios;
 using Proyecto.Core.Servicios;
-using Proyecto.Modelos.Repositorios.ReposDapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Proyecto.Modelos.DTOs;
+using Proyecto.Core.DTOs;
+using Proyecto.Core.Repositorios.ReposDapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -180,8 +179,8 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            IdDetalleOrden = d.IdDetalleOrden,
+            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -200,8 +199,8 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
         Total = o.Total,
         Detalles = o.Detalles.Select(d => new DetalleOrdenDTO
         {
-            idDetalleOrden = d.idDetalleOrden,
-            idEntrada = d.idEntrada,
+            IdDetalleOrden = d.IdDetalleOrden,
+            IdEntrada = d.IdEntrada,
             Cantidad = d.Cantidad,
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
@@ -228,7 +227,7 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
     var entradas = repo.GetAll();
     return Results.Ok(entradas.Select(e => new EntradaDTO
     {
-        idEntrada = e.idEntrada,
+        idEntrada = e.IdEntrada,
         Precio = e.Precio,
         Numero = e.Numero,
         Usada = e.Usada,

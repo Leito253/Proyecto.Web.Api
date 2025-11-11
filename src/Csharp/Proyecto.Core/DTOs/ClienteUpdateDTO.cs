@@ -2,7 +2,7 @@ namespace Proyecto.Core.DTOs
 {
     public class ClienteUpdateDTO
     {
-        public required string DNI { get; set; }
+        public required int DNI { get; set; }
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public required string Email { get; set; }

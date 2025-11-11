@@ -2,10 +2,9 @@ using System.Data;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
-using Proyecto.Core.Repositorios;
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 
-namespace Proyecto.Modelos.Repositorios.ReposDapper
+namespace Proyecto.Core.Repositorios.ReposDapper
 {
 public class EntradaRepository : IEntradaRepository
 {
@@ -68,7 +67,7 @@ public class EntradaRepository : IEntradaRepository
             INSERT INTO Entrada (Precio, idFuncion, idCliente, Usada, Anulada, Numero, QR)
             VALUES (@Precio, @idFuncion, @idCliente, @Usada, @Anulada, @Numero, @QR);
             SELECT LAST_INSERT_ID();";
-        entrada.idEntrada = db.ExecuteScalar<int>(sql, entrada);
+        entrada.IdEntrada = db.ExecuteScalar<int>(sql, entrada);
     }
 }
 }

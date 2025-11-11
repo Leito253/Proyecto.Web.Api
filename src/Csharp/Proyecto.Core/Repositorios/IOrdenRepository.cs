@@ -1,4 +1,4 @@
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 namespace Proyecto.Core.Repositorios;
 
 public interface IOrdenRepository
@@ -9,5 +9,6 @@ public interface IOrdenRepository
     void Update(Orden orden);
     void Pagar(int IdOrden);
     void Cancelar(int IdOrden);
-
+    //void Add(Orden nueva);
 }
+

@@ -1,4 +1,4 @@
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 namespace Proyecto.Core.Repositorios
 {
     public interface IRolRepository

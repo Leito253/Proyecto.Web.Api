@@ -1,4 +1,4 @@
-using Proyecto.Modelos.Entidades;
+using Proyecto.Core.Entidades;
 namespace Proyecto.Core.Repositorios;
 
 public interface IUsuarioRepository
@@ -9,4 +9,5 @@ public interface IUsuarioRepository
     IEnumerable<Rol> GetRoles(int IdUsuario);
     IEnumerable<Rol> GetAllRoles();
     void AsignarRoles(int IdUsuario, int idRol);
+    object Login(object nombreUsuario, string contrasena);
 }

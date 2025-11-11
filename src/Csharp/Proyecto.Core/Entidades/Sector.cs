@@ -1,4 +1,4 @@
-namespace Proyecto.Modelos.Entidades;
+namespace Proyecto.Core.Entidades;
 
 public class Sector
 {
