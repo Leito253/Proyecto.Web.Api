@@ -10,25 +10,6 @@ CREATE TABLE Cliente (
     Email VARCHAR(100) NOT NULL,
     Telefono VARCHAR(50) NOT NULL
 );
-CREATE TABLE Sector (
-    idSector INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre VARCHAR(100) NOT NULL,
-    Descripcion VARCHAR(255) DEFAULT '',
-    Capacidad INT NOT NULL,
-    Precio DECIMAL(10,2) NOT NULL,
-    idLocal INT NOT NULL,
-    FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
-);
-CREATE TABLE Evento (
-    idEvento INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre VARCHAR(100) NOT NULL,
-    Fecha DATETIME NOT NULL,
-    Lugar VARCHAR(100) NOT NULL,
-    Tipo VARCHAR(50) NOT NULL,
-    Activo BOOLEAN NOT NULL DEFAULT TRUE,
-    idLocal INT NOT NULL,
-    FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
-);
 CREATE TABLE Orden (
     idOrden INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATETIME NOT NULL,
@@ -37,29 +18,6 @@ CREATE TABLE Orden (
     NumeroOrden INT NOT NULL,
     Total DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) ON DELETE CASCADE
-);
-CREATE TABLE Tarifa (
-    idTarifa INT AUTO_INCREMENT PRIMARY KEY,
-    Precio DECIMAL(10,2) NOT NULL,
-    Descripcion VARCHAR(255) DEFAULT '',
-    idSector INT NOT NULL,
-    IdFuncion INT NOT NULL,
-    IdEvento INT NOT NULL,
-    FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
-    FOREIGN KEY (IdFuncion) REFERENCES Funcion(idFuncion) ON DELETE CASCADE,
-    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
-);
-CREATE TABLE DetalleOrden (
-    IdDetalleOrden INT AUTO_INCREMENT PRIMARY KEY,
-    IdOrden INT NOT NULL,
-    IdEvento INT NOT NULL,
-    IdTarifa INT NOT NULL,
-    Cantidad INT NOT NULL,
-    PrecioUnitario DECIMAL(10,2) NOT NULL,
-
-    FOREIGN KEY (IdOrden) REFERENCES Orden(idOrden) ON DELETE CASCADE,
-    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
-    FOREIGN KEY (IdTarifa) REFERENCES Tarifa(idTarifa) ON DELETE CASCADE
 );
 CREATE TABLE Entrada (
     IdEntrada INT AUTO_INCREMENT PRIMARY KEY,
@@ -76,6 +34,19 @@ CREATE TABLE Entrada (
     FOREIGN KEY (IdSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
     FOREIGN KEY (IdFuncion) REFERENCES Funcion(idFuncion) ON DELETE CASCADE
 );
+CREATE TABLE DetalleOrden (
+    IdDetalleOrden INT AUTO_INCREMENT PRIMARY KEY,
+    IdOrden INT NOT NULL,
+    IdEvento INT NOT NULL,
+    IdTarifa INT NOT NULL,
+    Cantidad INT NOT NULL,
+    PrecioUnitario DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (IdOrden) REFERENCES Orden(idOrden) ON DELETE CASCADE,
+    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
+    FOREIGN KEY (IdTarifa) REFERENCES Tarifa(idTarifa) ON DELETE CASCADE
+);
+
 CREATE TABLE Funcion (
     IdFuncion INT AUTO_INCREMENT PRIMARY KEY,
     Descripcion VARCHAR(255) DEFAULT '',
@@ -110,6 +81,37 @@ CREATE TABLE Local (
     Direccion VARCHAR(255) NOT NULL,
     Capacidad INT NOT NULL,
     Telefono VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Sector (
+    idSector INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion VARCHAR(255) DEFAULT '',
+    Capacidad INT NOT NULL,
+    Precio DECIMAL(10,2) NOT NULL,
+    idLocal INT NOT NULL,
+    FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
+);
+CREATE TABLE Evento (
+    idEvento INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Fecha DATETIME NOT NULL,
+    Lugar VARCHAR(100) NOT NULL,
+    Tipo VARCHAR(50) NOT NULL,
+    Activo BOOLEAN NOT NULL DEFAULT TRUE,
+    idLocal INT NOT NULL,
+    FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
+);
+CREATE TABLE Tarifa (
+    idTarifa INT AUTO_INCREMENT PRIMARY KEY,
+    Precio DECIMAL(10,2) NOT NULL,
+    Descripcion VARCHAR(255) DEFAULT '',
+    idSector INT NOT NULL,
+    IdFuncion INT NOT NULL,
+    IdEvento INT NOT NULL,
+    FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
+    FOREIGN KEY (IdFuncion) REFERENCES Funcion(idFuncion) ON DELETE CASCADE,
+    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
 );
 CREATE TABLE Qr (
     IdQr INT AUTO_INCREMENT PRIMARY KEY,
