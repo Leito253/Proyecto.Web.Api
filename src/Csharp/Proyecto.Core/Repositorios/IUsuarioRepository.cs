@@ -1,14 +1,14 @@
 using Proyecto.Core.Entidades;
-namespace Proyecto.Core.Repositorios;
 
-public interface IUsuarioRepository
+namespace Proyecto.Core.Repositorios
 {
-    Usuario? GetById(int IdUsuario);
-    Usuario? Login(string Email, string Contrasena);
-    void Add(Usuario usuario);
-    IEnumerable<Rol> GetRoles(int IdUsuario);
-    IEnumerable<Rol> GetAllRoles();
-    void AsignarRoles(int IdUsuario, int idRol);
-    object Login(object nombreUsuario, string contrasena);
-    
+    public interface IUsuarioRepository
+    {
+        Usuario? GetById(int idUsuario);
+        Usuario? Login(string nombreUsuario, string contrasena);
+        void Add(Usuario usuario);
+        IEnumerable<Rol> GetRoles(int idUsuario);
+        IEnumerable<Rol> GetAllRoles();
+        void AsignarRol(int idUsuario, int idRol);
+    }
 }

@@ -122,7 +122,7 @@ app.MapGet("/api/clientes", (IClienteRepository repo) =>
     }));
 });
 
-app.MapGet("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
+app.MapGet("/api/clientes/{idCliente}", (int idCliente, IClienteRepository repo) =>
 {
     var c = repo.GetById(idCliente);
     if (c is null) return Results.NotFound();
@@ -136,6 +136,7 @@ app.MapGet("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
         Telefono = c.Telefono
     });
 });
+
 
 app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
 {
@@ -421,7 +422,7 @@ app.MapGet("/roles", (IUsuarioRepository repo) => Results.Ok(repo.GetAllRoles())
 
 app.MapPost("/usuarios/{id}/roles/{rolId}", (int idUsuario, int rolId, IUsuarioRepository repo) =>
 {
-    repo.AsignarRoles(idUsuario, rolId);
+    repo.AsignarRol(idUsuario, rolId);
     return Results.Ok(new { mensaje = "Rol asignado correctamente" });
 });
 #endregion

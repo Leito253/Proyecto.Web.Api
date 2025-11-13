@@ -22,30 +22,29 @@ public class UsuarioRepository : IUsuarioRepository
     {
         using var db = Connection;
         string sql = @"INSERT INTO Usuario (Usuario, Email, Password, Activo)
-                       VALUES (@Usuario, @Email, @Password, @Activo)";
-       int filas = db.Execute(sql, usuario );
+                        VALUES (@Usuario, @Email, @Password, @Activo)";
+        int filas = db.Execute(sql, usuario);
     }
 
     public Usuario? Login(string Correo, string Contrasena)
-        {
-            using var db = Connection;
-            const string sql = "SELECT * FROM Usuario WHERE correo = @correo AND contrasena = @contrasena;";
-            return db.QueryFirstOrDefault<Usuario>(sql, new { Correo, Contrasena });
-        }
-
-         public Usuario? GetById(int IdUsuario)
     {
         using var db = Connection;
-        return db.QueryFirstOrDefault<Usuario>(
-            "SELECT * FROM Usuario WHERE IdUsuario = @IdUsuario", new { Id = IdUsuario });
+        const string sql = "SELECT * FROM Usuario WHERE correo = @correo AND contrasena = @contrasena;";
+        return db.QueryFirstOrDefault<Usuario>(sql, new { Correo, Contrasena });
     }
 
+    public Usuario? GetById(int idUsuario)
+    {
+        using var db = Connection;
+        var sql = "SELECT * FROM Usuario WHERE IdUsuario = @idUsuario";
+        return db.QueryFirstOrDefault<Usuario>(sql, new { idUsuario });
+    }
     public IEnumerable<Rol> GetRoles(int IdUsuario)
     {
         using var db = Connection;
         string sql = @"SELECT r.* FROM Rol r
-                       INNER JOIN UsuarioRol ur ON r.IdRol = ur.IdRol
-                       WHERE ur.IdUsuario = @IdUsuario";
+                        INNER JOIN UsuarioRol ur ON r.IdRol = ur.IdRol
+                        WHERE ur.IdUsuario = @IdUsuario";
         return db.Query<Rol>(sql, new { Id = IdUsuario });
     }
 
@@ -55,12 +54,12 @@ public class UsuarioRepository : IUsuarioRepository
         return db.Query<Rol>("SELECT * FROM Rol");
     }
 
-    public void AsignarRoles(int IdUsuario, int idRol)
+    public void AsignarRol(int IdUsuario, int idRol)
     {
         using var db = Connection;
         string sql = @"INSERT INTO UsuarioRol (IdUsuario, IdRol)
-                       VALUES (@IdUsuario, @IdRol)
-                       ON DUPLICATE KEY UPDATE IdRol = @IdRol";
+                        VALUES (@IdUsuario, @IdRol)
+                        ON DUPLICATE KEY UPDATE IdRol = @IdRol";
         db.Execute(sql, new { Id = IdUsuario, IdRol = idRol });
     }
 

@@ -10,53 +10,7 @@ CREATE TABLE Cliente (
     Email VARCHAR(100) NOT NULL,
     Telefono VARCHAR(50) NOT NULL
 );
-CREATE TABLE Orden (
-    idOrden INT AUTO_INCREMENT PRIMARY KEY,
-    Fecha DATETIME NOT NULL,
-    Estado VARCHAR(50) NOT NULL,
-    idCliente INT NOT NULL,
-    NumeroOrden INT NOT NULL,
-    Total DECIMAL(10,2) NOT NULL DEFAULT 0,
-    FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) ON DELETE CASCADE
-);
-CREATE TABLE Entrada (
-    IdEntrada INT AUTO_INCREMENT PRIMARY KEY,
-    Precio DECIMAL(10,2) NOT NULL,
-    QR VARCHAR(255),
-    Anulada BOOLEAN DEFAULT FALSE,
-    Usada BOOLEAN DEFAULT FALSE,
-    Numero VARCHAR(10) NOT NULL,
-    IdDetalleOrden INT NOT NULL,
-    IdSector INT NOT NULL,
-    IdFuncion INT NOT NULL,
 
-    FOREIGN KEY (IdDetalleOrden) REFERENCES DetalleOrden(IdDetalleOrden) ON DELETE CASCADE,
-    FOREIGN KEY (IdSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
-    FOREIGN KEY (IdFuncion) REFERENCES Funcion(idFuncion) ON DELETE CASCADE
-);
-CREATE TABLE DetalleOrden (
-    IdDetalleOrden INT AUTO_INCREMENT PRIMARY KEY,
-    IdOrden INT NOT NULL,
-    IdEvento INT NOT NULL,
-    IdTarifa INT NOT NULL,
-    Cantidad INT NOT NULL,
-    PrecioUnitario DECIMAL(10,2) NOT NULL,
-
-    FOREIGN KEY (IdOrden) REFERENCES Orden(idOrden) ON DELETE CASCADE,
-    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
-    FOREIGN KEY (IdTarifa) REFERENCES Tarifa(idTarifa) ON DELETE CASCADE
-);
-
-CREATE TABLE Funcion (
-    IdFuncion INT AUTO_INCREMENT PRIMARY KEY,
-    Descripcion VARCHAR(255) DEFAULT '',
-    FechaHora DATETIME NOT NULL,
-    IdEvento INT NOT NULL,
-    IdLocal INT NOT NULL,
-
-    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
-    FOREIGN KEY (IdLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
-);
 CREATE TABLE Usuario (
     IdUsuario INT AUTO_INCREMENT PRIMARY KEY,
     NombreUsuario VARCHAR(50) NOT NULL UNIQUE,
@@ -64,17 +18,12 @@ CREATE TABLE Usuario (
     Contrasena VARCHAR(255) NOT NULL,
     Activo BOOLEAN DEFAULT TRUE
 );
+
 CREATE TABLE Rol (
     IdRol INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL UNIQUE
 );
-CREATE TABLE UsuarioRol (
-    IdUsuario INT NOT NULL,
-    IdRol INT NOT NULL,
-    PRIMARY KEY (IdUsuario, IdRol),
-    FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario) ON DELETE CASCADE,
-    FOREIGN KEY (IdRol) REFERENCES Rol(IdRol) ON DELETE CASCADE
-);
+
 CREATE TABLE Local (
     idLocal INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
@@ -92,6 +41,7 @@ CREATE TABLE Sector (
     idLocal INT NOT NULL,
     FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
 );
+
 CREATE TABLE Evento (
     idEvento INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
@@ -102,6 +52,17 @@ CREATE TABLE Evento (
     idLocal INT NOT NULL,
     FOREIGN KEY (idLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
 );
+
+CREATE TABLE Funcion (
+    IdFuncion INT AUTO_INCREMENT PRIMARY KEY,
+    Descripcion VARCHAR(255) DEFAULT '',
+    FechaHora DATETIME NOT NULL,
+    IdEvento INT NOT NULL,
+    IdLocal INT NOT NULL,
+    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
+    FOREIGN KEY (IdLocal) REFERENCES Local(idLocal) ON DELETE CASCADE
+);
+
 CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
     Precio DECIMAL(10,2) NOT NULL,
@@ -110,9 +71,47 @@ CREATE TABLE Tarifa (
     IdFuncion INT NOT NULL,
     IdEvento INT NOT NULL,
     FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
-    FOREIGN KEY (IdFuncion) REFERENCES Funcion(idFuncion) ON DELETE CASCADE,
+    FOREIGN KEY (IdFuncion) REFERENCES Funcion(IdFuncion) ON DELETE CASCADE,
     FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
 );
+
+CREATE TABLE Orden (
+    idOrden INT AUTO_INCREMENT PRIMARY KEY,
+    Fecha DATETIME NOT NULL,
+    Estado VARCHAR(50) NOT NULL,
+    idCliente INT NOT NULL,
+    NumeroOrden INT NOT NULL,
+    Total DECIMAL(10,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente) ON DELETE CASCADE
+);
+
+CREATE TABLE DetalleOrden (
+    IdDetalleOrden INT AUTO_INCREMENT PRIMARY KEY,
+    IdOrden INT NOT NULL,
+    IdEvento INT NOT NULL,
+    IdTarifa INT NOT NULL,
+    Cantidad INT NOT NULL,
+    PrecioUnitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (IdOrden) REFERENCES Orden(idOrden) ON DELETE CASCADE,
+    FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE,
+    FOREIGN KEY (IdTarifa) REFERENCES Tarifa(idTarifa) ON DELETE CASCADE
+);
+
+CREATE TABLE Entrada (
+    IdEntrada INT AUTO_INCREMENT PRIMARY KEY,
+    Precio DECIMAL(10,2) NOT NULL,
+    QR VARCHAR(255),
+    Anulada BOOLEAN DEFAULT FALSE,
+    Usada BOOLEAN DEFAULT FALSE,
+    Numero VARCHAR(10) NOT NULL,
+    IdDetalleOrden INT NOT NULL,
+    IdSector INT NOT NULL,
+    IdFuncion INT NOT NULL,
+    FOREIGN KEY (IdDetalleOrden) REFERENCES DetalleOrden(IdDetalleOrden) ON DELETE CASCADE,
+    FOREIGN KEY (IdSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
+    FOREIGN KEY (IdFuncion) REFERENCES Funcion(IdFuncion) ON DELETE CASCADE
+);
+
 CREATE TABLE Qr (
     IdQr INT AUTO_INCREMENT PRIMARY KEY,
     IdEntrada INT NOT NULL,
@@ -120,15 +119,21 @@ CREATE TABLE Qr (
     FechaGeneracion DATETIME NOT NULL,
     Usado BOOLEAN DEFAULT FALSE,
     Estado VARCHAR(50) DEFAULT 'NoValidado',
-
     FOREIGN KEY (IdEntrada) REFERENCES Entrada(IdEntrada) ON DELETE CASCADE
 );
+
+CREATE TABLE UsuarioRol (
+    IdUsuario INT NOT NULL,
+    IdRol INT NOT NULL,
+    PRIMARY KEY (IdUsuario, IdRol),
+    FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (IdRol) REFERENCES Rol(IdRol) ON DELETE CASCADE
+);
+
 CREATE TABLE Token (
     IdToken INT AUTO_INCREMENT PRIMARY KEY,
     IdUsuario INT NOT NULL,
     TokenRefresh VARCHAR(500) NOT NULL,
     FechaExpiracion DATETIME NOT NULL,
-
     FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario) ON DELETE CASCADE
 );
-
