@@ -152,9 +152,9 @@ app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
     return Results.Created($"/api/clientes/{cliente.idCliente}", cliente);
 });
 
-app.MapPut("/api/clientes/{id}", (int id, ClienteUpdateDTO dto, IClienteRepository repo) =>
+app.MapPut("/api/clientes/{id}", (int idCliente, ClienteUpdateDTO dto, IClienteRepository repo) =>
 {
-    var c = repo.GetById(id);
+    var c = repo.GetById(idCliente);
     if (c is null) return Results.NotFound();
     c.DNI = dto.DNI;
     c.Nombre = dto.Nombre;
@@ -165,9 +165,9 @@ app.MapPut("/api/clientes/{id}", (int id, ClienteUpdateDTO dto, IClienteReposito
     return Results.NoContent();
 });
 
-app.MapDelete("/api/clientes/{id}", (int id, IClienteRepository repo) =>
+app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 {
-    repo.Delete(id);
+    repo.Delete(idCliente);
     return Results.NoContent();
 });
 #endregion
@@ -222,8 +222,7 @@ app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
     repo.Add(nueva);
     return Results.Created($"/api/ordenes/{nueva.idOrden}", nueva);
 });
-#endregion
-
+#endregion 
 #region ENTRADAS
 app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 {
@@ -384,7 +383,7 @@ app.MapPost("/api/roles", (Rol r, IRolRepository repo) =>
 {
     repo.Add(r);
     return Results.Created($"/api/roles/{r.IdRol}", r);
-});
+}) .WithTags("Tarifa");
 #endregion
 
 #region USUARIOS
@@ -392,7 +391,7 @@ app.MapGet("/usuarios/{id}", (int idUsuario, IUsuarioRepository repo) =>
 {
     var usuario = repo.GetById(idUsuario);
     return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
-});
+}) .WithTags("Tarifa");
 
 app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
@@ -436,7 +435,7 @@ app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEnt
     string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
     var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
     return Results.File(qrBytes, "image/png");
-});
+}) .WithTags("Tarifa");
 
 app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepository repo) =>
 {
@@ -450,7 +449,7 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
         resultados.Add(entrada.IdEntrada, qrBytes);
     }
     return Results.Ok(resultados);
-});
+}); 
 
 app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
 {
