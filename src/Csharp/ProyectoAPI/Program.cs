@@ -135,7 +135,7 @@ app.MapGet("/api/clientes", (IClienteRepository repo) =>
         Email = c.Email,
         Telefono = c.Telefono
     }));
-});
+}).WithTags("Cliente");
 
 app.MapGet("/api/clientes/{idCliente}", (int idCliente, IClienteRepository repo) =>
 {
@@ -150,7 +150,7 @@ app.MapGet("/api/clientes/{idCliente}", (int idCliente, IClienteRepository repo)
         Email = c.Email,
         Telefono = c.Telefono
     });
-});
+}).WithTags("Cliente");
 
 
 app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
@@ -165,7 +165,7 @@ app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
     };
     repo.Add(cliente);
     return Results.Created($"/api/clientes/{cliente.idCliente}", cliente);
-});
+}).WithTags("Cliente");
 
 app.MapPut("/api/clientes/{id}", (int idCliente, ClienteUpdateDTO dto, IClienteRepository repo) =>
 {
@@ -178,13 +178,13 @@ app.MapPut("/api/clientes/{id}", (int idCliente, ClienteUpdateDTO dto, IClienteR
     c.Telefono = dto.Telefono;
     repo.Update(c);
     return Results.NoContent();
-});
+}).WithTags("Cliente");
 
 app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 {
     repo.Delete(idCliente);
     return Results.NoContent();
-});
+}).WithTags("Cliente");
 #endregion
 
 #region ORDENES
@@ -204,7 +204,7 @@ app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
     }));
-});
+}).WithTags("Orden");
 
 app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
 {
@@ -223,7 +223,7 @@ app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
             PrecioUnitario = d.PrecioUnitario
         }).ToList()
     });
-});
+}).WithTags("Orden");
 
 app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
 {
@@ -236,7 +236,7 @@ app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
     };
     repo.Add(nueva);
     return Results.Created($"/api/ordenes/{nueva.idOrden}", nueva);
-});
+}).WithTags("Orden");
 #endregion 
 #region ENTRADAS
 app.MapGet("/api/entradas", (IEntradaRepository repo) =>
@@ -251,13 +251,13 @@ app.MapGet("/api/entradas", (IEntradaRepository repo) =>
         Anulada = e.Anulada,
         QR = e.QR
     }));
-});
+}).WithTags("Entradas");
 
 app.MapPost("/api/entradas", (Entrada e, IEntradaRepository repo) =>
 {
     repo.Add(e);
     return Results.Created($"/api/entradas/{e.IdEntrada}", e);
-});
+}).WithTags("Entradas");
 #endregion
 
 #region EVENTOS
@@ -272,7 +272,7 @@ app.MapGet("/api/eventos", (IEventoRepository repo) =>
         Activo = e.Activo,
         idLocal = e.Local?.idLocal ?? 0
     }));
-});
+}).WithTags("Eventos");
 
 app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
 {
@@ -286,7 +286,7 @@ app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
     };
     repo.Add(ev);
     return Results.Created($"/api/eventos/{ev.idEvento}", ev);
-});
+}).WithTags("Eventos");
 #endregion
 
 #region FUNCIONES
@@ -300,7 +300,7 @@ app.MapGet("/api/funciones", (IFuncionRepository repo) =>
         Fecha = f.FechaHora,
         idLocal = f.IdLocal
     }));
-});
+}).WithTags("Funcion");
 
 app.MapPost("/api/funciones", (FuncionCreateDTO dto, IFuncionRepository repo) =>
 {
@@ -312,7 +312,7 @@ app.MapPost("/api/funciones", (FuncionCreateDTO dto, IFuncionRepository repo) =>
     };
     repo.Add(f);
     return Results.Created($"/api/funciones/{f.IdFuncion}", f);
-});
+}).WithTags("Funcion");
 #endregion
 
 #region LOCALES
@@ -327,7 +327,7 @@ app.MapGet("/api/locales", (ILocalRepository repo) =>
         Capacidad = l.Capacidad,
         Telefono = l.Telefono
     }));
-});
+}).WithTags("Local");
 
 app.MapPost("/api/locales", (LocalCreateDTO dto, ILocalRepository repo) =>
 {
@@ -340,7 +340,7 @@ app.MapPost("/api/locales", (LocalCreateDTO dto, ILocalRepository repo) =>
     };
     var id = repo.Add(local);
     return Results.Created($"/api/locales/{id}", local);
-});
+}).WithTags("Local");
 #endregion
 
 #region SECTORES
@@ -353,7 +353,7 @@ app.MapGet("/api/sectores", (ISectorRepository repo) =>
         Nombre = s.Nombre,
         idLocal = s.idLocal
     }));
-});
+}).WithTags("Sector");
 app.MapPost("/api/sectores", (SectorCreateDTO dto, ISectorRepository repo) =>
 {
     var s = new Sector
@@ -365,7 +365,7 @@ app.MapPost("/api/sectores", (SectorCreateDTO dto, ISectorRepository repo) =>
     };
     repo.Add(s);
     return Results.Created($"/api/sectores/{s.idSector}", s);
-});
+}).WithTags("Sector");
 #endregion
 
 #region TARIFAS
@@ -378,7 +378,7 @@ app.MapGet("/api/funciones/{funcionId}/tarifas", (int funcionId, ITarifaReposito
         Precio = t.Precio,
         idFuncion = t.IdFuncion
     }));
-});
+}).WithTags("Tarifas");
 
 app.MapPost("/api/tarifas", (TarifaCreateDTO dto, ITarifaRepository repo) =>
 {
@@ -389,7 +389,7 @@ app.MapPost("/api/tarifas", (TarifaCreateDTO dto, ITarifaRepository repo) =>
     };
     repo.Add(t);
     return Results.Created($"/api/tarifas/{t.idTarifa}", t);
-});
+}).WithTags("Tarifas");
 #endregion
 
 #region ROLES
@@ -398,7 +398,7 @@ app.MapPost("/api/roles", (Rol r, IRolRepository repo) =>
 {
     repo.Add(r);
     return Results.Created($"/api/roles/{r.IdRol}", r);
-}) .WithTags("Tarifa");
+}) .WithTags("Roles");
 #endregion
 
 #region USUARIOS
@@ -406,7 +406,7 @@ app.MapGet("/usuarios/{id}", (int idUsuario, IUsuarioRepository repo) =>
 {
     var usuario = repo.GetById(idUsuario);
     return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
-}) .WithTags("Tarifa");
+}) .WithTags("Usuario");
 
 app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
@@ -418,19 +418,19 @@ app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
         idUsuario = usuario.IdUsuario,
         NombreUsuario = usuario.NombreUsuario,
     });
-});
+}).WithTags("Usuario");
 
 app.MapPost("/usuarios", (Usuario nuevoUsuario, IUsuarioRepository repo) =>
 {
     repo.Add(nuevoUsuario);
     return Results.Created($"/usuarios/{nuevoUsuario.IdUsuario}", nuevoUsuario);
-});
+}).WithTags("Usuario");
 
 app.MapGet("/usuarios/{id}/roles", (int idUsuario, IUsuarioRepository repo) =>
 {
     var roles = repo.GetRoles(idUsuario);
     return Results.Ok(roles);
-});
+}).WithTags("Usuario");
 
 app.MapGet("/roles", (IUsuarioRepository repo) => Results.Ok(repo.GetAllRoles()));
 
@@ -438,7 +438,7 @@ app.MapPost("/usuarios/{id}/roles/{rolId}", (int idUsuario, int rolId, IUsuarioR
 {
     repo.AsignarRol(idUsuario, rolId);
     return Results.Ok(new { mensaje = "Rol asignado correctamente" });
-});
+}).WithTags("Rol");
 #endregion
 
 #region QR
@@ -450,7 +450,7 @@ app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEnt
     string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
     var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
     return Results.File(qrBytes, "image/png");
-}) .WithTags("Tarifa");
+}) .WithTags("QR");
 
 app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepository repo) =>
 {
@@ -464,7 +464,7 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
         resultados.Add(entrada.IdEntrada, qrBytes);
     }
     return Results.Ok(resultados);
-});
+}).WithTags("QR");
 
 app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
 {
@@ -476,7 +476,7 @@ app.MapPost("/api/qr/{idEntrada}", (int idEntrada, IQrService qrService) =>
 {
     var qr = qrService.GenerarQr(idEntrada);
     return Results.Ok(qr);
-});
+}).WithTags("QR");
 
 #endregion
 
