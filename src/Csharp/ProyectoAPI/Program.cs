@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Proyecto.Core.DTOs;
 using src.Proyecto.Dappers;
+using Proyecto.Core.Servicios.Interfaces;
+using Proyecto.Dapper;
+using System.Data;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,9 +71,20 @@ builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ITarifaRepository, TarifaRepository>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
+builder.Services.AddScoped<IQRRepository, QRRepository>();
+builder.Services.AddScoped<IDbConnection>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return new MySqlConnection(config.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddScoped<IQRRepository, QRRepository>();
+
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<QrService>();
+builder.Services.AddScoped<IQrService, QrService>();
+
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -449,13 +464,20 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
         resultados.Add(entrada.IdEntrada, qrBytes);
     }
     return Results.Ok(resultados);
-}); 
+});
 
 app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
 {
     var resultado = qrService.ValidarQr(qrContent);
     return Results.Ok(resultado);
 });
+
+app.MapPost("/api/qr/{idEntrada}", (int idEntrada, IQrService qrService) =>
+{
+    var qr = qrService.GenerarQr(idEntrada);
+    return Results.Ok(qr);
+});
+
 #endregion
 
 app.Run();

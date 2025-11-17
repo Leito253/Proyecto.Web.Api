@@ -1,81 +1,75 @@
+using Proyecto.Core.DTOs;
+using Proyecto.Core.Entidades;
+using Proyecto.Core.Repositorios;
+using Proyecto.Core.Servicios.Interfaces;
 using QRCoder;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using Proyecto.Core.Entidades;
-using Proyecto.Core.Interfaces;
-using SkiaSharp;
-using Proyecto.Core.Entidades;
-using Proyecto.Core.Repositorios; // ✅ agregado
-using System;
-using Microsoft.Extensions.Configuration;
 
 namespace Proyecto.Core.Servicios
 {
-    public class QrService
+    public class QrService : IQrService
     {
         private readonly IEntradaRepository _entradaRepo;
-        private readonly IConfiguration _config;
+        private readonly IQRRepository _qrRepo;
 
-        public QrService(IEntradaRepository entradaRepo, IConfiguration config)
+        public QrService(IEntradaRepository entradaRepo, IQRRepository qrRepo)
         {
             _entradaRepo = entradaRepo;
-            _config = config;
+            _qrRepo = qrRepo;
         }
 
-        // Devuelve la imagen del QR como FileResult para el navegador
-        public byte[] GenerarQrEntradaImagen(string url)
+        public QrDTO GenerarQr(int idEntrada)
         {
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentException("La URL no puede estar vacía.", nameof(url));
+            var entrada = _entradaRepo.GetById(idEntrada);
+            if (entrada == null)
+                throw new Exception("La entrada no existe");
 
-            QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
-            QRCodeData qRCodeData = qRCodeGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qRCode = new BitmapByteQRCode(qRCodeData);
-            byte[] qrCodeBytes = qRCode.GetGraphic(20);
+            string contenido = $"Entrada:{entrada.IdEntrada}|Usuario:{entrada.IdUsuario}";
 
-            // Convertir a PNG usando SkiaSharp
-            using var bitmap = SKBitmap.Decode(qrCodeBytes);
-            using var image = SKImage.FromBitmap(bitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrData = qrGenerator.CreateQrCode(contenido, QRCodeGenerator.ECCLevel.Q);
+            Base64QRCode qrCode = new Base64QRCode(qrData);
+            string imagenBase64 = qrCode.GetGraphic(10);
 
-            return data.ToArray();
+            var qr = new QR
+            {
+                IdEntrada = idEntrada,
+                Codigo = imagenBase64,
+                FechaCreacion = DateTime.Now
+            };
+
+            _qrRepo.Add(qr);
+
+            return new QrDTO
+            {
+                idQR = qr.idQR,
+                IdEntrada = qr.IdEntrada,
+                Codigo = qr.Codigo,
+                FechaCreacion = qr.FechaCreacion
+            };
         }
 
-        // Validación del QR
-        public string ValidarQr(string qrContent)
+        public byte[] GenerarQrEntradaImagen(string qrContent)
         {
-            try
+            throw new NotImplementedException();
+        }
+
+        public QrDTO ObtenerQrPorEntrada(int idEntrada)
+        {
+            var qr = _qrRepo.GetByEntrada(idEntrada);
+            if (qr == null) return null;
+
+            return new QrDTO
             {
-                var partes = qrContent.Split('|');
-                if (partes.Length < 4) return "FirmaInvalida";
+                idQR = qr.idQR,
+                IdEntrada = qr.IdEntrada,
+                Codigo = qr.Codigo,
+                FechaCreacion = qr.FechaCreacion
+            };
+        }
 
-                int entradaId = int.Parse(partes[0]);
-                int funcionId = int.Parse(partes[1]);
-                int clienteId = int.Parse(partes[2]);
-                string firma = partes[3];
-
-                string firmaEsperada = _config["Qr:Key"];
-                if (firma != firmaEsperada) return "FirmaInvalida";
-
-                var entrada = _entradaRepo.GetById(entradaId);
-                if (entrada == null) return "NoExiste";
-
-                if (entrada.Usada) return "YaUsada";
-
-               /* if (entrada.funcion != null && entrada.funcion.FechaHora < DateTime.Now)
-                    return "Expirada";
-
-                entrada.Usada = true;
-                _entradaRepo.Update(entrada);*/
-
-                return "Ok";
-            }
-            catch
-            {
-                return "FirmaInvalida";
-            }
+        public object? ValidarQr(string qrContent)
+        {
+            throw new NotImplementedException();
         }
     }
 }

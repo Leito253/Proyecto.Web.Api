@@ -38,13 +38,13 @@ INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono) VALUES
 
 -- Insertar entradas;  
 
-INSERT INTO Entrada (Precio, idTarifa, idFuncion, Estado, QR, Usada, Anulada, Numero, idSector, idDetalleOrden) VALUES 
-(15000, 1, 1, 'Disponible', '', True, FALSE, 1, 1, 1),
-(10000, 2, 2, 'Disponible', '', True, FALSE, 2, 2, 2),
-(10500, 3, 3, 'Disponible', '', True, FALSE, 3, 3, 3),
-(14000, 4, 4, 'Disponible', '', True, FALSE, 4, 4, 4),
-(15000, 5, 5, 'Disponible', '', True, FALSE, 5, 5, 5),
-(13000, 2, 6, 'Disponible', '', True, FALSE, 6, 6, 5);
+INSERT INTO Entrada (Precio, idTarifa, idFuncion, Estado, Usada, Anulada, Numero, idSector, idDetalleOrden) VALUES 
+(15000, 1, 1, 'Disponible', True, FALSE, 1, 1, 1),
+(10000, 2, 2, 'Disponible', True, FALSE, 2, 2, 2),
+(10500, 3, 3, 'Disponible', True, FALSE, 3, 3, 3),
+(14000, 4, 4, 'Disponible', True, FALSE, 4, 4, 4),
+(15000, 5, 5, 'Disponible', True, FALSE, 5, 5, 5),
+(13000, 2, 6, 'Disponible', True, FALSE, 6, 6, 5);
 -- Insertar Funciones
 INSERT INTO Funcion (Descripcion, FechaHora) VALUES 
 ('Concierto Coldplay - Día 1', '2025-11-20 20:00:00'),

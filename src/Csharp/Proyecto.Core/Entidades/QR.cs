@@ -1,16 +1,13 @@
-namespace Proyecto.Core.Entidades;
-
-public class Qr
+namespace Proyecto.Core.Entidades
 {
-    public int IdQr { get; set; }
-    public int IdEntrada { get; set; }  
-    public string QrContent { get; set; } = string.Empty;  
-    public DateTime FechaGeneracion { get; set; }  
-    public bool Usado { get; set; }  
-    public string Estado { get; set; } = "NoValidado";  
-
-
-    public Entrada Entrada { get; set; }  
+    public class QR
+    {
+        public int idQR { get; set; }
+        public int IdEntrada { get; set; }
+        public string Codigo { get; set; }
+        public DateTime FechaCreacion { get; set; }
+    }
 }
+
 
 

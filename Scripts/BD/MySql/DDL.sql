@@ -107,20 +107,22 @@ CREATE TABLE Entrada (
     IdDetalleOrden INT NOT NULL,
     IdSector INT NOT NULL,
     IdFuncion INT NOT NULL,
+    IdTarifa INT NOT NULL,
+    Estado VARCHAR(50) NOT NULL DEFAULT 'Disponible',
+    Foreign Key (IdTarifa) REFERENCES Tarifa(idTarifa) ON DELETE CASCADE,
     FOREIGN KEY (IdDetalleOrden) REFERENCES DetalleOrden(IdDetalleOrden) ON DELETE CASCADE,
     FOREIGN KEY (IdSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
     FOREIGN KEY (IdFuncion) REFERENCES Funcion(IdFuncion) ON DELETE CASCADE
 );
 
-CREATE TABLE Qr (
-    IdQr INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE QR (
+    idQR INT AUTO_INCREMENT PRIMARY KEY,
     IdEntrada INT NOT NULL,
-    QrContent VARCHAR(500) NOT NULL,
-    FechaGeneracion DATETIME NOT NULL,
-    Usado BOOLEAN DEFAULT FALSE,
-    Estado VARCHAR(50) DEFAULT 'NoValidado',
-    FOREIGN KEY (IdEntrada) REFERENCES Entrada(IdEntrada) ON DELETE CASCADE
+    Codigo VARCHAR(500) NOT NULL,
+    FechaCreacion DATETIME NOT NULL,
+    CONSTRAINT FK_QR_Entrada FOREIGN KEY (IdEntrada) REFERENCES Entrada(idEntrada)
 );
+
 
 CREATE TABLE UsuarioRol (
     IdUsuario INT NOT NULL,

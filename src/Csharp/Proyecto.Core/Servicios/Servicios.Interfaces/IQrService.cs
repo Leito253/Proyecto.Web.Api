@@ -1,6 +1,10 @@
-using Proyecto.Core.Entidades;
+using Proyecto.Core.DTOs;
 
-namespace Servicios.Interfaces
+namespace Proyecto.Core.Servicios.Interfaces
 {
-    
+    public interface IQrService
+    {
+        QrDTO GenerarQr(int idEntrada);
+        QrDTO ObtenerQrPorEntrada(int idEntrada);
+    }
 }

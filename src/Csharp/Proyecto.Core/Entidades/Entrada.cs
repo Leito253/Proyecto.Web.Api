@@ -2,6 +2,8 @@ namespace Proyecto.Core.Entidades;
 
 public class Entrada
 {
+    internal readonly object IdUsuario;
+
     public int IdEntrada { get; set; }
     public decimal Precio { get; set; }
     public string QR { get; set; } = string.Empty;
