@@ -17,8 +17,8 @@ namespace Proyecto.Dapper
         public void Add(QR qr)
         {
             string sql = @"INSERT INTO QR (IdEntrada, Codigo, FechaCreacion)
-                           VALUES (@IdEntrada, @Codigo, @FechaCreacion);
-                           SELECT LAST_INSERT_ID();";
+                            VALUES (@IdEntrada, @Codigo, @FechaCreacion);
+                            SELECT LAST_INSERT_ID();";
 
             qr.idQR = _db.ExecuteScalar<int>(sql, qr);
         }

@@ -6,6 +6,7 @@ using Proyecto.Core.Repositorios;
 using Proyecto.Core.Entidades;
 
 namespace Proyecto.Core.Repositorios.ReposDapper;
+
 public class OrdenRepository : IOrdenRepository
 {
     private readonly string _connectionString;
@@ -17,35 +18,36 @@ public class OrdenRepository : IOrdenRepository
 
     private IDbConnection Connection => new MySqlConnection(_connectionString);
 
-    // Crear orden (INSERT)
     public void Add(Orden orden)
     {
         using var db = Connection;
-        string sql = @"
-                INSERT INTO Orden (IdUsuario, FechaCreacion, Estado)
-                VALUES (@IdUsuario, @FechaCreacion, @Estado);
-                SELECT LAST_INSERT_ID();";
 
-        var id = db.ExecuteScalar<int>(sql, orden);
-        orden.idOrden = id;
+        string sqlOrden = @"
+            INSERT INTO Orden (IdCliente, FechaCreacion, Estado)
+            VALUES (@IdCliente, @FechaCreacion, @Estado);
+            SELECT LAST_INSERT_ID();
+        ";
 
-        // Insertar detalles
+        orden.idOrden = db.ExecuteScalar<int>(sqlOrden, orden);
+
         foreach (var detalle in orden.Detalles)
         {
             string sqlDetalle = @"
-                    INSERT INTO DetalleOrden (IdOrden, IdEvento, Cantidad, PrecioUnitario)
-                    VALUES (@IdOrden, @IdEvento, @Cantidad, @PrecioUnitario);";
-            detalle.IdOrden = id;
+                INSERT INTO DetalleOrden (IdOrden, IdFuncion, Cantidad, PrecioUnitario)
+                VALUES (@IdOrden, @IdFuncion, @Cantidad, @PrecioUnitario);
+            ";
+
+            detalle.IdOrden = orden.idOrden;
             db.Execute(sqlDetalle, detalle);
         }
     }
 
-    // Listar todas las órdenes
     public IEnumerable<Orden> GetAll()
     {
         using var db = Connection;
-        string sql = "SELECT * FROM Orden;";
-        var ordenes = db.Query<Orden>(sql).ToList();
+
+        string sqlOrden = "SELECT * FROM Orden;";
+        var ordenes = db.Query<Orden>(sqlOrden).ToList();
 
         foreach (var orden in ordenes)
         {
@@ -56,12 +58,12 @@ public class OrdenRepository : IOrdenRepository
         return ordenes;
     }
 
-    // Buscar por ID
     public Orden? GetById(int idOrden)
     {
         using var db = Connection;
-        string sql = "SELECT * FROM Orden WHERE IdOrden = @IdOrden;";
-        var orden = db.QueryFirstOrDefault<Orden>(sql, new { IdOrden = idOrden });
+
+        string sqlOrden = "SELECT * FROM Orden WHERE IdOrden = @IdOrden;";
+        var orden = db.QueryFirstOrDefault<Orden>(sqlOrden, new { IdOrden = idOrden });
 
         if (orden != null)
         {
@@ -72,31 +74,64 @@ public class OrdenRepository : IOrdenRepository
         return orden;
     }
 
-    // Actualizar orden (ej: cambiar estado o usuario)
     public void Update(Orden orden)
     {
         using var db = Connection;
+
         string sql = @"
-                UPDATE Orden 
-                SET IdUsuario = @IdUsuario,
-                    Estado = @Estado
-                WHERE IdOrden = @IdOrden;";
+            UPDATE Orden
+            SET IdCliente = @IdCliente,
+                Estado = @Estado
+            WHERE IdOrden = @IdOrden;
+        ";
+
         db.Execute(sql, orden);
     }
 
-    // Marcar como Pagada
     public void Pagar(int idOrden)
     {
         using var db = Connection;
+
         string sql = "UPDATE Orden SET Estado = 'Pagada' WHERE IdOrden = @IdOrden;";
         db.Execute(sql, new { IdOrden = idOrden });
     }
-
-    // Cancelar orden
     public void Cancelar(int idOrden)
     {
         using var db = Connection;
-        string sql = "UPDATE Orden SET Estado = 'Cancelada' WHERE IdOrden = @IdOrden AND Estado = 'Creada';";
+
+        string sql = @"
+            UPDATE Orden 
+            SET Estado = 'Cancelada' 
+            WHERE IdOrden = @IdOrden 
+            AND Estado = 'Creada';
+        ";
+
         db.Execute(sql, new { IdOrden = idOrden });
+    }
+
+    public Orden? GetByIdWithDetalles(int idOrden)
+    {
+        using var db = Connection;
+
+        string sqlOrden = "SELECT * FROM Orden WHERE IdOrden = @IdOrden;";
+        var orden = db.QueryFirstOrDefault<Orden>(sqlOrden, new { IdOrden = idOrden });
+
+        if (orden != null)
+        {
+            string sqlDetalle = "SELECT * FROM DetalleOrden WHERE IdOrden = @IdOrden;";
+            orden.Detalles = db.Query<DetalleOrden>(sqlDetalle, new { IdOrden = idOrden }).ToList();
+        }
+
+        return orden;
+    }
+
+    public bool EstaPagada(int idOrden)
+    {
+        using var db = Connection;
+
+        string sql = "SELECT Estado FROM Orden WHERE IdOrden = @IdOrden;";
+        var estado = db.QueryFirstOrDefault<string>(sql, new { IdOrden = idOrden });
+
+        return string.Equals(estado, "Pagada", StringComparison.OrdinalIgnoreCase);
     }
 }

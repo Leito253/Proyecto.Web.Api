@@ -1,4 +1,5 @@
 using Proyecto.Core.Entidades;
+
 namespace Proyecto.Core.Repositorios;
 
 public interface IFuncionRepository
@@ -8,5 +9,6 @@ public interface IFuncionRepository
     void Add(Funcion funcion);
     void Update(Funcion funcion);
     void Delete(int IdFuncion);
-
+    bool TieneFuncionesDeSector(int idSector);
+    void Cancelar(int idFuncion);
 }

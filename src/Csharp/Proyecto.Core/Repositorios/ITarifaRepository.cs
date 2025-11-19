@@ -1,4 +1,5 @@
 using Proyecto.Core.Entidades;
+
 namespace Proyecto.Core.Repositorios
 {
     public interface ITarifaRepository
@@ -8,6 +9,6 @@ namespace Proyecto.Core.Repositorios
         Tarifa? GetById(int idTarifa);
         void Update(Tarifa tarifa);
 
-
+        bool TieneTarifasDeSector(int idSector);
     }
 }

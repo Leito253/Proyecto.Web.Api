@@ -1,12 +1,8 @@
 using Proyecto.Core.Entidades;
 
-
-
-namespace Proyecto.Core.Repositorios
+namespace Proyecto.Core.Repositorios;
+public interface IQRRepository
 {
-    public interface IQRRepository
-    {
-        void Add(QR qr);
-        QR GetByEntrada(int idEntrada);
-    }
+    void Add(QR qr);
+    QR GetByEntrada(int idEntrada);
 }

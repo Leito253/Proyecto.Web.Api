@@ -1,13 +1,9 @@
 namespace Proyecto.Core.DTOs;
 
-public class EntradaDTO
+public class EntradaCreateDTO
 {
-    public int idEntrada { get; set; }
     public decimal Precio { get; set; }
     public required string Numero { get; set; }
-    public bool Usada { get; set; }
-    public bool Anulada { get; set; }
-    public string QR { get; set; } = string.Empty;
     public int IdDetalleOrden { get; set; }
     public int IdSector { get; set; }
     public int IdFuncion { get; set; }

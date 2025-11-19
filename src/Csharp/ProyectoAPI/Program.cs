@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using Proyecto.Core.Entidades;
 using Proyecto.Core.Interfaces;
 using Proyecto.Core.Repositorios;
@@ -61,6 +60,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Repositorios
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
@@ -72,19 +72,16 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ITarifaRepository, TarifaRepository>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<IQRRepository, QRRepository>();
+
 builder.Services.AddScoped<IDbConnection>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
     return new MySqlConnection(config.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<IQRRepository, QRRepository>();
-
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<QrService>();
 builder.Services.AddScoped<IQrService, QrService>();
-
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -123,6 +120,36 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 #region CLIENTES
+app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
+{
+    if (dto.DNI <= 0) return Results.BadRequest("El DNI debe ser mayor a 0.");
+    if (string.IsNullOrWhiteSpace(dto.Nombre)) return Results.BadRequest("El nombre es obligatorio.");
+    if (string.IsNullOrWhiteSpace(dto.Apellido)) return Results.BadRequest("El apellido es obligatorio.");
+    if (string.IsNullOrWhiteSpace(dto.Email)) return Results.BadRequest("El email es obligatorio.");
+
+    var cliente = new Cliente
+    {
+        DNI = dto.DNI,
+        Nombre = dto.Nombre,
+        Apellido = dto.Apellido,
+        Email = dto.Email,
+        Telefono = dto.Telefono
+    };
+    repo.Add(cliente);
+
+    var clienteDTO = new ClienteDTO
+    {
+        idCliente = cliente.idCliente,
+        DNI = cliente.DNI,
+        Nombre = cliente.Nombre,
+        Apellido = cliente.Apellido,
+        Email = cliente.Email,
+        Telefono = cliente.Telefono
+    };
+
+    return Results.Created($"/api/clientes/{cliente.idCliente}", clienteDTO);
+}).WithTags("Cliente");
+
 app.MapGet("/api/clientes", (IClienteRepository repo) =>
 {
     var clientes = repo.GetAll();
@@ -140,7 +167,7 @@ app.MapGet("/api/clientes", (IClienteRepository repo) =>
 app.MapGet("/api/clientes/{idCliente}", (int idCliente, IClienteRepository repo) =>
 {
     var c = repo.GetById(idCliente);
-    if (c is null) return Results.NotFound();
+    if (c is null) return Results.NotFound("Cliente no encontrado.");
     return Results.Ok(new ClienteDTO
     {
         idCliente = c.idCliente,
@@ -152,37 +179,23 @@ app.MapGet("/api/clientes/{idCliente}", (int idCliente, IClienteRepository repo)
     });
 }).WithTags("Cliente");
 
-
-app.MapPost("/api/clientes", (ClienteCreateDTO dto, IClienteRepository repo) =>
+app.MapPut("/api/clientes/{idCliente}", (int idCliente, ClienteUpdateDTO dto, IClienteRepository repo) =>
 {
-    var cliente = new Cliente
-    {
-        DNI = dto.DNI,
-        Nombre = dto.Nombre,
-        Apellido = dto.Apellido,
-        Email = dto.Email,
-        Telefono = dto.Telefono
-    };
-    repo.Add(cliente);
-    return Results.Created($"/api/clientes/{cliente.idCliente}", cliente);
-}).WithTags("Cliente");
+    var cliente = repo.GetById(idCliente);
+    if (cliente is null) return Results.NotFound("Cliente no encontrado.");
 
-app.MapPut("/api/clientes/{id}", (int idCliente, ClienteUpdateDTO dto, IClienteRepository repo) =>
-{
-    var c = repo.GetById(idCliente);
-    if (c is null) return Results.NotFound();
-    c.DNI = dto.DNI;
-    c.Nombre = dto.Nombre;
-    c.Apellido = dto.Apellido;
-    c.Email = dto.Email;
-    c.Telefono = dto.Telefono;
-    repo.Update(c);
-    return Results.NoContent();
-}).WithTags("Cliente");
+    if (dto.DNI <= 0) return Results.BadRequest("El DNI debe ser mayor a 0.");
+    if (string.IsNullOrWhiteSpace(dto.Nombre)) return Results.BadRequest("El nombre es requerido.");
+    if (string.IsNullOrWhiteSpace(dto.Apellido)) return Results.BadRequest("El apellido es requerido.");
+    if (string.IsNullOrWhiteSpace(dto.Email)) return Results.BadRequest("El email es requerido.");
 
-app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
-{
-    repo.Delete(idCliente);
+    cliente.DNI = dto.DNI;
+    cliente.Nombre = dto.Nombre;
+    cliente.Apellido = dto.Apellido;
+    cliente.Email = dto.Email;
+    cliente.Telefono = dto.Telefono;
+
+    repo.Update(cliente);
     return Results.NoContent();
 }).WithTags("Cliente");
 #endregion
@@ -191,73 +204,171 @@ app.MapDelete("/api/clientes/{id}", (int idCliente, IClienteRepository repo) =>
 app.MapGet("/api/ordenes", (IOrdenRepository repo) =>
 {
     var ordenes = repo.GetAll();
-    return Results.Ok(ordenes.Select(o => new OrdenDTO
+    var dto = ordenes.Select(o => new OrdenDTO
     {
         idOrden = o.idOrden,
         idCliente = o.idCliente,
         Fecha = o.Fecha,
         Total = o.Total,
-        Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
-        {
-            IdDetalleOrden = d.IdDetalleOrden,
-            Cantidad = d.Cantidad,
-            PrecioUnitario = d.PrecioUnitario
-        }).ToList()
-    }));
+        Estado = o.Estado,
+        Detalles = (o.Detalles ?? new List<DetalleOrden>())
+            .Select(d => new DetalleOrdenDTO
+            {
+                IdDetalleOrden = d.IdDetalleOrden,
+                IdEvento = d.IdEvento,
+                Cantidad = d.Cantidad,
+                PrecioUnitario = d.PrecioUnitario
+            }).ToList()
+    });
+
+    return Results.Ok(dto);
 }).WithTags("Orden");
 
-app.MapGet("/api/ordenes/{id}", (int idOrden, IOrdenRepository repo) =>
+app.MapGet("/api/ordenes/{id}", (int id, IOrdenRepository repo) =>
 {
-    var o = repo.GetById(idOrden);
+    var o = repo.GetByIdWithDetalles(id);
     if (o is null) return Results.NotFound();
-    return Results.Ok(new OrdenDTO
+
+    var dto = new OrdenDTO
     {
         idOrden = o.idOrden,
         idCliente = o.idCliente,
         Fecha = o.Fecha,
         Total = o.Total,
-        Detalles = (o.Detalles ?? new List<DetalleOrden>()).Select(d => new DetalleOrdenDTO
-        {
-            IdDetalleOrden = d.IdDetalleOrden,
-            Cantidad = d.Cantidad,
-            PrecioUnitario = d.PrecioUnitario
-        }).ToList()
-    });
+        Estado = o.Estado,
+        Detalles = (o.Detalles ?? new List<DetalleOrden>())
+            .Select(d => new DetalleOrdenDTO
+            {
+                IdDetalleOrden = d.IdDetalleOrden,
+                IdEvento = d.IdEvento,
+                Cantidad = d.Cantidad,
+                PrecioUnitario = d.PrecioUnitario
+            }).ToList()
+    };
+
+    return Results.Ok(dto);
 }).WithTags("Orden");
 
 app.MapPost("/api/ordenes", (OrdenCreateDTO dto, IOrdenRepository repo) =>
 {
-    var nueva = new Orden
+    if (dto.idFunciones.Count != dto.idTarifas.Count || dto.idTarifas.Count != dto.Cantidades.Count)
+        return Results.BadRequest("Las listas idFunciones, idTarifas y Cantidades deben tener la misma longitud.");
+
+    var orden = new Orden
     {
         idCliente = dto.idCliente,
         Fecha = DateTime.Now,
+        Estado = "Creada",
         Total = 0,
         Detalles = new List<DetalleOrden>()
     };
-    repo.Add(nueva);
-    return Results.Created($"/api/ordenes/{nueva.idOrden}", nueva);
+
+    for (int i = 0; i < dto.idFunciones.Count; i++)
+    {
+        orden.Detalles.Add(new DetalleOrden
+        {
+            IdEvento = dto.idFunciones[i],
+            IdTarifa = dto.idTarifas[i],
+            Cantidad = dto.Cantidades[i],
+            PrecioUnitario = 0
+        });
+    }
+
+    orden.Total = orden.Detalles.Sum(d => d.PrecioUnitario * d.Cantidad);
+
+    repo.Add(orden);
+
+    return Results.Created($"/api/ordenes/{orden.idOrden}", orden);
 }).WithTags("Orden");
-#endregion 
+
+app.MapPost("/api/ordenes/{id}/generar-qr", (int id, IOrdenRepository ordenRepo, IEntradaRepository entradaRepo, IQrService qrService) =>
+{
+    var orden = ordenRepo.GetById(id);
+    if (orden == null) return Results.NotFound();
+    if (!orden.Estado.Equals("Pagada", StringComparison.OrdinalIgnoreCase))
+        return Results.BadRequest("La orden no está pagada.");
+
+    foreach (var detalle in orden.Detalles ?? new List<DetalleOrden>())
+    {
+        var entrada = entradaRepo.GetByDetalleOrdenId(detalle.IdDetalleOrden);
+        if (entrada == null) continue;
+
+        string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
+        qrService.GenerarQrImagen(qrContent);
+    }
+
+    return Results.Ok("QRs generados correctamente.");
+}).WithTags("Orden");
+#endregion
+
 #region ENTRADAS
 app.MapGet("/api/entradas", (IEntradaRepository repo) =>
 {
     var entradas = repo.GetAll();
-    return Results.Ok(entradas.Select(e => new EntradaDTO
+    var dto = entradas.Select(e => new EntradaDTO
     {
         idEntrada = e.IdEntrada,
         Precio = (int)e.Precio,
         Numero = e.Numero,
         Usada = e.Usada,
         Anulada = e.Anulada,
-        QR = e.QR
-    }));
+        QR = e.QR,
+        IdDetalleOrden = e.IdDetalleOrden,
+        IdSector = e.IdSector,
+        IdFuncion = e.IdFuncion
+    }).ToList();
+    return Results.Ok(dto);
 }).WithTags("Entradas");
 
-app.MapPost("/api/entradas", (Entrada e, IEntradaRepository repo) =>
+app.MapGet("/api/entradas/{id}", (int id, IEntradaRepository repo) =>
 {
-    repo.Add(e);
-    return Results.Created($"/api/entradas/{e.IdEntrada}", e);
+    var entrada = repo.GetById(id);
+    if (entrada == null) return Results.NotFound();
+    var dto = new EntradaDTO
+    {
+        idEntrada = entrada.IdEntrada,
+        Precio = (int)entrada.Precio,
+        Numero = entrada.Numero,
+        Usada = entrada.Usada,
+        Anulada = entrada.Anulada,
+        QR = entrada.QR,
+        IdDetalleOrden = entrada.IdDetalleOrden,
+        IdSector = entrada.IdSector,
+        IdFuncion = entrada.IdFuncion
+    };
+    return Results.Ok(dto);
 }).WithTags("Entradas");
+
+app.MapPost("/api/entradas", (EntradaCreateDTO dto, IEntradaRepository repo) =>
+{
+    var entrada = new Entrada
+    {
+        Precio = dto.Precio,
+        Numero = dto.Numero,
+        Usada = false,
+        Anulada = false,
+        QR = string.Empty,
+        IdDetalleOrden = dto.IdDetalleOrden,
+        IdSector = dto.IdSector,
+        IdFuncion = dto.IdFuncion
+    };
+    repo.Add(entrada);
+    return Results.Created($"/api/entradas/{entrada.IdEntrada}", entrada);
+}).WithTags("Entradas");
+
+app.MapPost("/api/entradas/{id}/anular", (int id, IEntradaRepository repo) =>
+{
+    try
+    {
+        repo.Anular(id);
+        return Results.Ok($"Entrada {id} anulada correctamente.");
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(ex.Message);
+    }
+}).WithTags("Entradas");
+
 #endregion
 
 #region EVENTOS
@@ -270,8 +381,23 @@ app.MapGet("/api/eventos", (IEventoRepository repo) =>
         Nombre = e.Nombre,
         Fecha = e.Fecha,
         Activo = e.Activo,
-        idLocal = e.Local?.idLocal ?? 0
+        idLocal = e.idLocal
     }));
+}).WithTags("Eventos");
+
+app.MapGet("/api/eventos/{id}", (int id, IEventoRepository repo) =>
+{
+    var e = repo.GetById(id);
+    if (e == null) return Results.NotFound("Evento no encontrado");
+
+    return Results.Ok(new EventoDTO
+    {
+        idEvento = e.idEvento,
+        Nombre = e.Nombre,
+        Fecha = e.Fecha,
+        Activo = e.Activo,
+        idLocal = e.idLocal
+    });
 }).WithTags("Eventos");
 
 app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
@@ -280,13 +406,52 @@ app.MapPost("/api/eventos", (EventoCreateDTO dto, IEventoRepository repo) =>
     {
         Nombre = dto.Nombre,
         Fecha = dto.Fecha,
-        Activo = true,
+        Activo = false,
+        idLocal = dto.idLocal,
         Lugar = dto.Lugar,
         Tipo = dto.Tipo
     };
+
     repo.Add(ev);
     return Results.Created($"/api/eventos/{ev.idEvento}", ev);
 }).WithTags("Eventos");
+
+app.MapPut("/api/eventos/{id}", (int id, EventoUpdateDTO dto, IEventoRepository repo) =>
+{
+    var evento = repo.GetById(id);
+    if (evento == null) return Results.NotFound("Evento no encontrado");
+
+    evento.Nombre = dto.Nombre;
+    evento.Fecha = dto.Fecha;
+    evento.idLocal = dto.IdLocal;
+    evento.Lugar = dto.Lugar;
+    evento.Tipo = dto.Tipo;
+
+    repo.Update(evento);
+
+    return Results.Ok(evento);
+}).WithTags("Eventos");
+
+app.MapPost("/api/eventos/{id}/publicar", (int id, IEventoRepository repo) =>
+{
+    var evento = repo.GetById(id);
+    if (evento == null) return Results.NotFound();
+
+    repo.Publicar(id);
+
+    return Results.Ok("Evento publicado correctamente");
+}).WithTags("Eventos");
+
+app.MapPost("/api/eventos/{id}/cancelar", (int id, IEventoRepository repo) =>
+{
+    var evento = repo.GetById(id);
+    if (evento == null) return Results.NotFound();
+
+    repo.Cancelar(id);
+
+    return Results.Ok("Evento cancelado correctamente");
+}).WithTags("Eventos");
+
 #endregion
 
 #region FUNCIONES
@@ -300,19 +465,58 @@ app.MapGet("/api/funciones", (IFuncionRepository repo) =>
         Fecha = f.FechaHora,
         idLocal = f.IdLocal
     }));
-}).WithTags("Funcion");
+}).WithTags("Funciones");
+
+app.MapGet("/api/funciones/{id}", (int id, IFuncionRepository repo) =>
+{
+    var f = repo.GetById(id);
+    if (f == null) return Results.NotFound("Función no encontrada");
+
+    return Results.Ok(new FuncionDTO
+    {
+        idFuncion = f.IdFuncion,
+        idEvento = f.IdEvento,
+        Fecha = f.FechaHora,
+        idLocal = f.IdLocal
+    });
+}).WithTags("Funciones");
 
 app.MapPost("/api/funciones", (FuncionCreateDTO dto, IFuncionRepository repo) =>
 {
-    var f = new Funcion
+    var funcion = new Funcion
     {
         IdEvento = dto.idEvento,
         FechaHora = dto.Fecha,
         IdLocal = dto.idLocal
     };
-    repo.Add(f);
-    return Results.Created($"/api/funciones/{f.IdFuncion}", f);
-}).WithTags("Funcion");
+
+    repo.Add(funcion);
+    return Results.Created($"/api/funciones/{funcion.IdFuncion}", funcion);
+}).WithTags("Funciones");
+
+app.MapPut("/api/funciones/{id}", (int id, FuncionUpdateDTO dto, IFuncionRepository repo) =>
+{
+    var f = repo.GetById(id);
+    if (f == null) return Results.NotFound("Función no encontrada");
+
+    f.FechaHora = dto.Fecha;
+    f.IdLocal = dto.IdLocal;
+
+    repo.Update(f);
+
+    return Results.Ok(f);
+}).WithTags("Funciones");
+
+app.MapPost("/api/funciones/{id}/cancelar", (int id, IFuncionRepository repo) =>
+{
+    var f = repo.GetById(id);
+    if (f == null) return Results.NotFound();
+
+    repo.Cancelar(id);
+
+    return Results.Ok("Función cancelada correctamente");
+}).WithTags("Funciones");
+
 #endregion
 
 #region LOCALES
@@ -328,7 +532,20 @@ app.MapGet("/api/locales", (ILocalRepository repo) =>
         Telefono = l.Telefono
     }));
 }).WithTags("Local");
+app.MapGet("/api/locales/{localId}", (int localId, ILocalRepository repo) =>
+{
+    var l = repo.GetById(localId);
+    if (l == null) return Results.NotFound();
 
+    return Results.Ok(new LocalDTO
+    {
+        idLocal = l.idLocal,
+        Nombre = l.Nombre,
+        Direccion = l.Direccion,
+        Capacidad = l.Capacidad,
+        Telefono = l.Telefono
+    });
+}).WithTags("Local");
 app.MapPost("/api/locales", (LocalCreateDTO dto, ILocalRepository repo) =>
 {
     var local = new Local
@@ -338,15 +555,55 @@ app.MapPost("/api/locales", (LocalCreateDTO dto, ILocalRepository repo) =>
         Capacidad = dto.Capacidad,
         Telefono = dto.Telefono
     };
+
     var id = repo.Add(local);
     return Results.Created($"/api/locales/{id}", local);
 }).WithTags("Local");
+app.MapPut("/api/locales/{localId}", (int localId, LocalCreateDTO dto, ILocalRepository repo) =>
+{
+    var l = repo.GetById(localId);
+    if (l == null) return Results.NotFound();
+
+    l.Nombre = dto.Nombre;
+    l.Direccion = dto.Direccion;
+    l.Capacidad = dto.Capacidad;
+    l.Telefono = dto.Telefono;
+
+    repo.Update(l);
+
+    return Results.Ok(l);
+}).WithTags("Local");
+app.MapDelete("/api/locales/{localId}", (int localId, ILocalRepository repo) =>
+{
+    var l = repo.GetById(localId);
+    if (l == null) return Results.NotFound();
+
+    var eliminado = repo.Delete(localId);
+    if (!eliminado) return Results.BadRequest("No se puede eliminar el local porque tiene funciones vigentes.");
+
+    return Results.Ok("Local eliminado correctamente.");
+}).WithTags("Local");
+
 #endregion
 
 #region SECTORES
-app.MapGet("/api/sectores", (ISectorRepository repo) =>
+app.MapPost("/api/locales/{localId}/sectores", (int localId, SectorCreateDTO dto, ISectorRepository repo) =>
 {
-    var sectores = repo.GetAll();
+    var sector = new Sector
+    {
+        Nombre = dto.Nombre,
+        Capacidad = dto.Capacidad,
+        Precio = dto.Precio,
+        idLocal = localId
+    };
+
+    repo.Add(sector);
+
+    return Results.Created($"/api/sectores/{sector.idSector}", sector);
+}).WithTags("Sector");
+app.MapGet("/api/locales/{localId}/sectores", (int localId, ISectorRepository repo) =>
+{
+    var sectores = repo.GetByLocal(localId);
     return Results.Ok(sectores.Select(s => new SectorDTO
     {
         idSector = s.idSector,
@@ -354,17 +611,31 @@ app.MapGet("/api/sectores", (ISectorRepository repo) =>
         idLocal = s.idLocal
     }));
 }).WithTags("Sector");
-app.MapPost("/api/sectores", (SectorCreateDTO dto, ISectorRepository repo) =>
+app.MapPut("/api/sectores/{sectorId}", (int sectorId, SectorUpdateDTO dto, ISectorRepository repo) =>
 {
-    var s = new Sector
-    {
-        Nombre = dto.Nombre,
-        idLocal = dto.idLocal,
-        Capacidad = dto.Capacidad, 
-        Precio = dto.Precio
-    };
-    repo.Add(s);
-    return Results.Created($"/api/sectores/{s.idSector}", s);
+    var sector = repo.GetById(sectorId);
+    if (sector is null)
+        return Results.NotFound("Sector no encontrado");
+
+    sector.Nombre = dto.Nombre;
+    sector.Capacidad = dto.Capacidad;
+    sector.Precio = dto.Precio;
+
+    repo.Update(sector);
+
+    return Results.Ok(sector);
+}).WithTags("Sector");
+app.MapDelete("/api/sectores/{sectorId}", (int sectorId, ISectorRepository repo, ITarifaRepository tarifaRepo, IFuncionRepository funcionRepo) =>
+{
+    var sector = repo.GetById(sectorId);
+    if (sector is null)
+        return Results.NotFound("Sector no encontrado");
+
+    if (tarifaRepo.TieneTarifasDeSector(sectorId) || funcionRepo.TieneFuncionesDeSector(sectorId))
+        return Results.BadRequest("No se puede eliminar: el sector tiene tarifas o funciones asociadas.");
+
+    repo.Delete(sectorId);
+    return Results.Ok("Sector eliminado.");
 }).WithTags("Sector");
 #endregion
 
@@ -398,7 +669,7 @@ app.MapPost("/api/roles", (Rol r, IRolRepository repo) =>
 {
     repo.Add(r);
     return Results.Created($"/api/roles/{r.IdRol}", r);
-}) .WithTags("Roles");
+}).WithTags("Roles");
 #endregion
 
 #region USUARIOS
@@ -406,7 +677,7 @@ app.MapGet("/usuarios/{id}", (int idUsuario, IUsuarioRepository repo) =>
 {
     var usuario = repo.GetById(idUsuario);
     return usuario is not null ? Results.Ok(usuario) : Results.NotFound();
-}) .WithTags("Usuario");
+}).WithTags("Usuario");
 
 app.MapPost("/auth/login", (UsuarioLoginDTO login, IUsuarioRepository repo) =>
 {
@@ -442,17 +713,17 @@ app.MapPost("/usuarios/{id}/roles/{rolId}", (int idUsuario, int rolId, IUsuarioR
 #endregion
 
 #region QR
-app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, QrService qrService, IEntradaRepository repo) =>
+app.MapGet("/entradas/{idEntrada}/qr", (int idEntrada, IQrService qrService, IEntradaRepository repo) =>
 {
     var entrada = repo.GetById(idEntrada);
     if (entrada == null) return Results.NotFound("Entrada no existe");
 
     string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
-    var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
+    var qrBytes = qrService.GenerarQrImagen(qrContent);
     return Results.File(qrBytes, "image/png");
-}) .WithTags("QR");
+}).WithTags("QR");
 
-app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepository repo) =>
+app.MapPost("/qr/lote", (List<int> idEntradas, IQrService qrService, IEntradaRepository repo) =>
 {
     var resultados = new Dictionary<int, byte[]>();
     foreach (var idEntrada in idEntradas)
@@ -460,13 +731,13 @@ app.MapPost("/qr/lote", (List<int> idEntradas, QrService qrService, IEntradaRepo
         var entrada = repo.GetById(idEntrada);
         if (entrada == null) continue;
         string qrContent = $"{entrada.IdEntrada}|{entrada.IdFuncion}|{builder.Configuration["Qr:Key"]}";
-        var qrBytes = qrService.GenerarQrEntradaImagen(qrContent);
+        var qrBytes = qrService.GenerarQrImagen(qrContent);
         resultados.Add(entrada.IdEntrada, qrBytes);
     }
     return Results.Ok(resultados);
 }).WithTags("QR");
 
-app.MapPost("/qr/validar", (string qrContent, QrService qrService) =>
+app.MapPost("/qr/validar", (string qrContent, IQrService qrService) =>
 {
     var resultado = qrService.ValidarQr(qrContent);
     return Results.Ok(resultado);
@@ -477,7 +748,6 @@ app.MapPost("/api/qr/{idEntrada}", (int idEntrada, IQrService qrService) =>
     var qr = qrService.GenerarQr(idEntrada);
     return Results.Ok(qr);
 }).WithTags("QR");
-
 #endregion
 
 app.Run();

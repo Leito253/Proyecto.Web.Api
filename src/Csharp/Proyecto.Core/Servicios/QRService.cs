@@ -3,73 +3,87 @@ using Proyecto.Core.Entidades;
 using Proyecto.Core.Repositorios;
 using Proyecto.Core.Servicios.Interfaces;
 using QRCoder;
+using System.Drawing;
+using System.IO;
 
-namespace Proyecto.Core.Servicios
+namespace Proyecto.Core.Servicios;
+public class QrService : IQrService
 {
-    public class QrService : IQrService
+    private readonly IEntradaRepository _entradaRepo;
+    private readonly IQRRepository _qrRepo;
+
+    public QrService(IEntradaRepository entradaRepo, IQRRepository qrRepo)
     {
-        private readonly IEntradaRepository _entradaRepo;
-        private readonly IQRRepository _qrRepo;
+        _entradaRepo = entradaRepo;
+        _qrRepo = qrRepo;
+    }
 
-        public QrService(IEntradaRepository entradaRepo, IQRRepository qrRepo)
+    public QrDTO GenerarQr(int idEntrada)
+    {
+        var entrada = _entradaRepo.GetById(idEntrada);
+        if (entrada == null)
+            throw new Exception("La entrada no existe");
+
+        if (entrada.Anulada)
+            throw new Exception("La entrada está anulada");
+
+        string contenido = $"{entrada.IdEntrada}|{entrada.IdCliente}|{entrada.IdFuncion}";
+
+        var qrBytes = GenerarQrImagen(contenido);
+        string base64 = Convert.ToBase64String(qrBytes);
+
+        var qr = new QR
         {
-            _entradaRepo = entradaRepo;
-            _qrRepo = qrRepo;
-        }
+            IdEntrada = idEntrada,
+            Codigo = base64,
+            FechaCreacion = DateTime.Now
+        };
 
-        public QrDTO GenerarQr(int idEntrada)
+        _qrRepo.Add(qr);
+
+        return new QrDTO
         {
-            var entrada = _entradaRepo.GetById(idEntrada);
-            if (entrada == null)
-                throw new Exception("La entrada no existe");
+            idQR = qr.idQR,
+            IdEntrada = qr.IdEntrada,
+            Codigo = qr.Codigo,
+            FechaCreacion = qr.FechaCreacion
+        };
+    }
 
-            string contenido = $"Entrada:{entrada.IdEntrada}|Usuario:{entrada.IdUsuario}";
+    public byte[] GenerarQrImagen(string contenido)
+    {
+        QRCodeGenerator gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode(contenido, QRCodeGenerator.ECCLevel.Q);
+        var png = new PngByteQRCode(data);
+        return png.GetGraphic(20);
+    }
 
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrData = qrGenerator.CreateQrCode(contenido, QRCodeGenerator.ECCLevel.Q);
-            Base64QRCode qrCode = new Base64QRCode(qrData);
-            string imagenBase64 = qrCode.GetGraphic(10);
+    public QrDTO? ObtenerQrPorEntrada(int idEntrada)
+    {
+        var qr = _qrRepo.GetByEntrada(idEntrada);
+        if (qr == null) return null;
 
-            var qr = new QR
-            {
-                IdEntrada = idEntrada,
-                Codigo = imagenBase64,
-                FechaCreacion = DateTime.Now
-            };
-
-            _qrRepo.Add(qr);
-
-            return new QrDTO
-            {
-                idQR = qr.idQR,
-                IdEntrada = qr.IdEntrada,
-                Codigo = qr.Codigo,
-                FechaCreacion = qr.FechaCreacion
-            };
-        }
-
-        public byte[] GenerarQrEntradaImagen(string qrContent)
+        return new QrDTO
         {
-            throw new NotImplementedException();
-        }
+            idQR = qr.idQR,
+            IdEntrada = qr.IdEntrada,
+            Codigo = qr.Codigo,
+            FechaCreacion = qr.FechaCreacion
+        };
+    }
 
-        public QrDTO ObtenerQrPorEntrada(int idEntrada)
-        {
-            var qr = _qrRepo.GetByEntrada(idEntrada);
-            if (qr == null) return null;
+    public bool ValidarQr(string contenido)
+    {
+        var partes = contenido.Split('|');
+        if (partes.Length < 3) return false;
 
-            return new QrDTO
-            {
-                idQR = qr.idQR,
-                IdEntrada = qr.IdEntrada,
-                Codigo = qr.Codigo,
-                FechaCreacion = qr.FechaCreacion
-            };
-        }
+        int idEntrada = int.Parse(partes[0]);
 
-        public object? ValidarQr(string qrContent)
-        {
-            throw new NotImplementedException();
-        }
+        var entrada = _entradaRepo.GetById(idEntrada);
+        if (entrada == null) return false;
+        if (entrada.Usada) return false;
+        if (entrada.Anulada) return false;
+
+        return true;
     }
 }
