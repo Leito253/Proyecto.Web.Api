@@ -134,4 +134,24 @@ public class OrdenRepository : IOrdenRepository
 
         return string.Equals(estado, "Pagada", StringComparison.OrdinalIgnoreCase);
     }
+
+    public string PagarOrden(int ordenId)
+    {
+        var orden = GetById(ordenId);
+        if (orden == null) return "NotFound";
+        if (orden.Estado != "Creada") return "BadRequest";
+        orden.Estado = "Pagada";
+        Update(orden);
+        return "Ok";
+    }
+
+    public string CancelarOrden(int ordenId)
+    {
+        var orden = GetById(ordenId);
+        if (orden == null) return "NotFound";
+        if (orden.Estado != "Creada") return "BadRequest";
+        orden.Estado = "Cancelada";
+        Update(orden);
+        return "Ok";
+    }
 }

@@ -42,10 +42,11 @@ public class FuncionRepository : IFuncionRepository
         using var connection = Connection;
 
         var sql = @"
-            INSERT INTO Funcion (Fecha, Horario, idLocal, idEvento, Estado)
-            VALUES (@Fecha, @Horario, @idLocal, @idEvento, @Estado);";
+                INSERT INTO Funcion (Fecha, Horario, idLocal, idEvento, Estado)
+                VALUES (@Fecha, @Horario, @idLocal, @idEvento, @Estado);";
 
-        connection.Execute(sql, funcion);
+connection.Execute(sql, funcion);
+
     }
 
     public void Update(Funcion funcion)

@@ -1,9 +1,9 @@
-namespace Proyecto.Core.DTOs
+namespace Proyecto.Core.DTOs;
+
+public class QrValidacionDTO
 {
-    public class QrValidacionDTO
-    {
-        public bool EsValido { get; set; }
-        public string Mensaje { get; set; }
-        public EntradaDTO? Entrada { get; set; }
-    }
+    public string Estado { get; set; } = "";  // Ok, YaUsada, Expirada, FirmaInvalida, NoExiste
+    public string Mensaje { get; set; } = "";
+    public EntradaDTO? Entrada { get; set; }
 }
+

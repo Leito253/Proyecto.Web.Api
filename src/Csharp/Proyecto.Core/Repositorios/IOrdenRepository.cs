@@ -11,4 +11,6 @@ public interface IOrdenRepository
     void Pagar(int idOrden);
     void Cancelar(int idOrden);
     bool EstaPagada(int idOrden);
+    string PagarOrden(int ordenId);
+    string CancelarOrden(int ordenId);
 }

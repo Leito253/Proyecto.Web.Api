@@ -1,14 +1,12 @@
 using Proyecto.Core.Entidades;
 
-namespace Servicios.Interfaces
+namespace Servicios.Interfaces;
+
+public interface IClienteService
 {
-    public interface IClienteService
-    {
-         Task<IEnumerable<Cliente>> ObtenerTodos();
+    Task<IEnumerable<Cliente>> ObtenerTodos();
     Task<Cliente?> ObtenerPorId(int id);
     Task<bool> Crear(Cliente cliente);
     Task<bool> Actualizar(Cliente cliente);
     Task<bool> Eliminar(int id);
-        
-    }
 }

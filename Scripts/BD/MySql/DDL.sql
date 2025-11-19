@@ -67,13 +67,17 @@ CREATE TABLE Tarifa (
     idTarifa INT AUTO_INCREMENT PRIMARY KEY,
     Precio DECIMAL(10,2) NOT NULL,
     Descripcion VARCHAR(255) DEFAULT '',
+    Stock INT NOT NULL DEFAULT 0,
+    Activa TINYINT(1) NOT NULL DEFAULT 1,
     idSector INT NOT NULL,
     IdFuncion INT NOT NULL,
     IdEvento INT NOT NULL,
+
     FOREIGN KEY (idSector) REFERENCES Sector(idSector) ON DELETE CASCADE,
     FOREIGN KEY (IdFuncion) REFERENCES Funcion(IdFuncion) ON DELETE CASCADE,
     FOREIGN KEY (IdEvento) REFERENCES Evento(idEvento) ON DELETE CASCADE
 );
+
 
 CREATE TABLE Orden (
     idOrden INT AUTO_INCREMENT PRIMARY KEY,
@@ -139,3 +143,5 @@ CREATE TABLE Token (
     FechaExpiracion DATETIME NOT NULL,
     FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUsuario) ON DELETE CASCADE
 );
+
+

@@ -1,12 +1,11 @@
-namespace Proyecto.Core.DTOs
+namespace Proyecto.Core.DTOs;
+
+public class ClienteDTO
 {
-    public class ClienteDTO
-    {
-        public int idCliente { get; set; }
-        public required int DNI { get; set; }
-        public required string Nombre { get; set; }
-        public required string Apellido { get; set; }
-        public required string Email { get; set; }
-        public required string Telefono { get; set; }
-    }
+    public int idCliente { get; set; }
+    public int DNI { get; set; }
+    public string Nombre { get; set; } = null!;
+    public string Apellido { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string Telefono { get; set; } = string.Empty;
 }
