@@ -1,6 +1,6 @@
 -- Crear base de datos
-CREATE DATABASE IF NOT EXISTS Boleteria;
-USE Boleteria;
+CREATE DATABASE IF NOT EXISTS EventoBd;
+USE EventoBd;
 
 -- Tabla Local
 CREATE TABLE Local (

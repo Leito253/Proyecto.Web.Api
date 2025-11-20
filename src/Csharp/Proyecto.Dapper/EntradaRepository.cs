@@ -40,8 +40,8 @@ public class EntradaRepository : IEntradaRepository
         using var connection = Connection;
 
         var sql = @"
-            INSERT INTO Entrada (Precio, Numero, Usada, Anulada, QR, IdDetalleOrden, IdSector, IdFuncion)
-            VALUES (@Precio, @Numero, @Usada, @Anulada, @QR, @IdDetalleOrden, @IdSector, @IdFuncion);
+            INSERT INTO Entrada (Precio, QR, Usada, Anulada, FechaUso, Numero, IdDetalleOrden, IdCliente, IdFuncion, IdSector)
+            VALUES (@Precio, @QR, @Usada, @Anulada, @FechaUso, @Numero, @IdDetalleOrden, @IdCliente, @IdFuncion, @IdSector);
             SELECT LAST_INSERT_ID();";
 
         entrada.IdEntrada = connection.ExecuteScalar<int>(sql, entrada);
@@ -53,10 +53,11 @@ public class EntradaRepository : IEntradaRepository
         var sql = @"
             UPDATE Entrada
             SET Precio = @Precio,
-                Numero = @Numero,
+                QR = @QR,
                 Usada = @Usada,
                 Anulada = @Anulada,
-                QR = @QR,
+                FechaUso = @FechaUso
+                Numero = @Numero,
                 IdDetalleOrden = @IdDetalleOrden,
                 IdSector = @IdSector,
                 IdFuncion = @IdFuncion

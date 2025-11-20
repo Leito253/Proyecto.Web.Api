@@ -1,4 +1,4 @@
-USE Boleteria;
+USE EventoBd;
 -- Locales
 INSERT INTO Local (Nombre, Direccion, Capacidad, Telefono) VALUES
 ('Estadio Central', 'Av. Siempre Viva 123', 50000, '123456789'),
@@ -29,3 +29,5 @@ INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono) VALUES
 INSERT INTO Tarifa (Precio, Descripcion, Stock, Activa, idSector, IdFuncion, IdEvento) VALUES
 (5000, 'Entrada General', 1000, TRUE, 1, 1, 1),
 (5500, 'Entrada VIP', 500, TRUE, 2, 1, 1);
+
+
