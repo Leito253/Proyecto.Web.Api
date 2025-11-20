@@ -1,81 +1,31 @@
+USE Boleteria;
+-- Locales
+INSERT INTO Local (Nombre, Direccion, Capacidad, Telefono) VALUES
+('Estadio Central', 'Av. Siempre Viva 123', 50000, '123456789'),
+('Teatro Principal', 'Calle Falsa 456', 2000, '987654321');
 
-USE EventosBD;
-
--- Insertar locales
-INSERT INTO Local (nombre, direccion, capacidad, telefono) VALUES
-('Cancha Monumental', 'Av. Figueroa Alcorta 7597, CABA', 83000, '011-12345678'),
-('Estadio Libertadores de América', 'Av. Pres. Figueroa Alcorta 7597, CABA', 66000, '011-87654321'),
-('Estadio Ciudad de La Plata', 'Av. 25 y 32, La Plata, Buenos Aires', 53000, '0221-5555555'),
-('Luna Park', 'Av. Eduardo Madero 470, C1106 CABA', 8400, '011-44445555'),
-('Estadio Único Diego Armando Maradona', 'Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires', 53000, '0221-66667777');
-
--- Insertar sectores para los locales
+-- Sectores
 INSERT INTO Sector (Nombre, Descripcion, Capacidad, Precio, idLocal) VALUES
-('Platea Baja', 'Platea cerca del escenario', 5000, 2000, 1),
-('Platea Alta', 'Platea elevada', 8000, 1500, 2),
-('VIP', 'Zona VIP', 500, 5000, 2),
-('General', 'Asientos generales', 30000, 1000, 4),
-('Tribuna Norte', 'Tribuna norte del estadio', 10000, 1200, 4),
-('Tribuna Sur', 'Tribuna sur del estadio', 10000, 1200, 5),
-('Ring', 'Alrededor del ring', 1000, 2500, 5),
-('Palco', 'Palco privado', 200, 6000, 2);
+('Sector A', 'Lateral Izquierdo', 10000, 5000, 1),
+('Sector B', 'Lateral Derecho', 10000, 5500, 1),
+('Platea', 'Platea Baja', 500, 10000, 2);
 
--- Insertar eventos
-INSERT INTO Evento (Nombre, Fecha, Tipo, idLocal, Lugar) VALUES
-('Concierto de Rock', '2025-12-15', 'Concierto', 1, ''),
-('Partido de Fútbol', '2025-11-01', 'Deportivo', 2, ''),
-('Concierto de Pop', '2025-10-20', 'Concierto', 3,  ''),
-('Evento de Box', '2025-09-30', 'Deportivo', 4, ''),
-('Festival de Música', '2025-12-25', 'Concierto', 5, '');
+-- Eventos
+INSERT INTO Evento (Nombre, Fecha, Lugar, Tipo, idLocal, Activo, Publicado, Cancelado) VALUES
+('Concierto Rock', '2025-12-10 20:00:00', 'Estadio Central', 'Concierto', 1, TRUE, FALSE, FALSE),
+('Obra de Teatro', '2025-12-15 19:00:00', 'Teatro Principal', 'Teatro', 2, TRUE, FALSE, FALSE);
 
--- Insertar clientes
+-- Funciones
+INSERT INTO Funcion (Descripcion, FechaHora, Estado, IdEvento, IdLocal) VALUES
+('Función única', '2025-12-10 20:00:00', 'Pendiente', 1, 1),
+('Función única', '2025-12-15 19:00:00', 'Pendiente', 2, 2);
+
+-- Clientes
 INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono) VALUES
-('00000001', 'Fulano', 'Gutierrez', 'fulanogutierrez@gmail.com', '1122334455'),
-('00000002', 'Cesar', 'Torres', 'cesar@gmail.com', '2233445566'),
-('00000003', 'Alpaka', 'Delvalle', 'alpaka@gmail.com', '3344556677'),
-('00000004', 'Hernan', 'Lopez', 'hernan@gmail.com', '4455667788'),
-('00000005', 'Tiago', 'Videira', 'tiago@gmail.com', '5566778899');
+(12345678, 'Juan', 'Pérez', 'juan.perez@email.com', '111111111'),
+(87654321, 'María', 'Gómez', 'maria.gomez@email.com', '222222222');
 
--- Insertar entradas;  
-
-INSERT INTO Entrada (Precio, idTarifa, idFuncion, Estado, Usada, Anulada, Numero, idSector, idDetalleOrden) VALUES 
-(15000, 1, 1, 'Disponible', True, FALSE, 1, 1, 1),
-(10000, 2, 2, 'Disponible', True, FALSE, 2, 2, 2),
-(10500, 3, 3, 'Disponible', True, FALSE, 3, 3, 3),
-(14000, 4, 4, 'Disponible', True, FALSE, 4, 4, 4),
-(15000, 5, 5, 'Disponible', True, FALSE, 5, 5, 5),
-(13000, 2, 6, 'Disponible', True, FALSE, 6, 6, 5);
--- Insertar Funciones
-INSERT INTO Funcion (Descripcion, FechaHora) VALUES 
-('Concierto Coldplay - Día 1', '2025-11-20 20:00:00'),
-('Concierto Coldplay - Día 2', '2025-11-21 21:00:00'),
-('Partido Argentina vs Brasil', '2025-11-30 18:00:00'),
-('Concierto Taylor Swift', '2025-12-01 20:30:00'),
-('Evento de Boxeo - Campeonato Mundial', '2025-12-03 21:00:00'),
-('Obra de teatro - Romeo y Julieta', '2025-12-05 19:30:00'),
-('Cine - Estreno Avengers 6', '2025-12-10 22:00:00'),
-('Partido Boca vs River', '2025-12-15 17:00:00'),
-('Concierto de Música Clásica', '2025-12-20 20:00:00'),
-('Festival de Jazz', '2025-12-25 21:00:00');
-
-INSERT INTO Orden (Fecha, Total, Estado, idCliente) VALUES 
-('2025-10-01 15:30:00', 10500.00,  'Pendiente', 1),
-('2025-10-02 18:45:00', 10000.00, 'Pagada', 2),
-('2025-10-03 20:15:00', 14000.00, 'Anulada', 3),
-('2025-10-05 11:00:00', 13000.00, 'Pendiente', 1),
-('2025-10-06 19:00:00', 15000.00, 'Pagada', 4);
-
-
-INSERT INTO Tarifa (Precio, Descripcion, idSector, idFuncion, idEvento) VALUES 
-(25000, 'Platea Baja - General', 1, 1, 1),
-(18000, 'Platea Alta - General', 2, 1, 2),
-(50000, 'Palco VIP', 3, 1, 3),
-(15000, 'Campo General', 4, 2, 4),
-(12000, 'Galería - Promoción', 5, 3, 5);
-
-INSERT INTO DetalleOrden (Cantidad, Precio, idOrden, idTarifa) VALUES
-(2, 10000.00, 1, 1),
-(1, 15000.00, 2, 2),
-(3, 15000.00, 3, 3),
-(2, 10000.00, 4, 4),
-(1, 12000.00, 5, 5);
+-- Tarifa
+INSERT INTO Tarifa (Precio, Descripcion, Stock, Activa, idSector, IdFuncion, IdEvento) VALUES
+(5000, 'Entrada General', 1000, TRUE, 1, 1, 1),
+(5500, 'Entrada VIP', 500, TRUE, 2, 1, 1);

@@ -14,7 +14,6 @@ public class ClienteService : IClienteService
 
     public async Task<IEnumerable<Cliente>> ObtenerTodos()
     {
-        // Si el repo es síncrono, puedes usar Task.FromResult
         return await Task.FromResult(_repo.GetAll());
     }
 
@@ -47,8 +46,6 @@ public class ClienteService : IClienteService
     {
         var cliente = _repo.GetById(id);
         if (cliente == null) return false;
-        // Si tienes lógica de borrado, agrégala aquí
-        // _repo.Delete(id);
         return await Task.FromResult(true);
     }
 }

@@ -1,14 +1,15 @@
+using Proyecto.Core.DTOs;
 using Proyecto.Core.Entidades;
 
-namespace Servicios.Interfaces
+namespace Proyecto.Core.Servicios.Interfaces
 {
     public interface IOrdenService
     {
-        Task<IEnumerable<Orden>> ObtenerTodas();
-        Task<Orden?> ObtenerPorId(int idOrden);
-        Task<bool> Crear(Orden orden);
-        Task<bool> Actualizar(Orden orden);
-        Task<bool> Eliminar(int idOrden);
+        Task<IEnumerable<OrdenDTO>> ObtenerOrdenes(int? clienteId, string? estado);
+        Task<OrdenDTO?> ObtenerOrdenPorId(int id);
+        Task<bool> CrearOrden(OrdenCreateDTO dto);
+        Task<bool> GenerarQrOrden(int id);
+        Task<bool> PagarOrden(int id);
+        Task<bool> CancelarOrden(int id);
     }
-
 }

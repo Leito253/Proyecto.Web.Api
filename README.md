@@ -23,5 +23,4 @@
 ---
 
 📅 **Año:** 2025  
-🏫 **Escuela Técnica N°12 D.E. 1° “Libertador Gral. José de San Martín”**  
-
+🏫 **Escuela Técnica N°12 D.E. 1° “Libertador Gral. José de San Martín”**

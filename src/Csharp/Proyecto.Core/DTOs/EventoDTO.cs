@@ -7,4 +7,6 @@ public class EventoDTO
     public DateTime Fecha { get; set; }
     public bool Activo { get; set; }
     public int idLocal { get; set; }
+    public string Lugar { get; set; }
+    public string Tipo { get; set; }
 }

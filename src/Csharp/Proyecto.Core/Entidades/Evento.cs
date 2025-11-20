@@ -10,4 +10,6 @@ public class Evento
     public int idLocal { get; set; }
     public Local? Local { get; set; }
     public bool Activo { get; set; }
+    public bool Publicado { get; set; }
+    public bool Cancelado { get; set; }
 }

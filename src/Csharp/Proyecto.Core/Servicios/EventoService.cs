@@ -1,52 +1,135 @@
+using Proyecto.Core.DTOs;
 using Proyecto.Core.Entidades;
+using Proyecto.Core.Interfaces;
+using Proyecto.Core.Servicios.Interfaces;
 
-namespace Servicios;
-public class EventoService : IEventoService
+namespace Proyecto.Core.Servicios
 {
-    private readonly List<Evento> _eventos = new List<Evento>();
-
-    /* public EventoService()
+    public class EventoService : IEventoService
     {
-        // Inicializar con algunos datos de ejemplo
-        _eventos.AddRange(new[]
+        private readonly IEventoRepository _eventoRepository;
+
+        public EventoService(IEventoRepository eventoRepository)
         {
-            new Evento { idEvento = 1, Nombre = "Partido de Fútbol", Fecha = new DateTime(2023, 11, 15), LocalId = 1, Local = new Local { idLocal = 1, Nombre = "Cancha Monumental", Direccion = "Av. Figueroa Alcorta 7597, CABA"}, Precio = 20000 },
-            new Evento { idEvento = 2, Nombre = "Concierto de Rock", Fecha = new DateTime(2023, 12, 5), LocalId = 2, Local = new Local { idLocal = 2, Nombre = "Luna Park", Direccion = "Av. Eduardo Madero 470, C1106 Cdad. Autónoma de Buenos Aires" }, Precio = 15000 },
-            new Evento { idEvento = 3, Nombre = "Obra de Teatro", Fecha = new DateTime(2024, 1, 20), LocalId = 3, Local = new Local { idLocal = 3, Nombre = "Teatro Gran Rex", Direccion = "Av. Corrientes 857" }, Precio = 8000 },
-            new Evento { idEvento = 4, Nombre = "Festival de Música", Fecha = new DateTime(2024, 2, 10), LocalId = 4, Local = new Local { idLocal = 4, Nombre = "Estadio Único Diego Armando Maradona", Direccion = "Av. Pres. Juan Domingo Perón 3500, La Plata, Buenos Aires" }, Precio = 25000 },
-            new Evento { idEvento = 5, Nombre = "Exposición de Arte", Fecha = new DateTime(2024, 3, 15), LocalId = 5, Local = new Local { idLocal = 5, Nombre = "Museo de Arte Latinoamericano de Buenos Aires (MALBA)", Direccion = "Av. Figueroa Alcorta 3415, C1425 CABA" }, Precio = 5000 }
-            
-        });
-    } */
+            _eventoRepository = eventoRepository;
+        }
 
-    public Evento Create(Evento newEvento)
-    {
-        throw new NotImplementedException();
-        
-    }
+        public async Task<IEnumerable<EventoDTO>> ObtenerEventos(string? q, string? tipo, int? localId, DateTime? desde, DateTime? hasta)
+        {
+            var eventos = _eventoRepository.GetAll();
 
-    public bool Delete(int id)
-    {
-        throw new NotImplementedException();
-    }
+            if (!string.IsNullOrWhiteSpace(q))
+                eventos = eventos.Where(e => e.Nombre.Contains(q, StringComparison.OrdinalIgnoreCase));
 
-    public bool Exists(int id)
-    {
-        throw new NotImplementedException();
-    }
+            if (!string.IsNullOrWhiteSpace(tipo))
+                eventos = eventos.Where(e => e.Tipo.Equals(tipo, StringComparison.OrdinalIgnoreCase));
 
-    public IEnumerable<Evento> GetAll()
-    {
-        return _eventos;
-    }
+            if (localId.HasValue)
+                eventos = eventos.Where(e => e.idLocal == localId);
 
-    public Evento? GetById(int id)
-    {
-        return _eventos.FirstOrDefault(e => e.idEvento == id);
-    }
+            if (desde.HasValue)
+                eventos = eventos.Where(e => e.Fecha >= desde);
 
-    public Evento? Update(int id, Evento updatedEvento)
-    {
-        throw new NotImplementedException();
+            if (hasta.HasValue)
+                eventos = eventos.Where(e => e.Fecha <= hasta);
+
+            return eventos.Select(e => new EventoDTO
+            {
+                idEvento = e.idEvento,
+                Nombre = e.Nombre,
+                Fecha = e.Fecha,
+                Lugar = e.Lugar,
+                Tipo = e.Tipo,
+                idLocal = e.idLocal,
+                Activo = e.Activo
+            });
+        }
+
+        public async Task<EventoDTO?> ObtenerEventoPorId(int id)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return null;
+
+            return new EventoDTO
+            {
+                idEvento = evento.idEvento,
+                Nombre = evento.Nombre,
+                Fecha = evento.Fecha,
+                Lugar = evento.Lugar,
+                Tipo = evento.Tipo,
+                idLocal = evento.idLocal,
+                Activo = evento.Activo
+            };
+        }
+
+        public async Task<bool> CrearEvento(EventoCreateDTO dto)
+        {
+            var evento = new Evento
+            {
+                Nombre = dto.Nombre,
+                Fecha = dto.Fecha,
+                Lugar = dto.Lugar,
+                Tipo = dto.Tipo,
+                idLocal = dto.idLocal,
+                Activo = true
+            };
+
+            _eventoRepository.Add(evento);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> ActualizarEvento(int id, EventoUpdateDTO dto)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return false;
+
+            evento.Nombre = dto.Nombre;
+            evento.Fecha = dto.Fecha;
+            evento.Lugar = dto.Lugar;
+            evento.Tipo = dto.Tipo;
+            evento.idLocal = dto.IdLocal;
+
+            _eventoRepository.Update(evento);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> ActivarEvento(int id)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return false;
+
+            evento.Activo = true;
+            _eventoRepository.Update(evento);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> DesactivarEvento(int id)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return false;
+
+            evento.Activo = false;
+            _eventoRepository.Update(evento);
+            return await Task.FromResult(true);
+        }
+        public async Task<bool> PublicarEvento(int id)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return false;
+
+            evento.Publicado = true;
+            _eventoRepository.Update(evento);
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> CancelarEvento(int id)
+        {
+            var evento = _eventoRepository.GetById(id);
+            if (evento == null) return false;
+
+            evento.Cancelado = true;
+            _eventoRepository.Update(evento);
+            return await Task.FromResult(true);
+        }
     }
 }
