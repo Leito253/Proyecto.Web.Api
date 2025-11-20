@@ -30,4 +30,49 @@ INSERT INTO Tarifa (Precio, Descripcion, Stock, Activa, idSector, IdFuncion, IdE
 (5000, 'Entrada General', 1000, TRUE, 1, 1, 1),
 (5500, 'Entrada VIP', 500, TRUE, 2, 1, 1);
 
+INSERT INTO Orden (Fecha, Estado, idCliente, NumeroOrden, Total)
+VALUES (NOW(), 'Pendiente', 1, 10001, 0);
 
+INSERT INTO DetalleOrden (IdOrden, IdEvento, IdFuncion, IdTarifa, Cantidad, PrecioUnitario)
+VALUES (1, 1, 1, 1, 1, 5000);
+
+INSERT INTO Entrada
+(Precio, QR, Usada, Anulada, FechaUso, Numero, IdDetalleOrden, IdCliente, IdFuncion, IdSector)
+VALUES
+(5000, NULL, FALSE, FALSE, NULL, 'A-001', 1, 1, 1, 1);
+
+INSERT INTO QR (IdEntrada, Codigo, FechaCreacion)
+VALUES (1, 'QR-entrada-1-XYZ123ABC', NOW());
+use EventoBd;
+INSERT INTO Cliente (DNI, Nombre, Apellido, Email, Telefono)
+VALUES (34567890, 'Carlos', 'López', 'carlos.lopez@email.com', '333333333');
+
+INSERT INTO Orden (Fecha, Estado, idCliente, NumeroOrden, Total)
+VALUES (NOW(), 'Pendiente', 2, 10002, 0);
+
+INSERT INTO DetalleOrden (IdOrden, IdEvento, IdFuncion, IdTarifa, Cantidad, PrecioUnitario)
+VALUES (2, 1, 1, 1, 2, 5000);
+
+INSERT INTO Sector (Nombre, Descripcion, Capacidad, Precio, idLocal)
+VALUES ('Sector C', 'Central', 8000, 6000, 1);
+
+INSERT INTO Funcion (Descripcion, FechaHora, Estado, IdEvento, IdLocal)
+VALUES ('Función especial', '2025-12-20 21:00:00', 'Pendiente', 1, 1);
+
+INSERT INTO Entrada
+(Precio, QR, Usada, Anulada, FechaUso, Numero, IdDetalleOrden, IdCliente, IdFuncion, IdSector)
+VALUES
+(6000, NULL, FALSE, FALSE, NULL, 'B-001', 2, 2, 2, 3);
+
+INSERT INTO Entrada
+(Precio, QR, Usada, Anulada, FechaUso, Numero, IdDetalleOrden, IdCliente, IdFuncion, IdSector)
+VALUES
+(6000, NULL, FALSE, FALSE, NULL, 'B-001', 2, 2, 2, 3);
+
+SET @IdEntrada = LAST_INSERT_ID();
+
+INSERT INTO QR (IdEntrada, Codigo, FechaCreacion)
+VALUES (@IdEntrada, 'QR-entrada-2-ABC456DEF', NOW());
+
+INSERT INTO QR (IdEntrada, Codigo, FechaCreacion)
+VALUES (1, 'QR-entrada-2-ABC456DEF', NOW());
